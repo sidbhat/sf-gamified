@@ -643,7 +643,13 @@ body.quest-running::before {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-.quest-complete .complete-icon {
+/* Quest Partial Success (with errors) */
+.quest-partial {
+  background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+}
+
+.quest-complete .complete-icon,
+.quest-partial .complete-icon {
   font-size: 64px;
   text-align: center;
   margin-bottom: 16px;
@@ -725,6 +731,30 @@ body.quest-running::before {
   background: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Step Summary (for partial completion) */
+.step-summary {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.step-summary ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.step-summary li {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.step-summary li:last-child {
+  border-bottom: none;
 }
 
 /* Quest Error */

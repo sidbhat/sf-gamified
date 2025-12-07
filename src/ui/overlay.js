@@ -386,11 +386,40 @@ class QuestOverlay {
   }
 
   /**
-   * Show quest complete screen
-   * @param {Object} quest - Quest configuration
+   * Show step error message (but quest continues)
+   * @param {Object} step - Step configuration
+   * @param {string} errorMessage - Error message
    */
-  showQuestComplete(quest) {
-    this.logger.info('Showing quest complete', quest);
+  showStepError(step, errorMessage) {
+    this.logger.warn('Showing step error (quest continues)', { step, errorMessage });
+
+    const html = `
+      <div class="joule-quest-card quest-error">
+        <div class="error-icon">⚠️</div>
+        <h3>Step Failed</h3>
+        <h4>${step.name}</h4>
+        <p>Error: ${errorMessage}</p>
+        <p style="opacity: 0.8; font-size: 13px; margin-top: 12px;">
+          ⏭️ Continuing to next step...
+        </p>
+      </div>
+    `;
+
+    this.container.innerHTML = html;
+    this.show();
+
+    // Auto-hide after 3 seconds (longer than success to read error)
+    setTimeout(() => this.hide(), 3000);
+  }
+
+  /**
+   * Show quest complete screen with step results summary
+   * @param {Object} quest - Quest configuration
+   * @param {Array} stepResults - Array of step result objects
+   * @param {Array} failedSteps - Array of failed step indices
+   */
+  showQuestComplete(quest, stepResults = [], failedSteps = []) {
+    this.logger.info('Showing quest complete', { quest, stepResults, failedSteps });
 
     // Defensive: ensure quest object has required properties
     if (!quest) {
@@ -400,22 +429,52 @@ class QuestOverlay {
 
     const questName = quest.name || 'Unknown Quest';
     const questPoints = quest.points || 0;
+    const totalSteps = stepResults.length;
+    const successfulSteps = stepResults.filter(r => r.status === 'success').length;
+    const failedStepsCount = failedSteps.length;
 
     // Remove page-level border indicator when quest completes
     document.body.classList.remove('quest-running');
 
+    // Determine completion status
+    const isFullSuccess = failedStepsCount === 0;
+    const completionIcon = isFullSuccess ? '🏆' : '⚠️';
+    const completionTitle = isFullSuccess ? 'Quest Complete!' : 'Quest Completed (With Errors)';
+    const completionColor = isFullSuccess ? 'quest-complete' : 'quest-partial';
+
+    // Build step summary if there were failures
+    let stepSummary = '';
+    if (failedStepsCount > 0) {
+      const failedStepsList = stepResults
+        .filter(r => r.status === 'error')
+        .map(r => `<li>❌ Step ${r.stepIndex + 1}: ${r.stepName}</li>`)
+        .join('');
+      
+      stepSummary = `
+        <div class="step-summary">
+          <p style="font-size: 13px; margin-bottom: 8px;">
+            <strong>Steps:</strong> ${successfulSteps}/${totalSteps} completed
+          </p>
+          <ul style="text-align: left; font-size: 12px; opacity: 0.9; margin: 0; padding-left: 20px;">
+            ${failedStepsList}
+          </ul>
+        </div>
+      `;
+    }
+
     const html = `
-      <div class="joule-quest-card quest-complete">
-        <div class="complete-icon">🏆</div>
-        <h2>Quest Complete!</h2>
+      <div class="joule-quest-card ${completionColor}">
+        <div class="complete-icon">${completionIcon}</div>
+        <h2>${completionTitle}</h2>
         <h3>${questName}</h3>
+        ${stepSummary}
         <div class="rewards">
           <div class="reward-item">
             <span class="reward-icon">⭐</span>
-            <span class="reward-value">+${questPoints} points</span>
+            <span class="reward-value">+${isFullSuccess ? questPoints : Math.floor(questPoints * 0.5)} points</span>
           </div>
         </div>
-        <p class="congrats">You're a Joule master!</p>
+        <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
         <button class="show-quests-btn" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
           🗺️ Show Quests
         </button>
@@ -425,8 +484,8 @@ class QuestOverlay {
     this.container.innerHTML = html;
     this.show();
 
-    // Trigger confetti (wrapped in try-catch for safety)
-    if (window.JouleQuestConfetti) {
+    // Trigger confetti only for full success (wrapped in try-catch for safety)
+    if (isFullSuccess && window.JouleQuestConfetti) {
       try {
         window.JouleQuestConfetti.celebrate();
       } catch (error) {

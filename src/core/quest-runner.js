@@ -13,6 +13,8 @@ class QuestRunner {
     this.mode = 'demo'; // 'demo' or 'real'
     this.overlay = null;
     this.selectors = null;
+    this.failedSteps = []; // Track steps that failed
+    this.stepResults = []; // Track all step results (success/error/skipped)
   }
 
   /**
@@ -69,9 +71,9 @@ class QuestRunner {
 
       this.logger.quest(quest.name, 'Quest completed successfully');
       
-      // Show completion overlay
+      // Show completion overlay with step results
       if (this.overlay) {
-        this.overlay.showQuestComplete(quest);
+        this.overlay.showQuestComplete(quest, this.stepResults, this.failedSteps);
       }
     } catch (error) {
       this.logger.error('Quest failed', error);
@@ -90,9 +92,14 @@ class QuestRunner {
 
   /**
    * Run quest in demo mode (automated)
+   * With error recovery - failed steps are marked but quest continues
    */
   async runDemoMode() {
-    this.logger.info('Running quest in DEMO mode');
+    this.logger.info('Running quest in DEMO mode with error recovery');
+
+    // Reset tracking arrays
+    this.failedSteps = [];
+    this.stepResults = [];
 
     // CRITICAL: Cache steps length to avoid accessing null during loop
     const steps = this.currentQuest.steps;
@@ -121,6 +128,14 @@ class QuestRunner {
       try {
         await this.executeStep(step);
         
+        // Track successful step
+        this.stepResults.push({
+          stepIndex: i,
+          stepName: step.name,
+          status: 'success',
+          error: null
+        });
+        
         // Show success message and WAIT so user can see it
         if (this.overlay) {
           this.overlay.showStepSuccess(step.successMessage);
@@ -129,9 +144,35 @@ class QuestRunner {
         // Wait after each step completes
         await this.sleep(3000);
       } catch (error) {
-        this.logger.error(`Step ${i + 1} failed`, error);
-        throw error;
+        this.logger.error(`Step ${i + 1} failed: ${error.message}`, error);
+        
+        // Track failed step
+        this.failedSteps.push(i);
+        this.stepResults.push({
+          stepIndex: i,
+          stepName: step.name,
+          status: 'error',
+          error: error.message
+        });
+        
+        // Show error state in overlay but CONTINUE
+        if (this.overlay) {
+          this.overlay.showStepError(step, error.message);
+        }
+        
+        // Wait before continuing to next step
+        await this.sleep(3000);
+        
+        // Log that we're continuing despite error
+        this.logger.warn(`⚠️ Step ${i + 1} failed but continuing quest...`);
       }
+    }
+
+    // Log summary of failed steps if any
+    if (this.failedSteps.length > 0) {
+      this.logger.warn(`Quest completed with ${this.failedSteps.length} failed step(s): ${this.failedSteps.map(i => i + 1).join(', ')}`);
+    } else {
+      this.logger.success('Quest completed successfully with all steps passing!');
     }
   }
 
