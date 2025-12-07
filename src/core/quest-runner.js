@@ -216,15 +216,29 @@ class QuestRunner {
     if (selectorKey === 'joule.chatButton') {
       this.logger.info('Checking if Joule is already open...');
       
-      // Check if iframe exists (means Joule is open)
+      // Robust check: iframe must exist AND be visible AND have proper dimensions
       const iframes = document.querySelectorAll('iframe');
       let jouleAlreadyOpen = false;
       
       for (const iframe of iframes) {
         if (iframe.src && iframe.src.includes('sapdas.cloud.sap')) {
-          jouleAlreadyOpen = true;
-          this.logger.success('✅ Joule iframe found - Joule is already open!');
-          break;
+          // Check if iframe is actually visible and rendered
+          const rect = iframe.getBoundingClientRect();
+          const isVisible = (
+            iframe.offsetParent !== null &&  // Not hidden via display:none
+            rect.width > 0 &&                // Has width
+            rect.height > 0 &&               // Has height
+            window.getComputedStyle(iframe).visibility !== 'hidden' &&  // Not visibility:hidden
+            window.getComputedStyle(iframe).opacity !== '0'             // Not transparent
+          );
+          
+          if (isVisible) {
+            jouleAlreadyOpen = true;
+            this.logger.success('✅ Joule iframe found AND visible - Joule is already open!');
+            break;
+          } else {
+            this.logger.info('Found Joule iframe but it is not visible/rendered');
+          }
         }
       }
       
