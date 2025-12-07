@@ -197,6 +197,14 @@ class QuestRunner {
         await this.executeTypeAndSendAction(step);
         break;
       
+      case 'select_first_option':
+        await this.executeSelectFirstOption(step);
+        break;
+      
+      case 'click_button_by_text':
+        await this.executeClickButtonByText(step);
+        break;
+      
       default:
         throw new Error(`Unknown action: ${step.action}`);
     }
@@ -314,6 +322,82 @@ class QuestRunner {
       // Keep it visible so user can read the response
       await this.sleep(5000);
     }
+  }
+
+  /**
+   * Execute select first option action (for interactive flows)
+   * Handles both buttons and input fields intelligently
+   * @param {Object} step - Step configuration
+   */
+  async executeSelectFirstOption(step) {
+    this.logger.info('Executing select_first_option action');
+
+    // Wait a bit for response to render
+    await this.sleep(2000);
+
+    // Try to select first interactive option
+    const result = await this.jouleHandler.selectFirstOption();
+
+    if (!result.success) {
+      throw new Error('Failed to select first option');
+    }
+
+    // Check if an input field was detected
+    if (result.type === 'input') {
+      this.logger.info(`Input field detected (type: ${result.inputType})`);
+      
+      // If input detected and we have a value to enter, use type_and_send
+      if (step.inputValue) {
+        this.logger.info(`Entering value into input: "${step.inputValue}"`);
+        
+        // Send the value using type_and_send
+        const typeResult = await this.jouleHandler.sendPrompt(
+          step.inputValue,
+          step.waitForResponse || true,
+          step.responseKeywords || []
+        );
+        
+        if (!typeResult.success) {
+          throw new Error('Failed to enter value into input field');
+        }
+        
+        this.logger.success(`Value entered into input field: ${step.inputValue}`);
+      } else {
+        this.logger.warn('Input field detected but no inputValue provided in step configuration');
+        throw new Error('Input field detected but no inputValue configured. Add "inputValue" to step.');
+      }
+    } else {
+      // Button was clicked
+      this.logger.success(`Selected first option (button): ${result.buttonText}`);
+      
+      // Wait for next response if specified
+      if (step.waitForResponse) {
+        await this.sleep(2000);
+      }
+    }
+  }
+
+  /**
+   * Execute click button by text action (for interactive flows)
+   * @param {Object} step - Step configuration
+   */
+  async executeClickButtonByText(step) {
+    this.logger.info(`Executing click_button_by_text action: "${step.buttonText}"`);
+
+    // Wait a bit for UI to be ready
+    await this.sleep(2000);
+
+    // Click button matching text
+    const result = await this.jouleHandler.clickButtonByText(step.buttonText);
+
+    if (!result.success) {
+      throw new Error(`Failed to click button: ${step.buttonText}`);
+    }
+
+    this.logger.success(`Clicked button: ${result.buttonText}`);
+
+    // Wait after clicking
+    await this.sleep(2000);
   }
 
   /**

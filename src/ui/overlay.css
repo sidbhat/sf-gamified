@@ -28,6 +28,32 @@
   position: relative;
 }
 
+/* Active Quest Indicator - Animated Border Around Entire Page */
+body.quest-running::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 6px solid transparent;
+  border-image: linear-gradient(90deg, #667eea, #764ba2, #667eea, #764ba2) 1;
+  pointer-events: none;
+  z-index: 2147483646;
+  animation: borderPulse 2s ease-in-out infinite;
+}
+
+@keyframes borderPulse {
+  0%, 100% {
+    opacity: 0.7;
+    border-width: 6px;
+  }
+  50% {
+    opacity: 1;
+    border-width: 8px;
+  }
+}
+
 /* Quest Selection Overlay */
 .joule-quest-card.quest-selection {
   width: 600px;
@@ -40,14 +66,14 @@
 
 .close-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 24px;
+  right: 24px;
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 24px;
-  width: 36px;
-  height: 36px;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -55,6 +81,7 @@
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 10;
+  line-height: 1;
 }
 
 .close-btn:hover {
@@ -66,6 +93,38 @@
   text-align: center;
   margin-bottom: 16px;
   position: relative;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selection-header .reset-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.selection-header .reset-btn:hover {
+  background: rgba(255, 100, 100, 0.4);
+  transform: rotate(180deg);
+}
+
+.selection-header .reset-btn:active {
+  transform: rotate(180deg) scale(0.9);
 }
 
 .selection-header .logo {
@@ -80,34 +139,6 @@
   display: inline-block;
   vertical-align: middle;
   margin: 0;
-}
-
-.selection-header .reset-btn {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.selection-header .reset-btn:hover {
-  background: rgba(255, 100, 100, 0.4);
-  transform: translateY(-50%) rotate(180deg);
-}
-
-.selection-header .reset-btn:active {
-  transform: translateY(-50%) rotate(180deg) scale(0.9);
 }
 
 .selection-stats {
@@ -260,7 +291,16 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
-.quest-map-selection .map-start,
+.quest-map-selection .map-start {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px;
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
 .quest-map-selection .map-end {
   font-size: 14px;
   font-weight: bold;

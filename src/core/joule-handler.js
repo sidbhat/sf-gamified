@@ -392,6 +392,134 @@ class JouleHandler {
   }
 
   /**
+   * Select first interactive option (button/link) in latest Joule response
+   * Also detects input fields and returns type info
+   * @returns {Promise<Object>} Result object with success status and type info
+   */
+  async selectFirstOption() {
+    this.logger.info('Selecting first interactive option via postMessage');
+
+    try {
+      if (!this.jouleIframe) {
+        await this.waitForJouleIframe();
+      }
+
+      if (!this.jouleIframe) {
+        throw new Error('Joule iframe not available');
+      }
+
+      // Click first button OR detect input via postMessage
+      this.logger.info('Sending click_first_button message to iframe');
+      const result = await this.sendMessageToIframe('click_first_button', {}, 10000);
+      
+      if (!result.data || !result.data.success) {
+        throw new Error(`Failed to interact with first option: ${result.data?.error || 'Unknown error'}`);
+      }
+      
+      // Return different result based on what was found
+      if (result.data.type === 'input') {
+        this.logger.info(`Input field detected: ${result.data.inputType}`);
+        return {
+          success: true,
+          type: 'input',
+          inputType: result.data.inputType,
+          inputId: result.data.inputId,
+          message: result.data.message
+        };
+      } else {
+        this.logger.success(`First option clicked (button): ${result.data.buttonText}`);
+        return {
+          success: true,
+          type: 'button',
+          buttonText: result.data.buttonText,
+          message: 'First option clicked successfully'
+        };
+      }
+
+    } catch (error) {
+      this.logger.error('Failed to select first option', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Click button matching specific text
+   * @param {string} buttonText - Text to search for in buttons
+   * @returns {Promise<Object>} Result object with success status
+   */
+  async clickButtonByText(buttonText) {
+    this.logger.info(`Clicking button by text: "${buttonText}" via postMessage`);
+
+    try {
+      if (!this.jouleIframe) {
+        await this.waitForJouleIframe();
+      }
+
+      if (!this.jouleIframe) {
+        throw new Error('Joule iframe not available');
+      }
+
+      // Click button by text via postMessage
+      this.logger.info('Sending click_button_by_text message to iframe');
+      const result = await this.sendMessageToIframe('click_button_by_text', { text: buttonText }, 10000);
+      
+      if (!result.data || !result.data.success) {
+        throw new Error(`Failed to click button: ${result.data?.error || 'Unknown error'}`);
+      }
+      
+      this.logger.success(`Button clicked: ${result.data.buttonText}`);
+
+      return {
+        success: true,
+        message: 'Button clicked successfully',
+        buttonText: result.data.buttonText
+      };
+
+    } catch (error) {
+      this.logger.error(`Failed to click button "${buttonText}"`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find all interactive elements in latest Joule response
+   * @returns {Promise<Object>} Result with list of interactive elements
+   */
+  async findInteractiveElements() {
+    this.logger.info('Finding interactive elements via postMessage');
+
+    try {
+      if (!this.jouleIframe) {
+        await this.waitForJouleIframe();
+      }
+
+      if (!this.jouleIframe) {
+        throw new Error('Joule iframe not available');
+      }
+
+      // Find interactive elements via postMessage
+      this.logger.info('Sending find_interactive_elements message to iframe');
+      const result = await this.sendMessageToIframe('find_interactive_elements', {}, 10000);
+      
+      if (!result.data || !result.data.success) {
+        throw new Error('Failed to find interactive elements');
+      }
+      
+      this.logger.success(`Found ${result.data.count} interactive elements`);
+
+      return {
+        success: true,
+        elements: result.data.elements,
+        count: result.data.count
+      };
+
+    } catch (error) {
+      this.logger.error('Failed to find interactive elements', error);
+      throw error;
+    }
+  }
+
+  /**
    * Format text to proper sentence case
    * Capitalizes first letter of sentences (after . ! ?)
    * @param {string} text - Text to format

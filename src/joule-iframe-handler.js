@@ -127,6 +127,18 @@ class JouleIframeHandler {
           await this.checkIfOpen(message.requestId);
           break;
         
+        case 'find_interactive_elements':
+          await this.findInteractiveElements(message.requestId);
+          break;
+        
+        case 'click_first_button':
+          await this.clickFirstButton(message.requestId);
+          break;
+        
+        case 'click_button_by_text':
+          await this.clickButtonByText(message.data.text, message.requestId);
+          break;
+        
         default:
           this.logger.error('Unknown message type', message.type);
       }
@@ -692,6 +704,178 @@ class JouleIframeHandler {
           resolve(null);
         }
       }, 100); // Check every 100ms
+    });
+  }
+
+  /**
+   * Find interactive elements (buttons, links) in latest Joule response
+   */
+  async findInteractiveElements(requestId) {
+    this.logger.info('Finding interactive elements in latest response');
+    
+    // Wait a bit for response to fully render
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Find message container
+    const messageContainer = document.querySelector('[role="log"]') ||
+                            document.querySelector('[aria-live="polite"]') ||
+                            document.body;
+    
+    // Get all buttons and links in latest response
+    const buttons = Array.from(messageContainer.querySelectorAll('button, a[role="button"], [role="button"]'));
+    
+    const interactiveElements = buttons.map((btn, index) => ({
+      index: index,
+      text: btn.textContent.trim(),
+      ariaLabel: btn.getAttribute('aria-label') || '',
+      type: btn.tagName.toLowerCase(),
+      hasIcon: !!btn.querySelector('svg, ui5-icon')
+    }));
+    
+    this.logger.success(`Found ${interactiveElements.length} interactive elements`);
+    interactiveElements.forEach((el, i) => {
+      this.logger.info(`  [${i}] ${el.type}: "${el.text}" (aria-label: "${el.ariaLabel}")`);
+    });
+    
+    this.sendMessageToParent({
+      type: 'interactive_elements_found',
+      requestId: requestId,
+      data: { 
+        success: true,
+        elements: interactiveElements,
+        count: interactiveElements.length
+      }
+    });
+  }
+
+  /**
+   * Click the first interactive button found in latest response
+   * OR enter text/number into input field if available
+   */
+  async clickFirstButton(requestId) {
+    this.logger.info('Looking for first interactive option (button or input)');
+    
+    // Wait a bit for response to fully render
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Find message container
+    const messageContainer = document.querySelector('[role="log"]') ||
+                            document.querySelector('[aria-live="polite"]') ||
+                            document.body;
+    
+    // PRIORITY 1: Check for input fields (text, number, select)
+    const inputs = Array.from(messageContainer.querySelectorAll('input[type="text"], input[type="number"], select'));
+    
+    if (inputs.length > 0) {
+      const firstInput = inputs[0];
+      this.logger.success(`Found input field: type="${firstInput.type}" id="${firstInput.id}"`);
+      
+      // Input field detected - need text value from parent
+      this.sendMessageToParent({
+        type: 'button_clicked',
+        requestId: requestId,
+        data: { 
+          success: true,
+          type: 'input',
+          inputType: firstInput.type,
+          inputId: firstInput.id,
+          message: 'Input field detected - use type_and_send action to enter value'
+        }
+      });
+      return;
+    }
+    
+    // PRIORITY 2: Look for buttons
+    const allButtons = Array.from(messageContainer.querySelectorAll('button, a[role="button"], [role="button"]'));
+    
+    if (allButtons.length === 0) {
+      this.logger.error('No interactive buttons or inputs found');
+      this.sendMessageToParent({
+        type: 'button_clicked',
+        requestId: requestId,
+        data: { success: false, error: 'No buttons or inputs found' }
+      });
+      return;
+    }
+    
+    // Click the first button (usually "View" or "Select")
+    const firstButton = allButtons[0];
+    this.logger.success(`Clicking button: "${firstButton.textContent.trim()}"`);
+    
+    // Trigger click with multiple events for reliability
+    firstButton.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+    firstButton.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
+    firstButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    firstButton.click();
+    
+    this.sendMessageToParent({
+      type: 'button_clicked',
+      requestId: requestId,
+      data: { 
+        success: true,
+        type: 'button',
+        buttonText: firstButton.textContent.trim(),
+        buttonAriaLabel: firstButton.getAttribute('aria-label') || ''
+      }
+    });
+  }
+
+  /**
+   * Click button matching specific text
+   */
+  async clickButtonByText(buttonText, requestId) {
+    this.logger.info(`Looking for button with text: "${buttonText}"`);
+    
+    // Wait a bit for UI to be ready
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Search entire document for button
+    const allButtons = Array.from(document.querySelectorAll('button, a[role="button"], [role="button"]'));
+    
+    // Find button matching text (case-insensitive)
+    const targetButton = allButtons.find(btn => {
+      const btnText = btn.textContent.trim().toLowerCase();
+      const ariaLabel = (btn.getAttribute('aria-label') || '').toLowerCase();
+      const searchText = buttonText.toLowerCase();
+      
+      return btnText.includes(searchText) || ariaLabel.includes(searchText);
+    });
+    
+    if (!targetButton) {
+      this.logger.error(`Button not found: "${buttonText}"`);
+      this.logger.info('Available buttons:');
+      allButtons.forEach((btn, i) => {
+        this.logger.info(`  [${i}] "${btn.textContent.trim()}" (aria: "${btn.getAttribute('aria-label') || ''}")`);
+      });
+      
+      this.sendMessageToParent({
+        type: 'button_clicked',
+        requestId: requestId,
+        data: { 
+          success: false, 
+          error: `Button not found: ${buttonText}`,
+          availableButtons: allButtons.map(b => b.textContent.trim())
+        }
+      });
+      return;
+    }
+    
+    this.logger.success(`Found and clicking button: "${targetButton.textContent.trim()}"`);
+    
+    // Trigger click with multiple events
+    targetButton.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+    targetButton.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
+    targetButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    targetButton.click();
+    
+    this.sendMessageToParent({
+      type: 'button_clicked',
+      requestId: requestId,
+      data: { 
+        success: true,
+        buttonText: targetButton.textContent.trim(),
+        buttonAriaLabel: targetButton.getAttribute('aria-label') || ''
+      }
     });
   }
 

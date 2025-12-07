@@ -41,12 +41,17 @@ class QuestOverlay {
    * @param {Array} quests - Array of all quests
    * @param {Array} completedQuests - Array of completed quest IDs
    * @param {Object} stats - User statistics
+   * @param {Object} journeys - Journey metadata (names and descriptions)
    */
-  showQuestSelection(quests, completedQuests, stats) {
-    this.logger.info('Showing quest selection', { quests, completedQuests, stats });
+  showQuestSelection(quests, completedQuests, stats, journeys = {}) {
+    this.logger.info('Showing quest selection', { quests, completedQuests, stats, journeys });
 
     const employeeQuests = quests.filter(q => q.category === 'employee');
     const managerQuests = quests.filter(q => q.category === 'manager');
+    
+    // Get journey info with defaults
+    const employeeJourney = journeys.employee || { name: 'Employee Journey', description: 'Complete employee quests' };
+    const managerJourney = journeys.manager || { name: 'Manager Journey', description: 'Complete manager quests' };
     
     const renderQuestNodes = (questList, category) => {
       return questList.map((quest, index) => {
@@ -107,7 +112,7 @@ class QuestOverlay {
           <div class="quest-category active" data-category="employee">
             <div class="journey-progress">
               <div class="progress-label">
-                <span>🗺️ Employee Journey</span>
+                <span>🗺️ ${employeeJourney.name}</span>
                 <strong>${employeeQuests.filter(q => completedQuests.includes(q.id)).length} / ${employeeQuests.length}</strong>
               </div>
               <div class="journey-bar">
@@ -127,7 +132,7 @@ class QuestOverlay {
           <div class="quest-category" data-category="manager">
             <div class="journey-progress">
               <div class="progress-label">
-                <span>🗺️ Manager Journey</span>
+                <span>🗺️ ${managerJourney.name}</span>
                 <strong>${managerQuests.filter(q => completedQuests.includes(q.id)).length} / ${managerQuests.length}</strong>
               </div>
               <div class="journey-bar">
@@ -315,6 +320,10 @@ class QuestOverlay {
     `;
 
     this.container.innerHTML = html;
+    
+    // Add page-level border indicator
+    document.body.classList.add('quest-running');
+    
     this.show();
   }
 
@@ -347,6 +356,10 @@ class QuestOverlay {
     `;
 
     this.container.innerHTML = html;
+    
+    // Add page-level border indicator
+    document.body.classList.add('quest-running');
+    
     this.show();
   }
 
@@ -387,6 +400,9 @@ class QuestOverlay {
 
     const questName = quest.name || 'Unknown Quest';
     const questPoints = quest.points || 0;
+
+    // Remove page-level border indicator when quest completes
+    document.body.classList.remove('quest-running');
 
     const html = `
       <div class="joule-quest-card quest-complete">
@@ -432,6 +448,9 @@ class QuestOverlay {
    */
   showError(message) {
     this.logger.error('Showing error overlay', message);
+
+    // Remove page-level border indicator on error
+    document.body.classList.remove('quest-running');
 
     const html = `
       <div class="joule-quest-card quest-error">

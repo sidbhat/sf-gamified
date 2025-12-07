@@ -117,8 +117,8 @@
       const completedQuests = await storage.getCompletedQuests();
       const stats = await storage.getUserStats();
 
-      // Show quest selection overlay (centered on screen)
-      overlay.showQuestSelection(quests.quests, completedQuests, stats);
+      // Show quest selection overlay (centered on screen) with journey metadata
+      overlay.showQuestSelection(quests.quests, completedQuests, stats, quests.journeys);
 
       logger.success('Quest selection overlay displayed');
     } catch (error) {

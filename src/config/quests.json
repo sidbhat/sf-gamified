@@ -1,37 +1,15 @@
 {
-  "quests": [
-    {
-      "id": "employee-cost-center",
-      "name": "View Cost Center",
-      "category": "employee",
-      "description": "Ask Joule about your cost center",
-      "difficulty": "Easy",
-      "points": 100,
-      "icon": "🍄",
-      "steps": [
-        {
-          "id": 1,
-          "name": "Open Joule",
-          "description": "Opening Joule AI assistant...",
-          "action": "click",
-          "selector": "joule.chatButton",
-          "waitForResponse": false,
-          "successMessage": "Joule opened! 🎮",
-          "hint": "Clicking Joule button in top bar"
-        },
-        {
-          "id": 2,
-          "name": "Ask about Cost Center",
-          "description": "Sending prompt to Joule...",
-          "action": "type_and_send",
-          "prompt": "Show me my cost center",
-          "waitForResponse": true,
-          "responseKeywords": ["cost", "center", "CC", "department", "organization"],
-          "successMessage": "Quest Complete! 🏆",
-          "hint": "Asking Joule for cost center information"
-        }
-      ]
+  "journeys": {
+    "employee": {
+      "name": "Joule Essentials",
+      "description": "Master the basics of Joule AI - from checking time off to understanding company policies"
     },
+    "manager": {
+      "name": "Leadership Essentials",
+      "description": "Essential Joule skills for managers - handle approvals and manage your team efficiently"
+    }
+  },
+  "quests": [
     {
       "id": "employee-leave-balance",
       "name": "View Leave Balance",
@@ -59,36 +37,6 @@
           "waitForResponse": true,
           "responseKeywords": ["leave", "balance", "vacation", "days", "remaining", "available"],
           "successMessage": "Leave balance retrieved! 🏆"
-        }
-      ]
-    },
-    {
-      "id": "employee-rental-policy",
-      "name": "Company Rental Car Policy",
-      "category": "employee",
-      "description": "Learn about rental car policies",
-      "difficulty": "Easy",
-      "points": 100,
-      "icon": "🚗",
-      "steps": [
-        {
-          "id": 1,
-          "name": "Open Joule",
-          "description": "Opening Joule AI assistant...",
-          "action": "click",
-          "selector": "joule.chatButton",
-          "waitForResponse": false,
-          "successMessage": "Joule opened! 🎮"
-        },
-        {
-          "id": 2,
-          "name": "Ask About Rental Policy",
-          "description": "Querying company policies...",
-          "action": "type_and_send",
-          "prompt": "What is the company policy on rental cars?",
-          "waitForResponse": true,
-          "responseKeywords": ["rental", "car", "policy", "vehicle", "travel", "expense"],
-          "successMessage": "Policy information found! 🏆"
         }
       ]
     },
@@ -123,13 +71,45 @@
       ]
     },
     {
-      "id": "manager-my-team",
-      "name": "Show My Team",
-      "category": "manager",
-      "description": "View your direct reports and team",
-      "difficulty": "Medium",
-      "points": 150,
-      "icon": "👥",
+      "id": "employee-cost-center",
+      "name": "View Cost Center",
+      "category": "employee",
+      "description": "View your cost center info",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🍄",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮",
+          "hint": "Clicking Joule button in top bar"
+        },
+        {
+          "id": 2,
+          "name": "Ask about Cost Center",
+          "description": "Sending prompt to Joule...",
+          "action": "type_and_send",
+          "prompt": "Show me my cost center",
+          "waitForResponse": true,
+          "responseKeywords": ["cost", "center", "CC", "department", "organization"],
+          "successMessage": "Quest Complete! 🏆",
+          "hint": "Asking Joule for cost center information"
+        }
+      ]
+    },
+    {
+      "id": "employee-rental-policy",
+      "name": "Company Rental Car Policy",
+      "category": "employee",
+      "description": "Learn about rental car policies",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🚗",
       "steps": [
         {
           "id": 1,
@@ -142,13 +122,13 @@
         },
         {
           "id": 2,
-          "name": "View Team",
-          "description": "Loading team information...",
+          "name": "Ask About Rental Policy",
+          "description": "Querying company policies...",
           "action": "type_and_send",
-          "prompt": "Show my team",
+          "prompt": "What is the company policy on rental cars?",
           "waitForResponse": true,
-          "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
-          "successMessage": "Team information loaded! 🏆"
+          "responseKeywords": ["rental", "car", "policy", "vehicle", "travel", "expense"],
+          "successMessage": "Policy information found! 🏆"
         }
       ]
     },
@@ -179,6 +159,104 @@
           "waitForResponse": true,
           "responseKeywords": ["approval", "pending", "request", "waiting", "review", "action"],
           "successMessage": "Approvals retrieved! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-my-team",
+      "name": "Show My Team",
+      "category": "manager",
+      "description": "View your direct reports and team",
+      "difficulty": "Medium",
+      "points": 150,
+      "icon": "👥",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Team",
+          "description": "Loading team information...",
+          "action": "type_and_send",
+          "prompt": "Show my team",
+          "waitForResponse": true,
+          "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
+          "successMessage": "Team information loaded! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-spot-award",
+      "name": "Give Spot Award",
+      "category": "manager",
+      "description": "Recognize an employee with a spot award (Interactive Multi-Step Flow)",
+      "difficulty": "Hard",
+      "points": 200,
+      "icon": "🏅",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Request Spot Award",
+          "description": "Initiating spot award process...",
+          "action": "type_and_send",
+          "prompt": "Give Spot Award",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "employee", "recipient", "name"],
+          "successMessage": "Joule is asking for employee name ✅"
+        },
+        {
+          "id": 3,
+          "name": "Enter Employee Name",
+          "description": "Entering employee name...",
+          "action": "type_and_send",
+          "prompt": "Jada Baker",
+          "waitForResponse": true,
+          "responseKeywords": ["select", "choose", "view", "option"],
+          "successMessage": "Employee options shown ✅"
+        },
+        {
+          "id": 4,
+          "name": "Enter Award Amount",
+          "description": "Entering award amount...",
+          "action": "select_first_option",
+          "inputValue": "100",
+          "waitForResponse": true,
+          "responseKeywords": ["message", "reason", "comment", "note"],
+          "successMessage": "Award amount entered ✅"
+        },
+        {
+          "id": 5,
+          "name": "Enter Award Message",
+          "description": "Adding recognition message...",
+          "action": "select_first_option",
+          "inputValue": "Thanks for your help with the client presentation!",
+          "waitForResponse": true,
+          "responseKeywords": ["submit", "confirm", "send", "complete"],
+          "successMessage": "Award message added ✅"
+        },
+        {
+          "id": 6,
+          "name": "Submit Award",
+          "description": "Submitting spot award...",
+          "action": "click_button_by_text",
+          "buttonText": "Submit",
+          "successMessage": "Spot award submitted! 🏆🎉"
         }
       ]
     }
