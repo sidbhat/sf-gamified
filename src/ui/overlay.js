@@ -78,7 +78,7 @@ class QuestOverlay {
         <div class="selection-header">
           <div class="logo">🎯</div>
           <h2>Joule Quest</h2>
-          <button class="reset-btn" id="quest-reset-btn" title="Reset all progress">🔄 Reset</button>
+          <button class="reset-btn" id="quest-reset-btn" title="Reset all progress">🔄</button>
         </div>
 
         <div class="selection-stats">
