@@ -110,8 +110,13 @@ class QuestRunner {
 
       this.logger.quest(this.currentQuest.name, `Executing step ${i + 1}: ${step.name}`);
 
-      // Brief transition before executing
-      await this.sleep(500);
+      // Show step in overlay so user knows what's happening
+      if (this.overlay) {
+        this.overlay.showStep(step, i + 1, stepsLength);
+      }
+
+      // Wait so user can read what the step will do
+      await this.sleep(2000);
 
       try {
         await this.executeStep(step);
@@ -121,8 +126,8 @@ class QuestRunner {
           this.overlay.showStepSuccess(step.successMessage);
         }
 
-        // Wait 2 seconds after each step completes (reduced from 5s)
-        await this.sleep(2000);
+        // Wait after each step completes
+        await this.sleep(3000);
       } catch (error) {
         this.logger.error(`Step ${i + 1} failed`, error);
         throw error;
@@ -270,15 +275,6 @@ class QuestRunner {
    * @param {Object} step - Step configuration
    */
   async executeTypeAndSendAction(step) {
-    // Show step dialog while sending (user sees what's happening)
-    if (this.overlay && this.currentQuest && this.currentQuest.steps) {
-      this.overlay.showStep(
-        step,
-        this.currentStepIndex + 1,
-        this.currentQuest.steps.length
-      );
-    }
-
     // Send prompt using JouleHandler (waits for response internally)
     const result = await this.jouleHandler.sendPrompt(
       step.prompt,
@@ -290,7 +286,7 @@ class QuestRunner {
       throw new Error('Failed to send prompt');
     }
 
-    // If we got a response, UPDATE the overlay to show it
+    // If we got a response, show it in the overlay
     // CRITICAL: Check if quest still exists (might have completed during async operation)
     if (result.response && this.overlay && this.currentQuest && this.currentQuest.steps) {
       const responseText = result.response.substring(0, 300); // Limit to 300 chars
@@ -301,11 +297,8 @@ class QuestRunner {
         this.currentQuest.steps.length,
         responseText + truncated
       );
-      // Reduced wait time (3s is enough to read response)
-      await this.sleep(3000);
-    } else if (this.overlay && this.currentQuest && this.currentQuest.steps) {
-      // No response received, but step completed - brief display
-      await this.sleep(1000);
+      // Keep it visible so user can read the response
+      await this.sleep(5000);
     }
   }
 
