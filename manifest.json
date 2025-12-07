@@ -1,0 +1,71 @@
+{
+  "manifest_version": 3,
+  "name": "Joule Quest",
+  "version": "0.1.0",
+  "description": "Gamified SAP SuccessFactors Joule training - Learn Joule AI through interactive quests",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.successfactors.com/*",
+    "https://*.successfactors.eu/*",
+    "https://*.hr.cloud.sap/*",
+    "https://*.sapdas.cloud.sap/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.successfactors.com/*",
+        "https://*.successfactors.eu/*",
+        "https://*.hr.cloud.sap/*"
+      ],
+      "js": [
+        "src/utils/logger.js",
+        "src/utils/shadow-dom-helper.js",
+        "src/core/storage-manager.js",
+        "src/core/joule-handler.js",
+        "src/core/quest-runner.js",
+        "src/ui/confetti.js",
+        "src/ui/overlay.js",
+        "src/content.js"
+      ],
+      "css": [
+        "src/ui/overlay.css"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://*.sapdas.cloud.sap/*"
+      ],
+      "js": [
+        "src/joule-iframe-handler.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "src/ui/popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*",
+        "src/ui/confetti.js",
+        "src/config/*.json"
+      ],
+      "matches": [
+        "https://*.successfactors.com/*",
+        "https://*.successfactors.eu/*",
+        "https://*.hr.cloud.sap/*"
+      ]
+    }
+  ]
+}

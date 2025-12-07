@@ -1,0 +1,57 @@
+{
+  "joule": {
+    "chatButton": [
+      "button[aria-label*='Joule']",
+      "button[title*='Joule']",
+      "button[aria-label*='AI']",
+      "[role='button'][aria-label*='Joule']",
+      "//button[contains(@aria-label, 'Joule')]",
+      "//button[contains(@aria-label, 'AI')]",
+      "//*[@role='button' and contains(@aria-label, 'Joule')]"
+    ],
+    "inputField": [
+      "textarea[placeholder*='Message Joule']",
+      "textarea[placeholder='Message Joule...']",
+      "textarea[aria-label*='Joule']",
+      "textarea[aria-label*='Message Joule']",
+      "[role='textbox'][aria-label*='Joule']",
+      "//textarea[contains(@placeholder, 'Message Joule')]",
+      "//textarea[contains(@aria-label, 'Joule')]",
+      "//*[@role='textbox' and contains(@aria-label, 'Joule')]"
+    ],
+    "sendButton": [
+      "button[aria-label='Send']",
+      "button[aria-label*='send']",
+      "button[type='submit']",
+      "button[data-sap-ui*='send']",
+      "//button[@aria-label='Send']",
+      "//button[contains(@aria-label, 'send')]",
+      "//button[@type='submit']"
+    ],
+    "responseContainer": [
+      ".joule-response",
+      ".chat-message",
+      "[role='log']",
+      "//div[contains(@class, 'response')]",
+      "//div[@role='log']"
+    ],
+    "closeButton": [
+      "button[aria-label='Close']",
+      "button[aria-label*='close']",
+      "button[title='Close']",
+      "[aria-label='Close']",
+      "//button[@aria-label='Close']",
+      "//button[contains(@aria-label, 'lose')]",
+      "//*[@aria-label='Close']"
+    ]
+  },
+  "navigation": {
+    "costCenter": [
+      "a[href*='cost_center']",
+      "button:has-text('Cost Center')",
+      "//a[contains(@href, 'cost_center')]",
+      "//button[contains(text(), 'Cost Center')]",
+      "//a[contains(text(), 'Cost Center')]"
+    ]
+  }
+}

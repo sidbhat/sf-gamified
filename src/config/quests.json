@@ -1,0 +1,186 @@
+{
+  "quests": [
+    {
+      "id": "employee-cost-center",
+      "name": "View Cost Center",
+      "category": "employee",
+      "description": "Ask Joule about your cost center",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🍄",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮",
+          "hint": "Clicking Joule button in top bar"
+        },
+        {
+          "id": 2,
+          "name": "Ask about Cost Center",
+          "description": "Sending prompt to Joule...",
+          "action": "type_and_send",
+          "prompt": "Show me my cost center",
+          "waitForResponse": true,
+          "responseKeywords": ["cost", "center", "CC", "department", "organization"],
+          "successMessage": "Quest Complete! 🏆",
+          "hint": "Asking Joule for cost center information"
+        }
+      ]
+    },
+    {
+      "id": "employee-leave-balance",
+      "name": "View Leave Balance",
+      "category": "employee",
+      "description": "Check your remaining vacation days",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🏖️",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Check Leave Balance",
+          "description": "Asking about time off...",
+          "action": "type_and_send",
+          "prompt": "View my leave balance",
+          "waitForResponse": true,
+          "responseKeywords": ["leave", "balance", "vacation", "days", "remaining", "available"],
+          "successMessage": "Leave balance retrieved! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "employee-rental-policy",
+      "name": "Company Rental Car Policy",
+      "category": "employee",
+      "description": "Learn about rental car policies",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🚗",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Ask About Rental Policy",
+          "description": "Querying company policies...",
+          "action": "type_and_send",
+          "prompt": "What is the company policy on rental cars?",
+          "waitForResponse": true,
+          "responseKeywords": ["rental", "car", "policy", "vehicle", "travel", "expense"],
+          "successMessage": "Policy information found! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "employee-my-goals",
+      "name": "Show My Goals",
+      "category": "employee",
+      "description": "View your performance goals",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🎯",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Goals",
+          "description": "Retrieving your goals...",
+          "action": "type_and_send",
+          "prompt": "Show me my goals",
+          "waitForResponse": true,
+          "responseKeywords": ["goal", "objective", "target", "performance", "development"],
+          "successMessage": "Goals displayed! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-my-team",
+      "name": "Show My Team",
+      "category": "manager",
+      "description": "View your direct reports and team",
+      "difficulty": "Medium",
+      "points": 150,
+      "icon": "👥",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Team",
+          "description": "Loading team information...",
+          "action": "type_and_send",
+          "prompt": "Show my team",
+          "waitForResponse": true,
+          "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
+          "successMessage": "Team information loaded! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-pending-approvals",
+      "name": "Pending Approvals",
+      "category": "manager",
+      "description": "Check items awaiting your approval",
+      "difficulty": "Medium",
+      "points": 150,
+      "icon": "✅",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Check Approvals",
+          "description": "Fetching pending approvals...",
+          "action": "type_and_send",
+          "prompt": "Show my pending approvals",
+          "waitForResponse": true,
+          "responseKeywords": ["approval", "pending", "request", "waiting", "review", "action"],
+          "successMessage": "Approvals retrieved! 🏆"
+        }
+      ]
+    }
+  ]
+}
