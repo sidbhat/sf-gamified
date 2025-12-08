@@ -822,30 +822,59 @@ class JouleIframeHandler {
 
   /**
    * Click button matching specific text
+   * Searches for buttons, links, and clickable elements
    */
   async clickButtonByText(buttonText, requestId) {
-    this.logger.info(`Looking for button with text: "${buttonText}"`);
+    this.logger.info(`Looking for clickable element with text: "${buttonText}"`);
     
     // Wait a bit for UI to be ready
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Search entire document for button
-    const allButtons = Array.from(document.querySelectorAll('button, a[role="button"], [role="button"]'));
+    // Search for ALL clickable elements: buttons, links, and elements with click handlers
+    const allClickable = Array.from(document.querySelectorAll(
+      'button, a, a[role="button"], [role="button"], [onclick], ' +
+      'span[class*="Link"], div[class*="Link"], ' +
+      '[class*="clickable"], [class*="Clickable"]'
+    ));
     
-    // Find button matching text (case-insensitive)
-    const targetButton = allButtons.find(btn => {
-      const btnText = btn.textContent.trim().toLowerCase();
-      const ariaLabel = (btn.getAttribute('aria-label') || '').toLowerCase();
-      const searchText = buttonText.toLowerCase();
+    // Also search for any element containing the exact text
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
+    
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      if (node.textContent.trim().toLowerCase() === buttonText.toLowerCase()) {
+        textNodes.push(node.parentElement);
+      }
+    }
+    
+    // Combine all potential clickable elements
+    const allElements = [...allClickable, ...textNodes];
+    
+    this.logger.info(`Found ${allElements.length} total clickable elements and text matches`);
+    
+    // Find element matching text (case-insensitive)
+    const searchText = buttonText.toLowerCase();
+    const targetElement = allElements.find(el => {
+      const elText = el.textContent.trim().toLowerCase();
+      const ariaLabel = (el.getAttribute('aria-label') || '').toLowerCase();
+      const title = (el.getAttribute('title') || '').toLowerCase();
       
-      return btnText.includes(searchText) || ariaLabel.includes(searchText);
+      return elText === searchText || 
+             elText.includes(searchText) || 
+             ariaLabel.includes(searchText) ||
+             title.includes(searchText);
     });
     
-    if (!targetButton) {
-      this.logger.error(`Button not found: "${buttonText}"`);
-      this.logger.info('Available buttons:');
-      allButtons.forEach((btn, i) => {
-        this.logger.info(`  [${i}] "${btn.textContent.trim()}" (aria: "${btn.getAttribute('aria-label') || ''}")`);
+    if (!targetElement) {
+      this.logger.error(`Clickable element not found: "${buttonText}"`);
+      this.logger.info('Available clickable elements:');
+      allElements.slice(0, 20).forEach((el, i) => {
+        this.logger.info(`  [${i}] tag=${el.tagName} text="${el.textContent.trim().substring(0, 50)}" class="${el.className}"`);
       });
       
       this.sendMessageToParent({
@@ -853,28 +882,33 @@ class JouleIframeHandler {
         requestId: requestId,
         data: { 
           success: false, 
-          error: `Button not found: ${buttonText}`,
-          availableButtons: allButtons.map(b => b.textContent.trim())
+          error: `Clickable element not found: ${buttonText}`,
+          availableElements: allElements.slice(0, 10).map(el => ({
+            tag: el.tagName,
+            text: el.textContent.trim().substring(0, 50),
+            class: el.className
+          }))
         }
       });
       return;
     }
     
-    this.logger.success(`Found and clicking button: "${targetButton.textContent.trim()}"`);
+    this.logger.success(`Found and clicking element: tag=${targetElement.tagName} text="${targetElement.textContent.trim()}"`);
     
-    // Trigger click with multiple events
-    targetButton.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
-    targetButton.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
-    targetButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
-    targetButton.click();
+    // Trigger click with multiple events for maximum compatibility
+    targetElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+    targetElement.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
+    targetElement.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    targetElement.click();
     
     this.sendMessageToParent({
       type: 'button_clicked',
       requestId: requestId,
       data: { 
         success: true,
-        buttonText: targetButton.textContent.trim(),
-        buttonAriaLabel: targetButton.getAttribute('aria-label') || ''
+        elementTag: targetElement.tagName,
+        buttonText: targetElement.textContent.trim(),
+        elementClass: targetElement.className
       }
     });
   }
