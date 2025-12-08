@@ -212,23 +212,23 @@
         },
         {
           "id": 2,
+          "name": "Request Spot Award",
+          "description": "Initiating spot award process...",
+          "action": "type_and_send",
+          "prompt": "Give Spot Award",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "employee", "recipient", "name"],
+          "successMessage": "Joule is asking for employee name ✅"
+        },
+        {
+          "id": 3,
           "name": "Enter Employee Name",
           "description": "Entering employee name...",
           "action": "type_and_send",
           "prompt": "Jada Baker",
           "waitForResponse": true,
-          "responseKeywords": ["select", "choose", "view", "option", "award"],
+          "responseKeywords": ["select", "choose", "view", "option"],
           "successMessage": "Employee name entered ✅"
-        },
-        {
-          "id": 3,
-          "name": "Select Employee Option",
-          "description": "Selecting employee from list...",
-          "action": "type_and_send",
-          "prompt": "1",
-          "waitForResponse": true,
-          "responseKeywords": ["amount", "value", "points"],
-          "successMessage": "Employee selected ✅"
         },
         {
           "id": 4,
