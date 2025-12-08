@@ -208,40 +208,30 @@
           "action": "click",
           "selector": "joule.chatButton",
           "waitForResponse": false,
-          "successMessage": "Joule opened! 🎮"
+          "successMessage": "Joule opened and asking for employee! 🎮"
         },
         {
           "id": 2,
-          "name": "Request Spot Award",
-          "description": "Initiating spot award process...",
-          "action": "type_and_send",
-          "prompt": "Give Spot Award",
-          "waitForResponse": true,
-          "responseKeywords": ["who", "employee", "recipient", "name"],
-          "successMessage": "Joule is asking for employee name ✅"
-        },
-        {
-          "id": 3,
           "name": "Enter Employee Name",
           "description": "Entering employee name...",
           "action": "type_and_send",
           "prompt": "Jada Baker",
           "waitForResponse": true,
-          "responseKeywords": ["select", "choose", "view", "option"],
+          "responseKeywords": ["select", "choose", "view", "option", "award"],
           "successMessage": "Employee name entered ✅"
         },
         {
-          "id": 4,
+          "id": 3,
           "name": "Enter Award Amount",
-          "description": "Entering award amount...",
-          "action": "select_first_option",
-          "inputValue": "100",
+          "description": "Entering award amount (1)...",
+          "action": "type_and_send",
+          "prompt": "1",
           "waitForResponse": true,
           "responseKeywords": ["message", "reason", "comment", "note"],
           "successMessage": "Award amount entered ✅"
         },
         {
-          "id": 5,
+          "id": 4,
           "name": "Enter Award Message",
           "description": "Adding recognition message...",
           "action": "select_first_option",
@@ -251,7 +241,7 @@
           "successMessage": "Award message added ✅"
         },
         {
-          "id": 6,
+          "id": 5,
           "name": "Submit Award",
           "description": "Submitting spot award...",
           "action": "click_button_by_text",
