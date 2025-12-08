@@ -263,12 +263,12 @@ class QuestRunner {
         await this.executeSelectFirstOption(step);
         break;
       
-      case 'click_button_by_text':
-        await this.executeClickButtonByText(step);
-        break;
-      
       case 'click_first_button':
         await this.executeClickFirstButton(step);
+        break;
+      
+      case 'click_button_by_text':
+        await this.executeClickButtonByText(step);
         break;
       
       default:
@@ -444,29 +444,6 @@ class QuestRunner {
   }
 
   /**
-   * Execute click button by text action (for interactive flows)
-   * @param {Object} step - Step configuration
-   */
-  async executeClickButtonByText(step) {
-    this.logger.info(`Executing click_button_by_text action: "${step.buttonText}"`);
-
-    // Wait a bit for UI to be ready
-    await this.sleep(2000);
-
-    // Click button matching text
-    const result = await this.jouleHandler.clickButtonByText(step.buttonText);
-
-    if (!result.success) {
-      throw new Error(`Failed to click button: ${step.buttonText}`);
-    }
-
-    this.logger.success(`Clicked button: ${result.buttonText}`);
-
-    // Wait after clicking
-    await this.sleep(2000);
-  }
-
-  /**
    * Execute click first button action (for dynamic card interactions)
    * Clicks the first interactive button found in Joule's response
    * Useful for card lists like team members with "View" buttons
@@ -488,6 +465,31 @@ class QuestRunner {
     this.logger.success(`Clicked first button: ${result.buttonText || 'button'}`);
 
     // Wait after clicking for new content to load
+    await this.sleep(2000);
+  }
+
+  /**
+   * Execute click button by text action (for interactive flows)
+   * Searches for button matching specific text and clicks it
+   * Button may open new tab but quest stays on current page
+   * @param {Object} step - Step configuration
+   */
+  async executeClickButtonByText(step) {
+    this.logger.info(`Executing click_button_by_text action: "${step.buttonText}"`);
+
+    // Wait a bit for UI to be ready
+    await this.sleep(2000);
+
+    // Click button matching text
+    const result = await this.jouleHandler.clickButtonByText(step.buttonText);
+
+    if (!result.success) {
+      throw new Error(`Failed to click button: ${step.buttonText}`);
+    }
+
+    this.logger.success(`Clicked button: ${result.buttonText}`);
+
+    // Wait after clicking (don't wait for response as button may open new tab)
     await this.sleep(2000);
   }
 

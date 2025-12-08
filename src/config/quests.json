@@ -192,12 +192,13 @@
         },
         {
           "id": 3,
-          "name": "View First Employee",
-          "description": "Opening first employee profile...",
-          "action": "click_first_button",
-          "waitForResponse": true,
-          "responseKeywords": ["profile", "detail", "information", "employee", "name", "position"],
-          "successMessage": "Employee profile opened! 🏆✨"
+          "name": "View First Employee Profile",
+          "description": "Clicking Profile button for first team member...",
+          "action": "click_button_by_text",
+          "buttonText": "Profile",
+          "waitForResponse": false,
+          "responseKeywords": [],
+          "successMessage": "Profile button clicked! 🏆✨"
         }
       ]
     },
