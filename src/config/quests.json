@@ -243,20 +243,20 @@
         {
           "id": 5,
           "name": "Enter Award Message",
-          "description": "Adding recognition message...",
-          "action": "select_first_option",
-          "inputValue": "Thanks for your help with the client presentation!",
+          "description": "Typing recognition message...",
+          "action": "type_and_send",
+          "prompt": "Thanks for your help with the client presentation!",
           "waitForResponse": true,
-          "responseKeywords": ["submit", "confirm", "send", "complete"],
-          "successMessage": "Award message added ✅"
+          "responseKeywords": ["send", "submit", "confirm", "complete"],
+          "successMessage": "Award message typed and sent ✅"
         },
         {
           "id": 6,
-          "name": "Submit Award",
-          "description": "Submitting spot award...",
+          "name": "Send Award",
+          "description": "Clicking Send button...",
           "action": "click_button_by_text",
-          "buttonText": "Submit",
-          "successMessage": "Spot award submitted! 🏆🎉"
+          "buttonText": "Send",
+          "successMessage": "Spot award sent! 🏆🎉"
         }
       ]
     }
