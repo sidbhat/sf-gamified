@@ -857,15 +857,18 @@ class JouleIframeHandler {
     
     this.logger.info(`Found ${allElements.length} total clickable elements and text matches`);
     
-    // Find element matching text (case-insensitive)
+    // Find FIRST element matching text (case-insensitive)
+    // IMPORTANT: Use .find() to get only the first match, not all matches
     const searchText = buttonText.toLowerCase();
     const targetElement = allElements.find(el => {
+      if (!el) return false; // Skip null elements
+      
       const elText = el.textContent.trim().toLowerCase();
       const ariaLabel = (el.getAttribute('aria-label') || '').toLowerCase();
       const title = (el.getAttribute('title') || '').toLowerCase();
       
+      // Match exact text OR text that includes the search term
       return elText === searchText || 
-             elText.includes(searchText) || 
              ariaLabel.includes(searchText) ||
              title.includes(searchText);
     });
