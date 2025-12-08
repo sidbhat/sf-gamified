@@ -188,7 +188,7 @@
           "prompt": "Show my team",
           "waitForResponse": true,
           "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
-          "successMessage": "Team list loaded! 👥"
+          "successMessage": "Team list loaded! 👥 Waiting for buttons to render..."
         },
         {
           "id": 3,

@@ -477,8 +477,9 @@ class QuestRunner {
   async executeClickButtonByText(step) {
     this.logger.info(`Executing click_button_by_text action: "${step.buttonText}"`);
 
-    // Wait a bit for UI to be ready
-    await this.sleep(2000);
+    // Wait longer for UI to be fully ready (cards with buttons take time to render)
+    this.logger.info('Waiting 4 seconds for buttons to fully render...');
+    await this.sleep(4000);
 
     // Click button matching text
     const result = await this.jouleHandler.clickButtonByText(step.buttonText);
