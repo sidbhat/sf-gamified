@@ -253,7 +253,7 @@
         {
           "id": 6,
           "name": "Send Award",
-          "description": "Clicking Send button...",
+          "description": "Clicking Send button(you can do this)...",
           "action": "click_button_by_text",
           "buttonText": "Send",
           "successMessage": "Spot award sent! 🏆🎉"

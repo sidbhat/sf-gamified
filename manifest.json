@@ -26,12 +26,13 @@
       ],
       "js": [
         "src/utils/logger.js",
+        "src/utils/error-messages.js",
         "src/utils/shadow-dom-helper.js",
         "src/core/storage-manager.js",
-        "src/core/joule-handler.js",
-        "src/core/quest-runner.js",
         "src/ui/confetti.js",
         "src/ui/overlay.js",
+        "src/core/joule-handler.js",
+        "src/core/quest-runner.js",
         "src/content.js"
       ],
       "css": [
@@ -53,6 +54,12 @@
   ],
   "action": {
     "default_popup": "src/ui/popup.html"
+  },
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
   },
   "web_accessible_resources": [
     {

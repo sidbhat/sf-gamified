@@ -388,17 +388,45 @@ class QuestOverlay {
   /**
    * Show step error message (but quest continues)
    * @param {Object} step - Step configuration
-   * @param {string} errorMessage - Error message
+   * @param {string} errorMessage - Error message or error type
+   * @param {string} technicalDetails - Optional technical details
    */
-  showStepError(step, errorMessage) {
-    this.logger.warn('Showing step error (quest continues)', { step, errorMessage });
+  showStepError(step, errorMessage, technicalDetails = null) {
+    this.logger.warn('Showing step error (quest continues)', { step, errorMessage, technicalDetails });
+
+    // Try to get formatted error from catalog
+    let errorContent = '';
+    let errorIcon = '⚠️';
+    
+    if (window.JouleQuestErrorMessages) {
+      // Check if errorMessage is an error type from catalog
+      const errorTypes = ['JOULE_NOT_FOUND', 'JOULE_IFRAME_NOT_FOUND', 'STEP_TIMEOUT', 
+                         'ELEMENT_NOT_FOUND', 'PROMPT_SEND_FAILED', 'BUTTON_NOT_FOUND', 
+                         'INPUT_FIELD_NOT_FOUND', 'UNKNOWN_ERROR'];
+      
+      if (errorTypes.includes(errorMessage)) {
+        const errorObj = window.JouleQuestErrorMessages.getErrorMessage(
+          errorMessage, 
+          step.name, 
+          technicalDetails
+        );
+        errorIcon = errorObj.icon;
+        errorContent = window.JouleQuestErrorMessages.formatErrorForDisplay(errorObj);
+      } else {
+        // Regular error message string
+        errorContent = `<p style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">Error: ${errorMessage}</p>`;
+      }
+    } else {
+      // Fallback if error catalog not loaded
+      errorContent = `<p style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">Error: ${errorMessage}</p>`;
+    }
 
     const html = `
       <div class="joule-quest-card quest-error">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon">${errorIcon}</div>
         <h3>Step Failed</h3>
         <h4>${step.name}</h4>
-        <p>Error: ${errorMessage}</p>
+        ${errorContent}
         <p style="opacity: 0.8; font-size: 13px; margin-top: 12px;">
           ⏭️ Continuing to next step...
         </p>
@@ -408,8 +436,8 @@ class QuestOverlay {
     this.container.innerHTML = html;
     this.show();
 
-    // Auto-hide after 3 seconds (longer than success to read error)
-    setTimeout(() => this.hide(), 3000);
+    // Auto-hide after 5 seconds (longer to read detailed error)
+    setTimeout(() => this.hide(), 5000);
   }
 
   /**

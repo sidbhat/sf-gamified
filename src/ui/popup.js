@@ -68,7 +68,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       error.message.includes('Could not establish connection') ||
       error.message.includes('Receiving end does not exist')
     )) {
-      showError('Content script not loaded. Please refresh the SAP page and try again.');
+      // Use error catalog for better messaging
+      if (window.JouleQuestErrorMessages) {
+        const errorMsg = window.JouleQuestErrorMessages.getErrorMessage('CONTENT_SCRIPT_NOT_LOADED');
+        showError(errorMsg.message, errorMsg);
+      } else {
+        showError('Content script not loaded. Please refresh the SAP page and try again.');
+      }
     } else {
       showError(error.message || 'Failed to open quest selection');
     }
@@ -84,14 +90,27 @@ function sleep(ms) {
 
 /**
  * Show error in popup
+ * @param {string} message - Error message
+ * @param {Object} errorObj - Optional error object from error catalog
  */
-function showError(message) {
+function showError(message, errorObj = null) {
   const container = document.querySelector('.popup-message');
   if (container) {
-    container.innerHTML = `
-      <div class="message-icon">⚠️</div>
-      <h2>Oops!</h2>
-      <p style="color: #ffe0e0; font-size: 13px; line-height: 1.4;">${message}</p>
-    `;
+    if (errorObj && window.JouleQuestErrorMessages) {
+      // Use formatted error display from catalog
+      const formatted = window.JouleQuestErrorMessages.formatErrorForDisplay(errorObj);
+      container.innerHTML = `
+        <div class="message-icon">${errorObj.icon}</div>
+        <h2>${errorObj.title}</h2>
+        ${formatted}
+      `;
+    } else {
+      // Fallback to simple error display
+      container.innerHTML = `
+        <div class="message-icon">⚠️</div>
+        <h2>Oops!</h2>
+        <p style="color: #ffe0e0; font-size: 13px; line-height: 1.4;">${message}</p>
+      `;
+    }
   }
 }

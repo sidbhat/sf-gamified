@@ -111,13 +111,7 @@ If we make changes to this privacy policy:
 - Significant changes will be announced in extension updates
 - Continued use after changes indicates acceptance
 
-## Open Source
 
-Joule Quest is open source:
-- Review the code: https://github.com/sidbhat/sf-gamified
-- Verify our privacy claims
-- Audit the code yourself
-- Contribute improvements
 
 ## Compliance
 
@@ -130,12 +124,10 @@ This extension complies with:
 ## Contact & Support
 
 **Questions about privacy?**
-- Email: [Add your support email]
-- GitHub Issues: https://github.com/sidbhat/sf-gamified/issues
-- Review the code: https://github.com/sidbhat/sf-gamified
+- Email: [siddhartha.bhattacharya@sap.com]
 
 **Report Security Issues:**
-If you discover a security vulnerability, please report it responsibly via email rather than public GitHub issues.
+If you discover a security vulnerability, please report it responsibly via email.
 
 ## Your Rights
 

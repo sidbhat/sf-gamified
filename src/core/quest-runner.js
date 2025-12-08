@@ -146,22 +146,43 @@ class QuestRunner {
       } catch (error) {
         this.logger.error(`Step ${i + 1} failed: ${error.message}`, error);
         
+        // Determine error type for better messaging
+        let errorType = 'UNKNOWN_ERROR';
+        const errorMsg = error.message.toLowerCase();
+        
+        if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
+          errorType = 'JOULE_NOT_FOUND';
+        } else if (errorMsg.includes('iframe') && errorMsg.includes('not found')) {
+          errorType = 'JOULE_IFRAME_NOT_FOUND';
+        } else if (errorMsg.includes('timeout')) {
+          errorType = 'STEP_TIMEOUT';
+        } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
+          errorType = 'ELEMENT_NOT_FOUND';
+        } else if (errorMsg.includes('prompt') || errorMsg.includes('send')) {
+          errorType = 'PROMPT_SEND_FAILED';
+        } else if (errorMsg.includes('button')) {
+          errorType = 'BUTTON_NOT_FOUND';
+        } else if (errorMsg.includes('input')) {
+          errorType = 'INPUT_FIELD_NOT_FOUND';
+        }
+        
         // Track failed step
         this.failedSteps.push(i);
         this.stepResults.push({
           stepIndex: i,
           stepName: step.name,
           status: 'error',
-          error: error.message
+          error: error.message,
+          errorType: errorType
         });
         
-        // Show error state in overlay but CONTINUE
+        // Show error state in overlay with error type for better messaging
         if (this.overlay) {
-          this.overlay.showStepError(step, error.message);
+          this.overlay.showStepError(step, errorType, error.message);
         }
         
-        // Wait before continuing to next step
-        await this.sleep(3000);
+        // Wait before continuing to next step (longer for error to be read)
+        await this.sleep(5000);
         
         // Log that we're continuing despite error
         this.logger.warn(`⚠️ Step ${i + 1} failed but continuing quest...`);
