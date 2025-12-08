@@ -71,13 +71,14 @@ Master the basics of Joule AI - from checking time off to understanding company 
 2. 🎯 **Show My Goals** (Easy, 100 pts) - View your performance goals
 3. 🍄 **View Cost Center** (Easy, 100 pts) - View your cost center information
 4. 🚗 **Company Rental Car Policy** (Easy, 100 pts) - Learn about rental car policies
+5. 📅 **Request Time Off** (Easy, 100 pts) - Request time off for tomorrow
 
 ### **Manager Journey: Leadership Essentials**
 Essential Joule skills for managers - handle approvals and manage your team efficiently
 
-5. ✅ **Pending Approvals** (Medium, 150 pts) - Check items awaiting your approval
-6. 👥 **Show My Team** (Hard, 200 pts) - View your direct reports and explore first member profile
-7. 🏅 **Give Spot Award** (Hard, 200 pts) - Recognize an employee with a spot award (interactive multi-step flow)
+6. ✅ **Pending Approvals** (Medium, 150 pts) - Check items awaiting your approval
+7. 👥 **Show My Team** (Hard, 200 pts) - View your direct reports and explore first member profile
+8. 🏅 **Give Spot Award** (Hard, 200 pts) - Recognize an employee with a spot award (interactive multi-step flow)
 
 ---
 

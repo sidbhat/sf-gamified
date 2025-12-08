@@ -133,6 +133,36 @@
       ]
     },
     {
+      "id": "employee-request-time-off",
+      "name": "Request Time Off",
+      "category": "employee",
+      "description": "Request time off for tomorrow",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "📅",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Request Time Off",
+          "description": "Requesting time off for tomorrow...",
+          "action": "type_and_send",
+          "prompt": "Request time off for tomorrow",
+          "waitForResponse": true,
+          "responseKeywords": ["time", "off", "leave", "request", "absence", "vacation", "tomorrow"],
+          "successMessage": "Time off request initiated! 🏆"
+        }
+      ]
+    },
+    {
       "id": "manager-pending-approvals",
       "name": "Pending Approvals",
       "category": "manager",
