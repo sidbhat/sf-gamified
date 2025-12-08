@@ -826,6 +826,7 @@ class JouleIframeHandler {
   /**
    * Click button matching specific text
    * Searches for buttons, links, and clickable elements
+   * CRITICAL: Only clicks the FIRST matching element, then returns immediately
    */
   async clickButtonByText(buttonText, requestId) {
     this.logger.info(`Looking for clickable element with text: "${buttonText}"`);
@@ -855,10 +856,10 @@ class JouleIframeHandler {
       }
     }
     
-    // Combine all potential clickable elements
-    const allElements = [...allClickable, ...textNodes];
+    // Combine and deduplicate - convert to Set and back to Array to remove duplicates
+    const allElements = [...new Set([...allClickable, ...textNodes])];
     
-    this.logger.info(`Found ${allElements.length} total clickable elements and text matches`);
+    this.logger.info(`Found ${allElements.length} unique clickable elements (after deduplication)`);
     
     // Find FIRST element matching text (case-insensitive)
     // IMPORTANT: Use .find() to get only the first match, not all matches
