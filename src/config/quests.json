@@ -166,9 +166,9 @@
       "id": "manager-my-team",
       "name": "Show My Team",
       "category": "manager",
-      "description": "View your direct reports and team",
-      "difficulty": "Medium",
-      "points": 150,
+      "description": "View your direct reports and explore first member profile",
+      "difficulty": "Hard",
+      "points": 200,
       "icon": "👥",
       "steps": [
         {
@@ -188,7 +188,16 @@
           "prompt": "Show my team",
           "waitForResponse": true,
           "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
-          "successMessage": "Team information loaded! 🏆"
+          "successMessage": "Team list loaded! 👥"
+        },
+        {
+          "id": 3,
+          "name": "View First Employee",
+          "description": "Opening first employee profile...",
+          "action": "click_first_button",
+          "waitForResponse": true,
+          "responseKeywords": ["profile", "detail", "information", "employee", "name", "position"],
+          "successMessage": "Employee profile opened! 🏆✨"
         }
       ]
     },

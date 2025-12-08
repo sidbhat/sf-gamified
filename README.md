@@ -76,7 +76,7 @@ Master the basics of Joule AI - from checking time off to understanding company 
 Essential Joule skills for managers - handle approvals and manage your team efficiently
 
 5. ✅ **Pending Approvals** (Medium, 150 pts) - Check items awaiting your approval
-6. 👥 **Show My Team** (Medium, 150 pts) - View your direct reports and team
+6. 👥 **Show My Team** (Hard, 200 pts) - View your direct reports and explore first member profile
 7. 🏅 **Give Spot Award** (Hard, 200 pts) - Recognize an employee with a spot award (interactive multi-step flow)
 
 ---

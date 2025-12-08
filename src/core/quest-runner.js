@@ -267,6 +267,10 @@ class QuestRunner {
         await this.executeClickButtonByText(step);
         break;
       
+      case 'click_first_button':
+        await this.executeClickFirstButton(step);
+        break;
+      
       default:
         throw new Error(`Unknown action: ${step.action}`);
     }
@@ -459,6 +463,31 @@ class QuestRunner {
     this.logger.success(`Clicked button: ${result.buttonText}`);
 
     // Wait after clicking
+    await this.sleep(2000);
+  }
+
+  /**
+   * Execute click first button action (for dynamic card interactions)
+   * Clicks the first interactive button found in Joule's response
+   * Useful for card lists like team members with "View" buttons
+   * @param {Object} step - Step configuration
+   */
+  async executeClickFirstButton(step) {
+    this.logger.info('Executing click_first_button action');
+
+    // Wait for response to fully render
+    await this.sleep(2000);
+
+    // Click first button using JouleHandler
+    const result = await this.jouleHandler.selectFirstOption();
+
+    if (!result.success) {
+      throw new Error('Failed to click first button');
+    }
+
+    this.logger.success(`Clicked first button: ${result.buttonText || 'button'}`);
+
+    // Wait after clicking for new content to load
     await this.sleep(2000);
   }
 
