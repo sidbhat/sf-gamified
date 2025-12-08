@@ -331,6 +331,9 @@ class JouleIframeHandler {
       await new Promise(resolve => setTimeout(resolve, 50));
       textarea.focus();
       
+      // Add purple pulse highlight to show typing action
+      this.addPulseHighlight(textarea, 1500);
+      
       this.logger.success(`✅ Text typed successfully into Shadow DOM textarea: "${text}"`);
       this.logger.success(`✅ Current textarea value: "${textarea.value}"`);
       
@@ -898,6 +901,12 @@ class JouleIframeHandler {
     
     this.logger.success(`Found and clicking element: tag=${targetElement.tagName} text="${targetElement.textContent.trim()}"`);
     
+    // Add purple pulse highlight BEFORE clicking to show what will be clicked
+    this.addPulseHighlight(targetElement, 1500);
+    
+    // Wait a moment so user can see the highlight
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
     // Trigger click with multiple events for maximum compatibility
     targetElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
     targetElement.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
@@ -914,6 +923,53 @@ class JouleIframeHandler {
         elementClass: targetElement.className
       }
     });
+  }
+
+  /**
+   * Add purple pulsing highlight to an element
+   * Matches the app's purple theme with smooth animation
+   */
+  addPulseHighlight(element, duration = 2000) {
+    if (!element) return;
+    
+    // Store original styles
+    const originalBoxShadow = element.style.boxShadow;
+    const originalTransition = element.style.transition;
+    const originalOutline = element.style.outline;
+    
+    // Add pulsing purple animation
+    element.style.transition = 'all 0.3s ease';
+    element.style.outline = '3px solid #9333ea';
+    element.style.boxShadow = '0 0 0 0 rgba(147, 51, 234, 0.7)';
+    
+    // Animate the pulse
+    let pulseCount = 0;
+    const maxPulses = Math.floor(duration / 600); // 600ms per pulse cycle
+    
+    const pulseInterval = setInterval(() => {
+      if (pulseCount >= maxPulses) {
+        clearInterval(pulseInterval);
+        // Restore original styles
+        element.style.boxShadow = originalBoxShadow;
+        element.style.transition = originalTransition;
+        element.style.outline = originalOutline;
+        return;
+      }
+      
+      // Pulse out
+      setTimeout(() => {
+        element.style.boxShadow = '0 0 20px 10px rgba(147, 51, 234, 0.4)';
+      }, 0);
+      
+      // Pulse in
+      setTimeout(() => {
+        element.style.boxShadow = '0 0 0 0 rgba(147, 51, 234, 0.7)';
+      }, 300);
+      
+      pulseCount++;
+    }, 600);
+    
+    this.logger.info(`Added purple pulse highlight to ${element.tagName}`);
   }
 
   /**
