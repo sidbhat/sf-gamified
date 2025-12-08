@@ -163,6 +163,43 @@
       ]
     },
     {
+      "id": "employee-assigned-learning",
+      "name": "View My Assigned Learning",
+      "category": "employee",
+      "description": "Check your assigned learning courses (Unlocks after completing previous 5 quests)",
+      "difficulty": "Easy",
+      "points": 150,
+      "icon": "📚",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center",
+        "employee-rental-policy",
+        "employee-request-time-off"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Assigned Learning",
+          "description": "Retrieving your learning assignments...",
+          "action": "type_and_send",
+          "prompt": "View my assigned learning",
+          "waitForResponse": true,
+          "responseKeywords": ["learning", "course", "training", "assigned", "development", "education"],
+          "successMessage": "Learning assignments retrieved! 🏆"
+        }
+      ]
+    },
+    {
       "id": "manager-pending-approvals",
       "name": "Pending Approvals",
       "category": "manager",
@@ -236,10 +273,14 @@
       "id": "manager-spot-award",
       "name": "Give Spot Award",
       "category": "manager",
-      "description": "Recognize an employee with a spot award (Interactive Multi-Step Flow)",
+      "description": "Recognize an employee with a spot award (Unlocks after completing previous 2 manager quests)",
       "difficulty": "Hard",
       "points": 200,
       "icon": "🏅",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team"
+      ],
       "steps": [
         {
           "id": 1,

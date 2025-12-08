@@ -1,12 +1,145 @@
 /**
  * Overlay - Joule Quest UI overlay for quest progress
- * Shows quest steps, success messages, and confetti
+ * Shows quest steps, success messages, confetti, and animated mascot
  */
 class QuestOverlay {
   constructor() {
     this.logger = window.JouleQuestLogger;
     this.container = null;
     this.isVisible = false;
+  }
+
+  /**
+   * Generate mascot SVG based on state
+   * @param {string} state - Mascot state (waiting, active, success, error, complete)
+   * @returns {string} SVG HTML string
+   */
+  getMascotSVG(state = 'waiting') {
+    // Determine colors based on state
+    let bodyGradient = 'purpleGradient';
+    let glowColor = '#9333ea';
+    
+    if (state === 'success') {
+      bodyGradient = 'successGradient';
+      glowColor = '#38ef7d';
+    } else if (state === 'error') {
+      bodyGradient = 'errorGradient';
+      glowColor = '#ff6b6b';
+    } else if (state === 'complete') {
+      bodyGradient = 'completeGradient';
+      glowColor = '#FFD700';
+    }
+
+    // Check if Joule is visible for arrow rendering
+    const jouleVisible = this.isJouleVisible();
+
+    return `
+      <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Default purple gradient -->
+          <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#667eea"/>
+            <stop offset="100%" style="stop-color:#764ba2"/>
+          </linearGradient>
+          
+          <!-- Success gradient -->
+          <linearGradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#11998e"/>
+            <stop offset="100%" style="stop-color:#38ef7d"/>
+          </linearGradient>
+          
+          <!-- Error gradient -->
+          <linearGradient id="errorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff6b6b"/>
+            <stop offset="100%" style="stop-color:#c92a2a"/>
+          </linearGradient>
+          
+          <!-- Complete gradient -->
+          <linearGradient id="completeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFD700"/>
+            <stop offset="50%" style="stop-color:#FFA500"/>
+            <stop offset="100%" style="stop-color:#FFD700"/>
+          </linearGradient>
+        </defs>
+        
+        <!-- Outer glow ring (pulsates) -->
+        <circle class="mascot-glow" cx="25" cy="30" r="38" 
+                fill="none" stroke="${glowColor}" stroke-width="2" opacity="0.4"/>
+        
+        <!-- Main body: Outer ring -->
+        <circle class="mascot-body" cx="25" cy="30" r="20" 
+                fill="url(#${bodyGradient})" opacity="0.9"/>
+        
+        <!-- Middle segmented ring -->
+        <g class="mascot-segments" opacity="0.85">
+          <path d="M 25 12 A 18 18 0 0 1 39 22 L 32 25 A 10 10 0 0 0 25 18 Z" 
+                fill="url(#${bodyGradient})"/>
+          <path d="M 39 22 A 18 18 0 0 1 39 38 L 32 35 A 10 10 0 0 0 32 25 Z" 
+                fill="url(#${bodyGradient})"/>
+          <path d="M 39 38 A 18 18 0 0 1 25 48 L 25 40 A 10 10 0 0 0 32 35 Z" 
+                fill="url(#${bodyGradient})"/>
+          <path d="M 25 48 A 18 18 0 0 1 11 38 L 18 35 A 10 10 0 0 0 25 40 Z" 
+                fill="url(#${bodyGradient})"/>
+          <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" 
+                fill="url(#${bodyGradient})"/>
+          <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" 
+                fill="url(#${bodyGradient})"/>
+        </g>
+        
+        <!-- Inner circle -->
+        <circle cx="25" cy="30" r="10" fill="#764ba2"/>
+        
+        <!-- Crosshair center -->
+        <g class="mascot-crosshair">
+          <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
+          <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
+          <circle cx="25" cy="30" r="4" fill="white"/>
+        </g>
+        
+        <!-- Pointing arrow (conditionally rendered based on Joule visibility) -->
+        ${jouleVisible ? `
+          <g class="pointing-arrow">
+            <line x1="42" y1="30" x2="56" y2="30" 
+                  stroke="white" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 51 25 L 56 30 L 51 35" 
+                  fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          </g>
+        ` : `
+          <!-- Joule not visible: Show question mark -->
+          <g class="pointing-arrow" opacity="0.4">
+            <circle cx="48" cy="30" r="8" fill="none" stroke="white" stroke-width="2"/>
+            <text x="48" y="34" fill="white" font-size="10" font-weight="bold" text-anchor="middle">?</text>
+          </g>
+        `}
+      </svg>
+    `;
+  }
+
+  /**
+   * Update mascot state
+   * @param {string} state - New state (waiting, active, success, error, complete)
+   */
+  updateMascotState(state) {
+    const mascot = this.container.querySelector('.quest-mascot');
+    if (mascot) {
+      mascot.setAttribute('data-state', state);
+      mascot.innerHTML = this.getMascotSVG(state);
+      this.logger.info(`Mascot state updated to: ${state}`);
+    }
+  }
+
+  /**
+   * Check if Joule iframe is visible
+   * @returns {boolean} True if Joule iframe exists and is visible
+   */
+  isJouleVisible() {
+    const iframe = document.querySelector('iframe[src*="sapdas.cloud.sap"]');
+    if (!iframe) {
+      return false;
+    }
+    
+    const rect = iframe.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
   }
 
   /**
@@ -56,15 +189,28 @@ class QuestOverlay {
     const renderQuestNodes = (questList, category) => {
       return questList.map((quest, index) => {
         const isCompleted = completedQuests.includes(quest.id);
-        const statusClass = isCompleted ? 'completed' : '';
+        
+        // Check if quest is locked (requires other quests to be completed first)
+        const isLocked = quest.requiresQuests && 
+          !quest.requiresQuests.every(reqId => completedQuests.includes(reqId));
+        
+        const statusClass = isCompleted ? 'completed' : (isLocked ? 'locked' : '');
         const nextIsCompleted = index < questList.length - 1 && completedQuests.includes(questList[index + 1].id);
         
+        // For locked quests, show which prerequisites are needed
+        let lockMessage = '';
+        if (isLocked && quest.requiresQuests) {
+          const remaining = quest.requiresQuests.filter(reqId => !completedQuests.includes(reqId));
+          lockMessage = `<div class="quest-lock-info">🔒 Complete ${remaining.length} more quest${remaining.length > 1 ? 's' : ''} to unlock</div>`;
+        }
+        
         return `
-          <div class="quest-node ${statusClass}" data-quest-id="${quest.id}" data-completed="${isCompleted}">
-            <div class="quest-number">${index + 1}</div>
-            <div class="quest-icon">${quest.icon}</div>
+          <div class="quest-node ${statusClass}" data-quest-id="${quest.id}" data-completed="${isCompleted}" data-locked="${isLocked}">
+            <div class="quest-number">${isLocked ? '🔒' : index + 1}</div>
+            <div class="quest-icon" style="opacity: ${isLocked ? '0.4' : '1'}">${quest.icon}</div>
             <div class="quest-info">
-              <div class="quest-name">${quest.name}</div>
+              <div class="quest-name" style="opacity: ${isLocked ? '0.6' : '1'}">${quest.name}</div>
+              ${lockMessage}
               <div class="quest-meta">
                 <span class="quest-badge">${quest.difficulty}</span>
                 <span class="quest-badge">💎 ${quest.points}</span>
@@ -215,24 +361,31 @@ class QuestOverlay {
       });
     });
 
-    // Quest node clicks
+    // Quest node clicks (persistent - doesn't hide quest selection)
     const questNodes = this.container.querySelectorAll('.quest-node');
     questNodes.forEach(node => {
       node.addEventListener('click', () => {
         const questId = node.dataset.questId;
         const isCompleted = node.dataset.completed === 'true';
+        const isLocked = node.dataset.locked === 'true';
+        
+        // Prevent starting locked quests
+        if (isLocked) {
+          alert('🔒 This quest is locked!\n\nComplete the previous quests first to unlock this one.');
+          return;
+        }
         
         if (isCompleted) {
           const replay = confirm('🎯 Replay this quest?\n\nYou won\'t earn points again, but you can practice the quest flow.');
           if (replay) {
             if (window.soundEffects) window.soundEffects.playQuestStart();
-            this.hide();
+            // DON'T hide quest selection - keep it visible
             // Trigger quest start with replay flag
             window.postMessage({ type: 'START_QUEST', questId, isReplay: true }, '*');
           }
         } else {
           if (window.soundEffects) window.soundEffects.playQuestStart();
-          this.hide();
+          // DON'T hide quest selection - keep it visible
           // Trigger quest start
           window.postMessage({ type: 'START_QUEST', questId, isReplay: false }, '*');
         }
@@ -300,6 +453,11 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-step">
+        <!-- Mascot -->
+        <div class="quest-mascot" data-state="active">
+          ${this.getMascotSVG('active')}
+        </div>
+        
         <div class="step-header">
           <span class="step-number">Step ${current}/${total}</span>
           <span class="step-icon">🎮</span>
@@ -340,6 +498,11 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-step instructions">
+        <!-- Mascot -->
+        <div class="quest-mascot" data-state="waiting">
+          ${this.getMascotSVG('waiting')}
+        </div>
+        
         <div class="step-header">
           <span class="step-number">Step ${current}/${total}</span>
           <span class="step-icon">👆</span>
@@ -372,6 +535,11 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-success">
+        <!-- Mascot -->
+        <div class="quest-mascot" data-state="success">
+          ${this.getMascotSVG('success')}
+        </div>
+        
         <div class="success-icon">⭐</div>
         <h3>Success!</h3>
         <p>${message}</p>
@@ -423,6 +591,11 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-error">
+        <!-- Mascot -->
+        <div class="quest-mascot" data-state="error">
+          ${this.getMascotSVG('error')}
+        </div>
+        
         <div class="error-icon">${errorIcon}</div>
         <h3>Step Failed</h3>
         <h4>${step.name}</h4>
@@ -492,6 +665,11 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card ${completionColor}">
+        <!-- Mascot -->
+        <div class="quest-mascot" data-state="complete">
+          ${this.getMascotSVG('complete')}
+        </div>
+        
         <div class="complete-icon">${completionIcon}</div>
         <h2>${completionTitle}</h2>
         <h3>${questName}</h3>
@@ -521,12 +699,8 @@ class QuestOverlay {
       }
     }
 
-    // Auto-hide after 8 seconds (longer to allow clicking button)
-    setTimeout(() => {
-      if (this.isVisible) {
-        this.hide();
-      }
-    }, 8000);
+    // DON'T auto-hide - keep quest complete screen visible
+    // User will click "Show Quests" button or close manually
   }
 
   /**
