@@ -633,6 +633,7 @@ class QuestRunner {
    * Execute click button action (for agent workflows)
    * Clicks a button in the main page (not Joule iframe)
    * Generic button click for form submissions, AI generation, etc.
+   * Uses enhanced click logic with retry and UI5 shadow piercing
    * @param {Object} step - Step configuration
    */
   async executeClickButtonAction(step) {
@@ -641,29 +642,22 @@ class QuestRunner {
     
     this.logger.info(`Looking for button: ${selectorKey}`, selectors);
     
-    // Try standard selector approach first
+    // Try standard selector approach with enhanced clicking
     try {
-      const element = await this.shadowDOM.waitForElement(selectors, 5000);
+      const element = await this.shadowDOM.waitForElement(selectors, 10000);
       
       if (element) {
         this.logger.success('Button found via selectors!', element);
         
-        // Check if it's a UI5 custom element with shadow root
-        if (element.shadowRoot) {
-          const shadowButton = element.shadowRoot.querySelector('button');
-          if (shadowButton) {
-            this.logger.success('Found button inside shadow root, clicking...');
-            shadowButton.click();
-            await this.sleep(3000);
-            return;
-          }
-        }
+        // Use clickElementWithRetry for better reliability
+        // This handles UI5 shadow piercing, clickability checks, and retries
+        const success = await this.shadowDOM.clickElementWithRetry(element, 3);
         
-        // Regular element, click directly
-        this.logger.info('Clicking element directly...');
-        element.click();
-        await this.sleep(3000);
-        return;
+        if (success) {
+          this.logger.success('Button clicked successfully with retry logic!');
+          await this.sleep(3000);
+          return;
+        }
       }
     } catch (err) {
       this.logger.warn('Standard selector approach failed, trying text-based search', err);

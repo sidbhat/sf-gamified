@@ -67,7 +67,7 @@ body.quest-running::before {
   left: 0;
   right: 0;
   bottom: 0;
-  border: 6px solid transparent;
+  border: 10px solid transparent;
   border-image: linear-gradient(90deg, #667eea, #764ba2, #667eea, #764ba2) 1;
   pointer-events: none;
   z-index: 2147483646;
@@ -79,14 +79,14 @@ body.quest-running::before {
 
 @keyframes borderPulseEnhanced {
   0%, 100% {
-    opacity: 0.7;
-    border-width: 6px;
-    filter: brightness(1);
+    opacity: 0.85;
+    border-width: 10px;
+    filter: brightness(1.1);
   }
   50% {
-    opacity: 0.95;
-    border-width: 8px;
-    filter: brightness(1.2);
+    opacity: 1;
+    border-width: 14px;
+    filter: brightness(1.3);
   }
 }
 
@@ -430,22 +430,22 @@ body.quest-running::before {
 }
 
 .quest-map-selection::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
 }
 
 .quest-map-selection::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
 }
 
 .quest-map-selection::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 .quest-map-selection::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .quest-map-selection .map-start {

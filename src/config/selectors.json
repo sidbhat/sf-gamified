@@ -20,13 +20,22 @@
       "//*[@role='textbox' and contains(@aria-label, 'Joule')]"
     ],
     "sendButton": [
+      "textarea + button",
+      "[role='textbox'] + button",
       "button[aria-label='Send']",
+      "button[aria-label*='Send message']",
       "button[aria-label*='send']",
       "button[type='submit']",
       "button[data-sap-ui*='send']",
+      ".send-icon",
+      "svg[aria-label='Send']",
+      "ui5-button:contains('Send')",
+      "[data-ui5-stable*='send'] button",
       "//button[@aria-label='Send']",
       "//button[contains(@aria-label, 'send')]",
-      "//button[@type='submit']"
+      "//button[@type='submit']",
+      "//textarea/following-sibling::button",
+      "//*[@role='textbox']/following-sibling::button"
     ],
     "responseContainer": [
       ".joule-response",
@@ -56,8 +65,14 @@
   },
   "goalForm": {
     "createButton": [
+      "[data-ui5-stable*='Module-GOAL']",
+      "ui5-button:contains('Create')",
+      "ui5-static-area-item-sf-header button",
+      "[data-ui5-stable*='create'] button",
       "ui5-button-xweb-goalmanagement",
       "ui5-button",
+      "button[aria-label*='Create Goal']",
+      "button[aria-label*='Create']",
       "span.ui5-dynamic-page-title-focus-area[role='button']",
       "span[class*='dynamic-page-title-focus-area'][role='button']",
       "span[data-sap-focus-ref='true'][role='button']",
@@ -66,8 +81,6 @@
       "button.ui5-button-root[role='button']",
       "button[class*='ui5-button']",
       "button[data-sap-focus-ref='true']",
-      "button[aria-label*='Create Goal']",
-      "button[aria-label*='Create']",
       "a[href*='goal-form?action=create']",
       "//span[@class='ui5-dynamic-page-title-focus-area' and @role='button']",
       "//span[@role='button' and @data-sap-focus-ref='true']",

@@ -401,7 +401,15 @@
           "name": "View Complete Goal",
           "description": "Scrolling down to view the complete generated goal...",
           "action": "scroll_to_bottom",
-          "successMessage": "✨ Complete goal visible! You can now click 'Save' to create the goal. Quest complete! 🎉"
+          "successMessage": "✨ Complete goal visible! Now saving the goal..."
+        },
+        {
+          "id": 7,
+          "name": "Save Goal",
+          "description": "Clicking Save button to create the goal...",
+          "action": "click_button",
+          "selector": "goalForm.saveButton",
+          "successMessage": "🎉 Goal saved successfully! Quest complete! 🏆"
         }
       ]
     }

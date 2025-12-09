@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Joule Quest for SAP SuccessFactors",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Master SAP Joule AI through gamified quests. Interactive learning - earn points, complete challenges, and become a Joule expert!",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "https://*.successfactors.com/*",

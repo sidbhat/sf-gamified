@@ -544,6 +544,9 @@ class QuestOverlay {
       return;
     }
 
+    // Add page-level border indicator immediately when quest starts
+    document.body.classList.add('quest-running');
+
     const html = `
       <div class="joule-quest-card quest-start">
         <svg class="joule-icon" width="64" height="64" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
