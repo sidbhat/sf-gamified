@@ -297,8 +297,8 @@
         },
         {
           "id": 2,
-          "name": "Request Spot Award",
-          "description": "Requesting spot award...",
+          "name": "Give Spot Award",
+          "description": "Giving a spot award...",
           "action": "type_and_send",
           "prompt": "Give Spot Award",
           "waitForResponse": true,
@@ -376,7 +376,7 @@
           "name": "Open Goal Creation Form",
           "description": "Opening AI-powered goal creation form...",
           "action": "navigate",
-          "url": "/sf/goals/#/goal-form?action=create",
+          "url": "/sf/goals#/goal-form?action=create",
           "preserveParams": true,
           "successMessage": "Goal creation form opened! 🎯"
         },

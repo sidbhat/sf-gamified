@@ -45,10 +45,10 @@
       const questState = result.activeQuestState;
       logger.info('Found active quest state from navigation', questState);
       
-      // CRITICAL FIX: Check if quest state is stale (older than 10 seconds)
+      // CRITICAL FIX: Check if quest state is stale (older than 30 seconds)
       // This prevents auto-restart loops from manual page refreshes
       const age = Date.now() - questState.timestamp;
-      const MAX_STATE_AGE = 10000; // 10 seconds
+      const MAX_STATE_AGE = 30000; // 30 seconds (increased for slower page loads)
       
       if (age > MAX_STATE_AGE) {
         logger.warn(`Quest state is stale (${age}ms old), ignoring and clearing`);
@@ -58,9 +58,8 @@
         // State is fresh, this is a legitimate navigation
         logger.info(`Quest state is fresh (${age}ms old), resuming quest`);
         
-        // Clear the saved state immediately to prevent re-triggering
-        await chrome.storage.local.remove('activeQuestState');
-        logger.info('Cleared saved quest state to prevent auto-restart');
+        // DON'T clear state yet - we need it for continueQuestFromStep
+        // It will be cleared by the smart clearing logic or at quest completion
         
         // Wait for page to be fully loaded
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -70,23 +69,43 @@
         if (quest) {
           logger.info(`Resuming quest: ${quest.name} from step ${questState.currentStepIndex + 1}`);
           
+          // Calculate next step index
+          const nextStepIndex = questState.currentStepIndex + 1;
+          
+          // Check if quest is already complete
+          if (nextStepIndex >= quest.steps.length) {
+            logger.warn('Quest already completed');
+            await chrome.storage.local.remove('activeQuestState');
+            return;
+          }
+          
           // Set runner state to resume from next step
           runner.currentQuest = quest;
-          runner.currentStepIndex = questState.currentStepIndex + 1; // Continue from NEXT step
+          runner.currentStepIndex = nextStepIndex;
           runner.isRunning = true;
           runner.mode = questState.mode;
           
+          // Initialize tracking arrays
+          runner.failedSteps = runner.failedSteps || [];
+          runner.stepResults = runner.stepResults || [];
+          
+          // Get next step and check if it's agent quest
+          const nextStep = quest.steps[nextStepIndex];
+          const isAgentQuest = quest.category === 'agent';
+          
           // Show the quest is continuing
           overlay.showStep(
-            quest.steps[questState.currentStepIndex],
-            questState.currentStepIndex + 1,
-            quest.steps.length
+            nextStep,
+            nextStepIndex + 1,
+            quest.steps.length,
+            null,
+            isAgentQuest
           );
           
           await new Promise(resolve => setTimeout(resolve, 2000));
           
-          // Continue quest execution from current step
-          await continueQuestFromStep(quest, questState.currentStepIndex + 1, questState.mode);
+          // Continue quest execution from next step
+          await continueQuestFromStep(quest, nextStepIndex, questState.mode);
         }
       }
     }
