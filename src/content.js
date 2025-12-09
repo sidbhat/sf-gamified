@@ -38,6 +38,49 @@
 
   logger.success('All components initialized');
 
+  // Check if there's an active quest state from navigation (page reload)
+  try {
+    const result = await chrome.storage.local.get('activeQuestState');
+    if (result.activeQuestState) {
+      const questState = result.activeQuestState;
+      logger.info('Found active quest state from navigation', questState);
+      
+      // Clear the saved state immediately to prevent re-triggering
+      await chrome.storage.local.remove('activeQuestState');
+      logger.info('Cleared saved quest state to prevent auto-restart');
+      
+      // Wait for page to be fully loaded
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Resume quest from saved state
+      const quest = quests.quests.find(q => q.id === questState.questId);
+      if (quest) {
+        logger.info(`Resuming quest: ${quest.name} from step ${questState.currentStepIndex + 1}`);
+        
+        // Set runner state to resume from next step
+        runner.currentQuest = quest;
+        runner.currentStepIndex = questState.currentStepIndex + 1; // Continue from NEXT step
+        runner.isRunning = true;
+        runner.mode = questState.mode;
+        
+        // Show the quest is continuing
+        overlay.showStep(
+          quest.steps[questState.currentStepIndex],
+          questState.currentStepIndex + 1,
+          quest.steps.length
+        );
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Continue quest execution from current step
+        await continueQuestFromStep(quest, questState.currentStepIndex + 1, questState.mode);
+      }
+    }
+  } catch (error) {
+    logger.error('Failed to restore quest state', error);
+    // Non-critical error, continue normal operation
+  }
+
   // Listen for messages from popup or background
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     logger.info('Message received', message);
@@ -207,6 +250,98 @@
       logger.info('Background script notified');
     }
   });
+
+  /**
+   * Continue quest execution from a specific step
+   * Used when resuming after page navigation
+   */
+  async function continueQuestFromStep(quest, startStepIndex, mode) {
+    logger.info(`Continuing quest from step ${startStepIndex + 1}`);
+    
+    runner.failedSteps = runner.failedSteps || [];
+    runner.stepResults = runner.stepResults || [];
+    
+    const steps = quest.steps;
+    const stepsLength = steps.length;
+    
+    // Check if this is an agent quest (hide mascot arrow)
+    const isAgentQuest = quest.category === 'agent';
+
+    for (let i = startStepIndex; i < stepsLength; i++) {
+      if (!runner.currentQuest || !runner.currentQuest.steps) {
+        logger.warn('Quest was stopped during execution');
+        return;
+      }
+
+      runner.currentStepIndex = i;
+      const step = steps[i];
+
+      logger.quest(quest.name, `Executing step ${i + 1}: ${step.name}`);
+
+      if (overlay) {
+        overlay.showStep(step, i + 1, stepsLength, null, isAgentQuest);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      try {
+        await runner.executeStep(step);
+        
+        runner.stepResults.push({
+          stepIndex: i,
+          stepName: step.name,
+          status: 'success',
+          error: null
+        });
+        
+        if (overlay) {
+          overlay.showStepSuccess(step.successMessage, isAgentQuest);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      } catch (error) {
+        logger.error(`Step ${i + 1} failed: ${error.message}`, error);
+        
+        runner.failedSteps.push(i);
+        runner.stepResults.push({
+          stepIndex: i,
+          stepName: step.name,
+          status: 'error',
+          error: error.message
+        });
+        
+        if (overlay) {
+          overlay.showStepError(step, 'UNKNOWN_ERROR', error.message, isAgentQuest);
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
+
+    // Quest completed
+    logger.quest(quest.name, 'Quest completed after navigation');
+    
+    if (overlay) {
+      overlay.showQuestComplete(quest, runner.stepResults, runner.failedSteps);
+    }
+    
+    // Save progress
+    try {
+      await storage.saveQuestProgress(quest.id, {
+        completed: true,
+        completedAt: Date.now(),
+        mode: mode
+      });
+      await storage.incrementQuestCompletion(quest.points);
+      logger.success('Quest progress saved');
+    } catch (error) {
+      logger.error('Failed to save progress', error);
+    }
+    
+    runner.isRunning = false;
+    runner.currentQuest = null;
+    runner.currentStepIndex = 0;
+  }
 
   logger.info('Content script initialization complete');
 })();

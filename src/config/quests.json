@@ -7,6 +7,10 @@
     "manager": {
       "name": "Leadership Essentials",
       "description": "Essential Joule skills for managers - handle approvals and manage your team efficiently"
+    },
+    "agent": {
+      "name": "AI Agent Workflows",
+      "description": "Master GenAI-powered workflows - create goals, analyze data, and automate tasks with AI"
     }
   },
   "quests": [
@@ -338,6 +342,66 @@
           "action": "click_button_by_text",
           "buttonText": "Send",
           "successMessage": "Spot award sent! 🏆🎉"
+        }
+      ]
+    },
+    {
+      "id": "agent-create-goal-ai",
+      "name": "AI Goal Creation",
+      "category": "agent",
+      "description": "Create a professional development goal using GenAI",
+      "difficulty": "Medium",
+      "points": 175,
+      "icon": "⚡",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Navigate to Goals List",
+          "description": "Opening Goals section...",
+          "action": "navigate",
+          "url": "/sf/goals/#/goal-list",
+          "successMessage": "Goals section opened! 📋"
+        },
+        {
+          "id": 2,
+          "name": "Open Goal Creation Form",
+          "description": "Opening AI-powered goal creation form...",
+          "action": "navigate",
+          "url": "/sf/goals/#/goal-form?action=create",
+          "preserveParams": true,
+          "successMessage": "Goal creation form opened! 🎯"
+        },
+        {
+          "id": 3,
+          "name": "Enter Goal Description",
+          "description": "Typing AI prompt for goal generation...",
+          "action": "type_in_field",
+          "selector": "goalForm.aiPromptField",
+          "value": "Help me improve my presentation skills by Q2 next year",
+          "successMessage": "AI prompt entered! ✍️"
+        },
+        {
+          "id": 4,
+          "name": "Generate Goal with AI",
+          "description": "Clicking AI generation button to create goal...",
+          "action": "click_button",
+          "selector": "goalForm.generateButton",
+          "successMessage": "AI is generating your goal... 🤖"
+        },
+        {
+          "id": 5,
+          "name": "Wait for AI Generation",
+          "description": "Waiting for AI to generate goal content...",
+          "action": "wait",
+          "duration": 5000,
+          "successMessage": "Goal generated! Scrolling to see the complete goal... ⚡"
+        },
+        {
+          "id": 6,
+          "name": "View Complete Goal",
+          "description": "Scrolling down to view the complete generated goal...",
+          "action": "scroll_to_bottom",
+          "successMessage": "✨ Complete goal visible! You can now click 'Save' to create the goal. Quest complete! 🎉"
         }
       ]
     }

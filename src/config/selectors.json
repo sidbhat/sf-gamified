@@ -53,5 +53,63 @@
       "//button[contains(text(), 'Cost Center')]",
       "//a[contains(text(), 'Cost Center')]"
     ]
+  },
+  "goalForm": {
+    "createButton": [
+      "ui5-button-xweb-goalmanagement",
+      "ui5-button",
+      "span.ui5-dynamic-page-title-focus-area[role='button']",
+      "span[class*='dynamic-page-title-focus-area'][role='button']",
+      "span[data-sap-focus-ref='true'][role='button']",
+      "span[role='button'][aria-expanded]",
+      "[role='button'][data-sap-focus-ref='true']",
+      "button.ui5-button-root[role='button']",
+      "button[class*='ui5-button']",
+      "button[data-sap-focus-ref='true']",
+      "button[aria-label*='Create Goal']",
+      "button[aria-label*='Create']",
+      "a[href*='goal-form?action=create']",
+      "//span[@class='ui5-dynamic-page-title-focus-area' and @role='button']",
+      "//span[@role='button' and @data-sap-focus-ref='true']",
+      "//button[contains(@aria-label, 'Create')]"
+    ],
+    "aiPromptField": [
+      "textarea[placeholder*='write some words about']",
+      "textarea[aria-label*='goal description']",
+      "textarea[name*='description']",
+      "textarea[placeholder*='Write some words']",
+      "[role='textbox'][placeholder*='write some words']",
+      "//textarea[contains(@placeholder, 'write some words about')]",
+      "//textarea[contains(@placeholder, 'Write some words')]"
+    ],
+    "generateButton": [
+      "button[aria-label*='Generate goals using AI']",
+      "button[aria-description*='Generate goals using AI']",
+      "button[title*='Generate goals using AI']",
+      "button:has-text('Generate')",
+      "[role='button'][aria-label*='Generate']",
+      "//button[contains(@aria-label, 'Generate goals using AI')]",
+      "//button[contains(@aria-description, 'Generate goals using AI')]",
+      "//button[contains(text(), 'Generate')]"
+    ],
+    "submitButton": [
+      "button[type='submit']",
+      "button[aria-label*='Submit']",
+      "button[aria-label*='Save']",
+      "ui5-button",
+      "ui5-button-xweb-goalmanagement",
+      "[role='button'][aria-label*='Submit']",
+      "[role='button'][aria-label*='Save']",
+      "//button[@type='submit']",
+      "//button[contains(@aria-label, 'Submit') or contains(@aria-label, 'Save')]"
+    ],
+    "saveButton": [
+      "ui5-button-xweb-goalmanagement",
+      "ui5-button",
+      "button[aria-label*='Save']",
+      "button[type='submit']",
+      "[role='button'][aria-label*='Save']",
+      "//button[contains(@aria-label, 'Save')]"
+    ]
   }
 }

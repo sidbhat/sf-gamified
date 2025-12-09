@@ -9,7 +9,7 @@ class ShadowDOMHelper {
 
   /**
    * Find element using multiple selector strategies
-   * Tries CSS selectors first, then XPath, then Shadow DOM traversal
+   * Tries CSS selectors first, then Shadow DOM traversal, then XPath
    * @param {string[]} selectors - Array of selector strings
    * @returns {Element|null} Found element or null
    */
@@ -18,25 +18,19 @@ class ShadowDOMHelper {
 
     for (const selector of selectors) {
       try {
-        // Try regular CSS selector first
-        if (!selector.startsWith('//')) {
-          const element = document.querySelector(selector);
-          if (element) {
-            this.logger.success('Found element with CSS selector', selector);
-            return element;
-          }
-        }
-
-        // Try XPath selector
+        // Skip XPath selectors for now (process them last)
         if (selector.startsWith('//')) {
-          const element = this.findByXPath(selector);
-          if (element) {
-            this.logger.success('Found element with XPath', selector);
-            return element;
-          }
+          continue;
         }
 
-        // Try Shadow DOM traversal
+        // Try regular CSS selector first
+        const element = document.querySelector(selector);
+        if (element) {
+          this.logger.success('Found element with CSS selector', selector);
+          return element;
+        }
+
+        // Try Shadow DOM traversal with CSS selector
         const shadowElement = this.findInShadowDOM(selector);
         if (shadowElement) {
           this.logger.success('Found element in Shadow DOM', selector);
@@ -44,6 +38,21 @@ class ShadowDOMHelper {
         }
       } catch (error) {
         this.logger.warn(`Selector failed: ${selector}`, error);
+      }
+    }
+
+    // Try XPath selectors last (as fallback)
+    for (const selector of selectors) {
+      if (selector.startsWith('//')) {
+        try {
+          const element = this.findByXPath(selector);
+          if (element) {
+            this.logger.success('Found element with XPath', selector);
+            return element;
+          }
+        } catch (error) {
+          this.logger.warn(`XPath selector failed: ${selector}`, error);
+        }
       }
     }
 
@@ -74,11 +83,38 @@ class ShadowDOMHelper {
 
   /**
    * Recursively search for element in Shadow DOM
+   * Also handles :contains() pseudo-selector for text matching
    * @param {string} selector - CSS selector
    * @param {Element} root - Root element to start search
    * @returns {Element|null} Found element or null
    */
   findInShadowDOM(selector, root = document.body) {
+    // Handle :contains() pseudo-selector (e.g., "ui5-button:contains('Create')")
+    const containsMatch = selector.match(/^([^:]+):contains\(['"](.+)['"]\)$/);
+    if (containsMatch) {
+      const [, tagOrClass, text] = containsMatch;
+      
+      // Find all matching elements
+      const elements = root.querySelectorAll(tagOrClass);
+      for (const el of elements) {
+        // Check if element's text content contains the search text
+        if (el.textContent && el.textContent.trim().includes(text)) {
+          this.logger.info(`Found element with text "${text}"`, el);
+          
+          // For UI5 web components, return the button inside shadow root
+          if (el.shadowRoot) {
+            const button = el.shadowRoot.querySelector('button');
+            if (button) {
+              this.logger.info('Found button inside shadow root', button);
+              return button;
+            }
+          }
+          
+          return el;
+        }
+      }
+    }
+    
     // Try to find in current scope
     const element = root.querySelector(selector);
     if (element) return element;

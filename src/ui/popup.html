@@ -9,7 +9,27 @@
 <body>
   <div class="popup-container">
     <div class="popup-message">
-      <div class="message-icon">🎯</div>
+      <svg class="popup-logo" width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="popupGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0.95)"/>
+            <stop offset="100%" style="stop-color:rgba(255,255,255,0.85)"/>
+          </linearGradient>
+        </defs>
+        <circle cx="25" cy="30" r="20" fill="url(#popupGradient)" opacity="0.9"/>
+        <g opacity="0.85">
+          <path d="M 25 12 A 18 18 0 0 1 39 22 L 32 25 A 10 10 0 0 0 25 18 Z" fill="url(#popupGradient)"/>
+          <path d="M 39 22 A 18 18 0 0 1 39 38 L 32 35 A 10 10 0 0 0 32 25 Z" fill="url(#popupGradient)"/>
+          <path d="M 39 38 A 18 18 0 0 1 25 48 L 25 40 A 10 10 0 0 0 32 35 Z" fill="url(#popupGradient)"/>
+          <path d="M 25 48 A 18 18 0 0 1 11 38 L 18 35 A 10 10 0 0 0 25 40 Z" fill="url(#popupGradient)"/>
+          <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" fill="url(#popupGradient)"/>
+          <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" fill="url(#popupGradient)"/>
+        </g>
+        <circle cx="25" cy="30" r="10" fill="rgba(118,75,162,0.7)"/>
+        <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
+        <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
+        <circle cx="25" cy="30" r="4" fill="white"/>
+      </svg>
       <h2>Joule Quest</h2>
       <p>Opening quest selection...</p>
       <div class="loading-dots">

@@ -104,6 +104,9 @@ class QuestRunner {
     // CRITICAL: Cache steps length to avoid accessing null during loop
     const steps = this.currentQuest.steps;
     const stepsLength = steps.length;
+    
+    // Check if this is an agent quest (hide mascot arrow)
+    const isAgentQuest = this.currentQuest.category === 'agent';
 
     for (let i = 0; i < stepsLength; i++) {
       // CRITICAL: Check if quest still exists (might have been stopped)
@@ -119,7 +122,7 @@ class QuestRunner {
 
       // Show step in overlay so user knows what's happening
       if (this.overlay) {
-        this.overlay.showStep(step, i + 1, stepsLength);
+        this.overlay.showStep(step, i + 1, stepsLength, null, isAgentQuest);
       }
 
       // Wait so user can read what the step will do
@@ -138,7 +141,7 @@ class QuestRunner {
         
         // Show success message and WAIT so user can see it
         if (this.overlay) {
-          this.overlay.showStepSuccess(step.successMessage);
+          this.overlay.showStepSuccess(step.successMessage, isAgentQuest);
         }
 
         // Wait after each step completes
@@ -178,7 +181,7 @@ class QuestRunner {
         
         // Show error state in overlay with error type for better messaging
         if (this.overlay) {
-          this.overlay.showStepError(step, errorType, error.message);
+          this.overlay.showStepError(step, errorType, error.message, isAgentQuest);
         }
         
         // Wait before continuing to next step (longer for error to be read)
@@ -271,6 +274,27 @@ class QuestRunner {
         await this.executeClickButtonByText(step);
         break;
       
+      // NEW AGENT ACTIONS (for GenAI UI interactions)
+      case 'navigate':
+        await this.executeNavigateAction(step);
+        break;
+      
+      case 'type_in_field':
+        await this.executeTypeInFieldAction(step);
+        break;
+      
+      case 'click_button':
+        await this.executeClickButtonAction(step);
+        break;
+      
+      case 'wait':
+        await this.executeWaitAction(step);
+        break;
+      
+      case 'scroll_to_bottom':
+        await this.executeScrollToBottomAction(step);
+        break;
+      
       default:
         throw new Error(`Unknown action: ${step.action}`);
     }
@@ -320,13 +344,16 @@ class QuestRunner {
         // Show notification in overlay
         // CRITICAL: Check if quest still exists before accessing steps
         if (this.overlay && this.currentQuest && this.currentQuest.steps) {
+          const isAgentQuest = this.currentQuest.category === 'agent';
           this.overlay.showStep(
             { 
               ...step, 
               description: '✅ Joule is already open and ready!' 
             },
             this.currentStepIndex + 1,
-            this.currentQuest.steps.length
+            this.currentQuest.steps.length,
+            null,
+            isAgentQuest
           );
           await this.sleep(2000);
         }
@@ -377,13 +404,15 @@ class QuestRunner {
     // If we got a response, show it in the overlay
     // CRITICAL: Check if quest still exists (might have completed during async operation)
     if (result.response && this.overlay && this.currentQuest && this.currentQuest.steps) {
+      const isAgentQuest = this.currentQuest.category === 'agent';
       const responseText = result.response.substring(0, 300); // Limit to 300 chars
       const truncated = result.response.length > 300 ? '...' : '';
       this.overlay.showStep(
         step,
         this.currentStepIndex + 1,
         this.currentQuest.steps.length,
-        responseText + truncated
+        responseText + truncated,
+        isAgentQuest
       );
       // Keep it visible so user can read the response
       await this.sleep(5000);
@@ -492,6 +521,262 @@ class QuestRunner {
 
     // Wait after clicking (don't wait for response as button may open new tab)
     await this.sleep(2000);
+  }
+
+  /**
+   * Execute navigate action (for agent workflows)
+   * Navigates to a specific URL in SuccessFactors
+   * Saves quest state before navigation and restores after
+   * @param {Object} step - Step configuration
+   */
+  async executeNavigateAction(step) {
+    this.logger.info(`Navigating to: ${step.url}`);
+    
+    // Save quest state to storage before navigation (page will reload)
+    const questState = {
+      questId: this.currentQuest.id,
+      questName: this.currentQuest.name,
+      currentStepIndex: this.currentStepIndex,
+      mode: this.mode,
+      timestamp: Date.now()
+    };
+    
+    try {
+      await chrome.storage.local.set({ activeQuestState: questState });
+      this.logger.info('Quest state saved before navigation', questState);
+    } catch (error) {
+      this.logger.error('Failed to save quest state', error);
+    }
+    
+    // Get base URL from current page
+    const baseUrl = window.location.origin;
+    let fullUrl = step.url.startsWith('http') 
+      ? step.url 
+      : `${baseUrl}${step.url}`;
+    
+    // If preserveParams is true, extract parameters from current URL and add them
+    if (step.preserveParams) {
+      this.logger.info('Preserving URL parameters from current page');
+      
+      // Extract params from current hash URL (after #)
+      const currentHash = window.location.hash;
+      const currentParamsString = currentHash.includes('?') ? currentHash.split('?')[1] : '';
+      
+      if (currentParamsString) {
+        const currentParams = new URLSearchParams(currentParamsString);
+        this.logger.info('Current URL parameters:', Object.fromEntries(currentParams));
+        
+        // Parse the target URL to see if it already has params
+        const targetUrl = new URL(fullUrl);
+        const targetHash = targetUrl.hash;
+        const [targetPath, targetParamsString] = targetHash.split('?');
+        
+        // Merge params: target URL params take precedence
+        const targetParams = new URLSearchParams(targetParamsString || '');
+        
+        // Add all current params that aren't already in target
+        for (const [key, value] of currentParams) {
+          if (!targetParams.has(key)) {
+            targetParams.set(key, value);
+          }
+        }
+        
+        // Reconstruct URL with merged params
+        const mergedParamsString = targetParams.toString();
+        fullUrl = `${targetUrl.origin}${targetUrl.pathname}${targetPath}${mergedParamsString ? '?' + mergedParamsString : ''}`;
+        
+        this.logger.info('Merged URL parameters:', Object.fromEntries(targetParams));
+      } else {
+        this.logger.warn('No parameters found in current URL to preserve');
+      }
+    }
+    
+    this.logger.info(`Full URL: ${fullUrl}`);
+    
+    // Navigate to URL (this will reload the page)
+    window.location.href = fullUrl;
+    
+    // Note: Code after this line won't execute as page reloads
+  }
+
+  /**
+   * Execute type in field action (for agent workflows)
+   * Types text into a form field in the main page (not Joule iframe)
+   * @param {Object} step - Step configuration
+   */
+  async executeTypeInFieldAction(step) {
+    const selectorKey = step.selector;
+    const selectors = this.getSelectorsFromKey(selectorKey);
+    
+    this.logger.info(`Looking for input field: ${selectorKey}`, selectors);
+    
+    // Find the field in main page (including Shadow DOM)
+    const element = await this.shadowDOM.waitForElement(selectors, 10000);
+    
+    if (!element) {
+      const errorMsg = `Input field not found: ${selectorKey}`;
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+    
+    this.logger.success('Input field found, typing...', element);
+    
+    // Use shadowDOM helper to properly set value with Shadow DOM events
+    this.shadowDOM.setInputValue(element, step.value);
+    
+    this.logger.success(`Typed into field: "${step.value}"`);
+    
+    await this.sleep(500);
+  }
+
+  /**
+   * Execute click button action (for agent workflows)
+   * Clicks a button in the main page (not Joule iframe)
+   * Generic button click for form submissions, AI generation, etc.
+   * @param {Object} step - Step configuration
+   */
+  async executeClickButtonAction(step) {
+    const selectorKey = step.selector;
+    const selectors = this.getSelectorsFromKey(selectorKey);
+    
+    this.logger.info(`Looking for button: ${selectorKey}`, selectors);
+    
+    // Try standard selector approach first
+    try {
+      const element = await this.shadowDOM.waitForElement(selectors, 5000);
+      
+      if (element) {
+        this.logger.success('Button found via selectors!', element);
+        
+        // Check if it's a UI5 custom element with shadow root
+        if (element.shadowRoot) {
+          const shadowButton = element.shadowRoot.querySelector('button');
+          if (shadowButton) {
+            this.logger.success('Found button inside shadow root, clicking...');
+            shadowButton.click();
+            await this.sleep(3000);
+            return;
+          }
+        }
+        
+        // Regular element, click directly
+        this.logger.info('Clicking element directly...');
+        element.click();
+        await this.sleep(3000);
+        return;
+      }
+    } catch (err) {
+      this.logger.warn('Standard selector approach failed, trying text-based search', err);
+    }
+    
+    // Fallback: Search by text content for UI5 buttons
+    this.logger.info('Fallback: Searching all UI5 buttons by text content');
+    
+    const allUI5Buttons = document.querySelectorAll('ui5-button, ui5-button-xweb-goalmanagement, [class*="ui5-button"]');
+    this.logger.info(`Found ${allUI5Buttons.length} UI5 button elements`);
+    
+    // Determine search keywords based on selector key
+    let searchKeywords = [];
+    if (selectorKey === 'goalForm.createButton') {
+      searchKeywords = ['create'];
+    } else if (selectorKey === 'goalForm.submitButton') {
+      searchKeywords = ['submit', 'save'];
+    } else if (selectorKey === 'goalForm.saveButton') {
+      searchKeywords = ['save'];
+    } else if (selectorKey === 'goalForm.generateButton') {
+      searchKeywords = ['generate'];
+    }
+    
+    for (const btnElement of allUI5Buttons) {
+      const text = btnElement.textContent?.trim().toLowerCase() || '';
+      const tagName = btnElement.tagName.toLowerCase();
+      
+      this.logger.info(`Checking ${tagName} with text: "${text}"`);
+      
+      // Check if text contains any of the keywords
+      const matches = searchKeywords.some(keyword => text.includes(keyword));
+      
+      if (matches) {
+        this.logger.success(`Found matching button in ${tagName}!`, btnElement);
+        
+        // Try to get the actual button from shadow root
+        const shadowButton = btnElement.shadowRoot?.querySelector('button');
+        if (shadowButton) {
+          this.logger.success('Found button inside shadow root, clicking...');
+          shadowButton.click();
+          await this.sleep(3000);
+          return;
+        } else {
+          this.logger.warn('No shadow root found, clicking host element directly');
+          btnElement.click();
+          await this.sleep(3000);
+          return;
+        }
+      }
+    }
+    
+    // If we get here, button was not found
+    this.logger.error('Could not find button by selectors or text content');
+    this.logger.error('Available UI5 buttons:', Array.from(allUI5Buttons).map(el => ({
+      tag: el.tagName,
+      text: el.textContent?.trim(),
+      class: el.className
+    })));
+    throw new Error(`Button not found: ${selectorKey}`);
+  }
+
+  /**
+   * Execute wait action (for agent workflows)
+   * Waits for a specified duration or for content to load
+   * @param {Object} step - Step configuration
+   */
+  async executeWaitAction(step) {
+    const duration = step.duration || 3000; // Default 3 seconds
+    this.logger.info(`Waiting for ${duration}ms for content to load...`);
+    
+    await this.sleep(duration);
+    
+    this.logger.success('Wait completed');
+  }
+
+  /**
+   * Execute scroll to bottom action (for agent workflows)
+   * Scrolls the page to the bottom to reveal submit buttons
+   * @param {Object} step - Step configuration
+   */
+  async executeScrollToBottomAction(step) {
+    this.logger.info('Scrolling to bottom of page');
+    
+    // Try multiple scroll targets to ensure we reach the bottom
+    // 1. Scroll main window
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth'
+    });
+    
+    await this.sleep(500);
+    
+    // 2. Also try scrolling the body
+    document.body.scrollTop = document.body.scrollHeight;
+    
+    await this.sleep(500);
+    
+    // 3. Find and scroll any scrollable containers
+    const scrollableElements = document.querySelectorAll('[class*="scroll"], [class*="content"], main, article');
+    for (const el of scrollableElements) {
+      if (el.scrollHeight > el.clientHeight) {
+        this.logger.info(`Found scrollable element: ${el.className || el.tagName}`);
+        el.scrollTo({
+          top: el.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
+    
+    // Wait for all scrolls to complete
+    await this.sleep(1500);
+    
+    this.logger.success('Scrolled to bottom');
   }
 
   /**

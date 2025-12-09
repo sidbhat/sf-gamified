@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const errorMsg = window.JouleQuestErrorMessages.getErrorMessage('CONTENT_SCRIPT_NOT_LOADED');
         showError(errorMsg.message, errorMsg);
       } else {
-        showError('Content script not loaded. Please refresh the SAP page and try again.');
+        showError('Content script loading... Please wait a few seconds and try again.');
       }
     } else {
       showError(error.message || 'Failed to open quest selection');

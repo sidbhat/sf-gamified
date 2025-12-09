@@ -12,9 +12,10 @@ class QuestOverlay {
   /**
    * Generate mascot SVG based on state
    * @param {string} state - Mascot state (waiting, active, success, error, complete)
+   * @param {boolean} showArrow - Whether to show pointing arrow (false for agent quests)
    * @returns {string} SVG HTML string
    */
-  getMascotSVG(state = 'waiting') {
+  getMascotSVG(state = 'waiting', showArrow = true) {
     // Determine colors based on state
     let bodyGradient = 'purpleGradient';
     let glowColor = '#9333ea';
@@ -30,8 +31,9 @@ class QuestOverlay {
       glowColor = '#FFD700';
     }
 
-    // Check if Joule is visible for arrow rendering
-    const jouleVisible = this.isJouleVisible();
+    // Only check Joule visibility if showArrow is true
+    // For agent quests, showArrow will be false, so arrow is never rendered
+    const jouleVisible = showArrow ? this.isJouleVisible() : false;
 
     return `
       <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
@@ -170,6 +172,67 @@ class QuestOverlay {
   }
 
   /**
+   * Get logo SVG
+   * @returns {string} Logo SVG HTML
+   */
+  getLogoSVG() {
+    return `
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="white" stroke-width="8"/>
+        <path d="M 50 10 A 40 40 0 0 1 85 35" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        <path d="M 90 50 A 40 40 0 0 1 85 65" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        <path d="M 50 90 A 40 40 0 0 1 15 65" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        <path d="M 10 50 A 40 40 0 0 1 15 35" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="15" fill="white"/>
+        <line x1="50" y1="38" x2="50" y2="62" stroke="#764ba2" stroke-width="3"/>
+        <line x1="38" y1="50" x2="62" y2="50" stroke="#764ba2" stroke-width="3"/>
+        <circle cx="50" cy="50" r="5" fill="#764ba2"/>
+      </svg>
+    `;
+  }
+
+  /**
+   * Get employee icon SVG
+   * @returns {string} Employee icon SVG HTML
+   */
+  getEmployeeIconSVG() {
+    return `
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20v-1a6 6 0 0112 0v1"/>
+        <path d="M17 12l3-3m0 0l-3-3m3 3h-5"/>
+      </svg>
+    `;
+  }
+
+  /**
+   * Get manager icon SVG
+   * @returns {string} Manager icon SVG HTML
+   */
+  getManagerIconSVG() {
+    return `
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="3"/>
+        <circle cx="6" cy="15" r="2.5"/>
+        <circle cx="18" cy="15" r="2.5"/>
+        <path d="M12 8v4M9 12l-2.5 2M15 12l2.5 2"/>
+      </svg>
+    `;
+  }
+
+  /**
+   * Get agent icon SVG
+   * @returns {string} Agent icon SVG HTML
+   */
+  getAgentIconSVG() {
+    return `
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    `;
+  }
+
+  /**
    * Show quest selection screen
    * @param {Array} quests - Array of all quests
    * @param {Array} completedQuests - Array of completed quest IDs
@@ -181,10 +244,12 @@ class QuestOverlay {
 
     const employeeQuests = quests.filter(q => q.category === 'employee');
     const managerQuests = quests.filter(q => q.category === 'manager');
+    const agentQuests = quests.filter(q => q.category === 'agent');
     
     // Get journey info with defaults
     const employeeJourney = journeys.employee || { name: 'Employee Journey', description: 'Complete employee quests' };
     const managerJourney = journeys.manager || { name: 'Manager Journey', description: 'Complete manager quests' };
+    const agentJourney = journeys.agent || { name: 'AI Agent Workflows', description: 'Master GenAI-powered workflows' };
     
     const renderQuestNodes = (questList, category) => {
       return questList.map((quest, index) => {
@@ -224,12 +289,35 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-selection">
-        <button class="close-btn" id="quest-close-btn">✕</button>
-        
         <div class="selection-header">
-          <div class="logo">🎯</div>
-          <h2>Joule Quest</h2>
           <button class="reset-btn" id="quest-reset-btn" title="Reset all progress">🔄</button>
+          
+          <div class="header-center">
+            <svg class="logo-icon" width="36" height="36" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#667eea"/>
+                  <stop offset="100%" style="stop-color:#764ba2"/>
+                </linearGradient>
+              </defs>
+              <circle cx="25" cy="30" r="20" fill="url(#headerGradient)" opacity="0.9"/>
+              <g opacity="0.85">
+                <path d="M 25 12 A 18 18 0 0 1 39 22 L 32 25 A 10 10 0 0 0 25 18 Z" fill="url(#headerGradient)"/>
+                <path d="M 39 22 A 18 18 0 0 1 39 38 L 32 35 A 10 10 0 0 0 32 25 Z" fill="url(#headerGradient)"/>
+                <path d="M 39 38 A 18 18 0 0 1 25 48 L 25 40 A 10 10 0 0 0 32 35 Z" fill="url(#headerGradient)"/>
+                <path d="M 25 48 A 18 18 0 0 1 11 38 L 18 35 A 10 10 0 0 0 25 40 Z" fill="url(#headerGradient)"/>
+                <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" fill="url(#headerGradient)"/>
+                <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" fill="url(#headerGradient)"/>
+              </g>
+              <circle cx="25" cy="30" r="10" fill="#764ba2"/>
+              <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
+              <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
+              <circle cx="25" cy="30" r="4" fill="white"/>
+            </svg>
+            <h2>Joule Quest</h2>
+          </div>
+          
+          <button class="close-btn" id="quest-close-btn">✕</button>
         </div>
 
         <div class="selection-stats">
@@ -250,8 +338,29 @@ class QuestOverlay {
         </div>
 
         <div class="selection-tabs">
-          <button class="tab-btn active" data-category="employee">👤 Employee</button>
-          <button class="tab-btn" data-category="manager">👔 Manager</button>
+          <button class="tab-btn active" data-category="employee">
+            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20v-1a6 6 0 0112 0v1"/>
+              <path d="M17 12l3-3m0 0l-3-3m3 3h-5"/>
+            </svg>
+            Employee
+          </button>
+          <button class="tab-btn" data-category="manager">
+            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="5" r="3"/>
+              <circle cx="6" cy="15" r="2.5"/>
+              <circle cx="18" cy="15" r="2.5"/>
+              <path d="M12 8v4M9 12l-2.5 2M15 12l2.5 2"/>
+            </svg>
+            Manager
+          </button>
+          <button class="tab-btn" data-category="agent">
+            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Agent
+          </button>
         </div>
 
         <div class="selection-content">
@@ -290,6 +399,26 @@ class QuestOverlay {
             <div class="quest-map-selection">
               <div class="map-start">🚩 START</div>
               ${renderQuestNodes(managerQuests, 'manager')}
+              <div class="path-line"></div>
+              <div class="map-end">🏆 GOAL!</div>
+            </div>
+          </div>
+
+          <div class="quest-category" data-category="agent">
+            <div class="journey-progress">
+              <div class="progress-label">
+                <span>⚡ ${agentJourney.name}</span>
+                <strong>${agentQuests.filter(q => completedQuests.includes(q.id)).length} / ${agentQuests.length}</strong>
+              </div>
+              <div class="journey-bar">
+                <div class="journey-fill" style="width: ${(agentQuests.filter(q => completedQuests.includes(q.id)).length / agentQuests.length) * 100}%">
+                  <span class="journey-sparkle">✨</span>
+                </div>
+              </div>
+            </div>
+            <div class="quest-map-selection">
+              <div class="map-start">🚩 START</div>
+              ${renderQuestNodes(agentQuests, 'agent')}
               <div class="path-line"></div>
               <div class="map-end">🏆 GOAL!</div>
             </div>
@@ -417,7 +546,27 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-start">
-        <div class="joule-icon">🎯</div>
+        <svg class="joule-icon" width="64" height="64" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="startGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:rgba(255,255,255,0.95)"/>
+              <stop offset="100%" style="stop-color:rgba(255,255,255,0.85)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="25" cy="30" r="20" fill="url(#startGradient)" opacity="0.9"/>
+          <g opacity="0.85">
+            <path d="M 25 12 A 18 18 0 0 1 39 22 L 32 25 A 10 10 0 0 0 25 18 Z" fill="url(#startGradient)"/>
+            <path d="M 39 22 A 18 18 0 0 1 39 38 L 32 35 A 10 10 0 0 0 32 25 Z" fill="url(#startGradient)"/>
+            <path d="M 39 38 A 18 18 0 0 1 25 48 L 25 40 A 10 10 0 0 0 32 35 Z" fill="url(#startGradient)"/>
+            <path d="M 25 48 A 18 18 0 0 1 11 38 L 18 35 A 10 10 0 0 0 25 40 Z" fill="url(#startGradient)"/>
+            <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" fill="url(#startGradient)"/>
+            <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" fill="url(#startGradient)"/>
+          </g>
+          <circle cx="25" cy="30" r="10" fill="rgba(118,75,162,0.7)"/>
+          <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
+          <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
+          <circle cx="25" cy="30" r="4" fill="white"/>
+        </svg>
         <h2>Quest Started!</h2>
         <h3>${quest.name}</h3>
         <p>${quest.description}</p>
@@ -445,18 +594,21 @@ class QuestOverlay {
    * @param {number} current - Current step number
    * @param {number} total - Total steps
    * @param {string} jouleResponse - Optional Joule response text to display
+   * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
    */
-  showStep(step, current, total, jouleResponse = null) {
-    this.logger.info('Showing step', { step, current, total, jouleResponse });
+  showStep(step, current, total, jouleResponse = null, isAgentQuest = false) {
+    this.logger.info('Showing step', { step, current, total, jouleResponse, isAgentQuest });
 
     const progress = (current / total) * 100;
 
     const html = `
       <div class="joule-quest-card quest-step">
-        <!-- Mascot -->
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
         <div class="quest-mascot" data-state="active">
-          ${this.getMascotSVG('active')}
+          ${this.getMascotSVG('active', true)}
         </div>
+        ` : ''}
         
         <div class="step-header">
           <span class="step-number">Step ${current}/${total}</span>
@@ -490,18 +642,21 @@ class QuestOverlay {
    * @param {Object} step - Step configuration
    * @param {number} current - Current step number
    * @param {number} total - Total steps
+   * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
    */
-  showStepInstructions(step, current, total) {
-    this.logger.info('Showing step instructions', { step, current, total });
+  showStepInstructions(step, current, total, isAgentQuest = false) {
+    this.logger.info('Showing step instructions', { step, current, total, isAgentQuest });
 
     const progress = (current / total) * 100;
 
     const html = `
       <div class="joule-quest-card quest-step instructions">
-        <!-- Mascot -->
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
         <div class="quest-mascot" data-state="waiting">
-          ${this.getMascotSVG('waiting')}
+          ${this.getMascotSVG('waiting', true)}
         </div>
+        ` : ''}
         
         <div class="step-header">
           <span class="step-number">Step ${current}/${total}</span>
@@ -529,16 +684,19 @@ class QuestOverlay {
   /**
    * Show step success message
    * @param {string} message - Success message
+   * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
    */
-  showStepSuccess(message) {
-    this.logger.info('Showing step success', message);
+  showStepSuccess(message, isAgentQuest = false) {
+    this.logger.info('Showing step success', message, { isAgentQuest });
 
     const html = `
       <div class="joule-quest-card quest-success">
-        <!-- Mascot -->
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
         <div class="quest-mascot" data-state="success">
-          ${this.getMascotSVG('success')}
+          ${this.getMascotSVG('success', true)}
         </div>
+        ` : ''}
         
         <div class="success-icon">⭐</div>
         <h3>Success!</h3>
@@ -558,9 +716,10 @@ class QuestOverlay {
    * @param {Object} step - Step configuration
    * @param {string} errorMessage - Error message or error type
    * @param {string} technicalDetails - Optional technical details
+   * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
    */
-  showStepError(step, errorMessage, technicalDetails = null) {
-    this.logger.warn('Showing step error (quest continues)', { step, errorMessage, technicalDetails });
+  showStepError(step, errorMessage, technicalDetails = null, isAgentQuest = false) {
+    this.logger.warn('Showing step error (quest continues)', { step, errorMessage, technicalDetails, isAgentQuest });
 
     // Try to get formatted error from catalog
     let errorContent = '';
@@ -591,10 +750,12 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-error">
-        <!-- Mascot -->
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
         <div class="quest-mascot" data-state="error">
-          ${this.getMascotSVG('error')}
+          ${this.getMascotSVG('error', true)}
         </div>
+        ` : ''}
         
         <div class="error-icon">${errorIcon}</div>
         <h3>Step Failed</h3>
@@ -630,6 +791,7 @@ class QuestOverlay {
 
     const questName = quest.name || 'Unknown Quest';
     const questPoints = quest.points || 0;
+    const questCategory = quest.category || 'employee';
     const totalSteps = stepResults.length;
     const successfulSteps = stepResults.filter(r => r.status === 'success').length;
     const failedStepsCount = failedSteps.length;
@@ -642,6 +804,9 @@ class QuestOverlay {
     const completionIcon = isFullSuccess ? '🏆' : '⚠️';
     const completionTitle = isFullSuccess ? 'Quest Complete!' : 'Quest Completed (With Errors)';
     const completionColor = isFullSuccess ? 'quest-complete' : 'quest-partial';
+    
+    // Hide arrow for agent quests
+    const isAgentQuest = questCategory === 'agent';
 
     // Build step summary if there were failures
     let stepSummary = '';
@@ -665,10 +830,12 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card ${completionColor}">
-        <!-- Mascot -->
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
         <div class="quest-mascot" data-state="complete">
-          ${this.getMascotSVG('complete')}
+          ${this.getMascotSVG('complete', true)}
         </div>
+        ` : ''}
         
         <div class="complete-icon">${completionIcon}</div>
         <h2>${completionTitle}</h2>
