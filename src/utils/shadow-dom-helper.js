@@ -212,6 +212,9 @@ class ShadowDOMHelper {
   async clickElementWithRetry(element, maxRetries = 3) {
     this.logger.info('Clicking element with retry', { element, maxRetries });
 
+    // Add highlight before attempting clicks
+    this.highlightElement(element);
+
     for (let i = 0; i < maxRetries; i++) {
       try {
         // Wait for element to be clickable
@@ -222,18 +225,24 @@ class ShadowDOMHelper {
         }
         
         // Element is clickable, perform click
-        this.clickElement(element);
+        this.clickElement(element, false); // Pass false to skip highlighting (already done above)
         
         // Wait for click to process
         await this.sleep(100);
         
         this.logger.success('Click with retry succeeded');
+        
+        // Remove highlight after successful click
+        setTimeout(() => this.unhighlightElement(element), 1500);
+        
         return true;
       } catch (error) {
         this.logger.warn(`Click attempt ${i + 1}/${maxRetries} failed`, error);
         
         if (i === maxRetries - 1) {
           this.logger.error('All click attempts failed', error);
+          // Remove highlight on final failure
+          this.unhighlightElement(element);
           throw error;
         }
         
@@ -241,6 +250,8 @@ class ShadowDOMHelper {
       }
     }
     
+    // Remove highlight if we exit loop without success
+    this.unhighlightElement(element);
     return false;
   }
 
@@ -321,7 +332,38 @@ class ShadowDOMHelper {
   }
 
   /**
-   * Dispatch proper events for Shadow DOM inputs
+   * Add highlight to element to show where automation is interacting
+   * @param {Element} element - Element to highlight
+   */
+  highlightElement(element) {
+    if (!element) return;
+    
+    try {
+      element.classList.add('joule-quest-highlight');
+      element.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      this.logger.info('Element highlighted', element);
+    } catch (error) {
+      this.logger.warn('Could not highlight element', error);
+    }
+  }
+
+  /**
+   * Remove highlight from element
+   * @param {Element} element - Element to unhighlight
+   */
+  unhighlightElement(element) {
+    if (!element) return;
+    
+    try {
+      element.classList.remove('joule-quest-highlight');
+      this.logger.info('Element highlight removed', element);
+    } catch (error) {
+      this.logger.warn('Could not remove highlight', error);
+    }
+  }
+
+  /**
+   * Dispatch proper events for Shadow DOM inputs with visual highlighting
    * SAP SF Shadow DOM requires full event dispatch
    * @param {Element} element - Input element
    * @param {string} value - Value to set
@@ -330,6 +372,9 @@ class ShadowDOMHelper {
     this.logger.info('Setting input value', { element, value });
 
     try {
+      // Highlight the input field
+      this.highlightElement(element);
+      
       // Set the value
       element.value = value;
 
@@ -340,6 +385,9 @@ class ShadowDOMHelper {
       element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, composed: true }));
 
       this.logger.success('Input value set with events dispatched');
+      
+      // Remove highlight after a delay
+      setTimeout(() => this.unhighlightElement(element), 2000);
     } catch (error) {
       this.logger.error('Failed to set input value', error);
       throw error;
@@ -347,14 +395,20 @@ class ShadowDOMHelper {
   }
 
   /**
-   * Click element with proper event dispatch
+   * Click element with proper event dispatch and visual highlighting
    * Handles both native buttons and shadow DOM components (UI5)
    * @param {Element} element - Element to click
+   * @param {boolean} addHighlight - Whether to add/remove highlight (default true)
    */
-  clickElement(element) {
+  clickElement(element, addHighlight = true) {
     this.logger.info('Clicking element', element);
 
     try {
+      // Add highlight before clicking (if not already highlighted by caller)
+      if (addHighlight) {
+        this.highlightElement(element);
+      }
+      
       // Step 1: Scroll element into view (like Selenium does)
       element.scrollIntoView({ block: 'center', behavior: 'smooth' });
       
@@ -377,10 +431,19 @@ class ShadowDOMHelper {
           
           this.logger.success('Event dispatch click completed');
         }
+        
+        // Remove highlight after delay (if we added it)
+        if (addHighlight) {
+          setTimeout(() => this.unhighlightElement(element), 1500);
+        }
       }, scrollDelay);
 
     } catch (error) {
       this.logger.error('Failed to click element', error);
+      // Remove highlight on error (if we added it)
+      if (addHighlight) {
+        this.unhighlightElement(element);
+      }
       throw error;
     }
   }

@@ -256,7 +256,7 @@
           "name": "View Team",
           "description": "Loading team information...",
           "action": "type_and_send",
-          "prompt": "Show my team",
+          "prompt": "Show my direct reports",
           "waitForResponse": true,
           "responseKeywords": ["team", "report", "employee", "member", "staff", "direct"],
           "successMessage": "Team list loaded! 👥 Waiting for buttons to render..."
@@ -344,30 +344,90 @@
         },
         {
           "id": 6,
-          "name": "Review Award",
+          "name": "Quest Complete",
           "description": "Quest complete! You can now click 'Send' if you want to submit the award.",
           "action": "wait",
           "duration": 3000,
-          "successMessage": "✨ Quest complete! Click 'Send' to submit the award (optional). 🏆"
+          "successMessage": "🎉 Quest complete! Click 'Send' to submit the award (optional). 🏆"
         }
       ]
     },
     {
-      "id": "agent-create-goal-ai",
-      "name": "AI Goal Creation",
+      "id": "spot-award-agent",
+      "name": "Spot Award (Manager)",
+      "description": "Give a team member a spot award for excellent work",
       "category": "agent",
-      "description": "Create a professional development goal using GenAI",
-      "difficulty": "Medium",
-      "points": 175,
-      "icon": "⚡",
+      "points": 150,
+      "estimatedTime": "3 minutes",
+      "difficulty": "intermediate",
+      "prerequisites": ["Must be a manager with direct reports"],
+      "steps": [
+        {
+          "name": "Open Joule",
+          "description": "Opening Joule Assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "successMessage": "✅ Joule is ready!"
+        },
+        {
+          "name": "Ask Joule to show your direct reports",
+          "description": "Asking Joule to display your direct reports...",
+          "action": "type_and_send",
+          "prompt": "show my direct reports",
+          "waitForResponse": true,
+          "responseKeywords": ["team", "report", "employee"],
+          "errorKeywords": ["sorry", "couldn't", "don't have", "not available", "permission"],
+          "successMessage": "✅ Direct reports list retrieved!"
+        },
+        {
+          "name": "Select First Team Member",
+          "description": "Selecting first team member from the list...",
+          "action": "select_first_option",
+          "successMessage": "✅ Team member selected!"
+        },
+        {
+          "name": "Request Spot Award",
+          "description": "Asking Joule to give a spot award...",
+          "action": "type_and_send",
+          "prompt": "Give this employee a spot award",
+          "waitForResponse": true,
+          "responseKeywords": ["amount", "value", "award"],
+          "errorKeywords": ["sorry", "couldn't", "don't have", "not available", "permission"],
+          "optional": true,
+          "successMessage": "✅ Spot award request initiated!"
+        },
+        {
+          "name": "Enter Award Amount",
+          "description": "Entering award amount...",
+          "action": "select_first_option",
+          "inputValue": "100",
+          "successMessage": "✅ Award amount entered!"
+        },
+        {
+          "name": "Enter Recognition Message",
+          "description": "Typing recognition message...",
+          "action": "select_first_option",
+          "inputValue": "Thank you for your excellent work on the project!",
+          "successMessage": "✅ Recognition message entered!"
+        }
+      ]
+    },
+    {
+      "id": "agent-goal-creation",
+      "name": "AI Goal Creation",
+      "description": "Create a development goal using AI assistance",
+      "category": "agent",
+      "points": 200,
+      "estimatedTime": "4 minutes",
+      "difficulty": "intermediate",
       "steps": [
         {
           "id": 1,
-          "name": "Navigate to Goals List",
-          "description": "Opening Goals section...",
-          "action": "navigate",
-          "url": "/sf/goals/#/goal-list",
-          "successMessage": "Goals section opened! 📋"
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "successMessage": "✅ Joule is ready!"
         },
         {
           "id": 2,

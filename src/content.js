@@ -45,40 +45,60 @@
       const questState = result.activeQuestState;
       logger.info('Found active quest state from navigation', questState);
       
-      // Clear the saved state immediately to prevent re-triggering
-      await chrome.storage.local.remove('activeQuestState');
-      logger.info('Cleared saved quest state to prevent auto-restart');
+      // CRITICAL FIX: Check if quest state is stale (older than 10 seconds)
+      // This prevents auto-restart loops from manual page refreshes
+      const age = Date.now() - questState.timestamp;
+      const MAX_STATE_AGE = 10000; // 10 seconds
       
-      // Wait for page to be fully loaded
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Resume quest from saved state
-      const quest = quests.quests.find(q => q.id === questState.questId);
-      if (quest) {
-        logger.info(`Resuming quest: ${quest.name} from step ${questState.currentStepIndex + 1}`);
+      if (age > MAX_STATE_AGE) {
+        logger.warn(`Quest state is stale (${age}ms old), ignoring and clearing`);
+        await chrome.storage.local.remove('activeQuestState');
+        logger.info('Cleared stale quest state');
+      } else {
+        // State is fresh, this is a legitimate navigation
+        logger.info(`Quest state is fresh (${age}ms old), resuming quest`);
         
-        // Set runner state to resume from next step
-        runner.currentQuest = quest;
-        runner.currentStepIndex = questState.currentStepIndex + 1; // Continue from NEXT step
-        runner.isRunning = true;
-        runner.mode = questState.mode;
+        // Clear the saved state immediately to prevent re-triggering
+        await chrome.storage.local.remove('activeQuestState');
+        logger.info('Cleared saved quest state to prevent auto-restart');
         
-        // Show the quest is continuing
-        overlay.showStep(
-          quest.steps[questState.currentStepIndex],
-          questState.currentStepIndex + 1,
-          quest.steps.length
-        );
-        
+        // Wait for page to be fully loaded
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Continue quest execution from current step
-        await continueQuestFromStep(quest, questState.currentStepIndex + 1, questState.mode);
+        // Resume quest from saved state
+        const quest = quests.quests.find(q => q.id === questState.questId);
+        if (quest) {
+          logger.info(`Resuming quest: ${quest.name} from step ${questState.currentStepIndex + 1}`);
+          
+          // Set runner state to resume from next step
+          runner.currentQuest = quest;
+          runner.currentStepIndex = questState.currentStepIndex + 1; // Continue from NEXT step
+          runner.isRunning = true;
+          runner.mode = questState.mode;
+          
+          // Show the quest is continuing
+          overlay.showStep(
+            quest.steps[questState.currentStepIndex],
+            questState.currentStepIndex + 1,
+            quest.steps.length
+          );
+          
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Continue quest execution from current step
+          await continueQuestFromStep(quest, questState.currentStepIndex + 1, questState.mode);
+        }
       }
     }
   } catch (error) {
     logger.error('Failed to restore quest state', error);
-    // Non-critical error, continue normal operation
+    // Clear state on error to prevent stuck loops
+    try {
+      await chrome.storage.local.remove('activeQuestState');
+      logger.info('Cleared quest state due to error');
+    } catch (clearError) {
+      logger.error('Failed to clear quest state', clearError);
+    }
   }
 
   // Listen for messages from popup or background
@@ -258,6 +278,15 @@
   async function continueQuestFromStep(quest, startStepIndex, mode) {
     logger.info(`Continuing quest from step ${startStepIndex + 1}`);
     
+    // CRITICAL FIX: Clear any saved quest state at the start
+    // This prevents loops if user manually refreshes during execution
+    try {
+      await chrome.storage.local.remove('activeQuestState');
+      logger.info('Cleared quest state at start of continuation to prevent loops');
+    } catch (error) {
+      logger.error('Failed to clear quest state', error);
+    }
+    
     runner.failedSteps = runner.failedSteps || [];
     runner.stepResults = runner.stepResults || [];
     
@@ -270,6 +299,13 @@
     for (let i = startStepIndex; i < stepsLength; i++) {
       if (!runner.currentQuest || !runner.currentQuest.steps) {
         logger.warn('Quest was stopped during execution');
+        // CRITICAL: Clear state when stopping
+        try {
+          await chrome.storage.local.remove('activeQuestState');
+          logger.info('Cleared quest state after stop');
+        } catch (error) {
+          logger.error('Failed to clear quest state on stop', error);
+        }
         return;
       }
 
@@ -336,6 +372,14 @@
       logger.success('Quest progress saved');
     } catch (error) {
       logger.error('Failed to save progress', error);
+    }
+    
+    // CRITICAL FIX: Final cleanup - ensure state is cleared when quest completes
+    try {
+      await chrome.storage.local.remove('activeQuestState');
+      logger.info('Final cleanup: Cleared quest state after completion');
+    } catch (error) {
+      logger.error('Failed final quest state cleanup', error);
     }
     
     runner.isRunning = false;
