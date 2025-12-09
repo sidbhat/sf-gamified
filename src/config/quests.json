@@ -337,11 +337,11 @@
         },
         {
           "id": 6,
-          "name": "Send Award",
-          "description": "Clicking Send button(you can do this)...",
-          "action": "click_button_by_text",
-          "buttonText": "Send",
-          "successMessage": "Spot award sent! 🏆🎉"
+          "name": "Review Award",
+          "description": "Quest complete! You can now click 'Send' if you want to submit the award.",
+          "action": "wait",
+          "duration": 3000,
+          "successMessage": "✨ Quest complete! Click 'Send' to submit the award (optional). 🏆"
         }
       ]
     },
@@ -401,15 +401,15 @@
           "name": "View Complete Goal",
           "description": "Scrolling down to view the complete generated goal...",
           "action": "scroll_to_bottom",
-          "successMessage": "✨ Complete goal visible! Now saving the goal..."
+          "successMessage": "✨ Complete goal visible! Quest complete!"
         },
         {
           "id": 7,
-          "name": "Save Goal",
-          "description": "Clicking Save button to create the goal...",
-          "action": "click_button",
-          "selector": "goalForm.saveButton",
-          "successMessage": "🎉 Goal saved successfully! Quest complete! 🏆"
+          "name": "Review Generated Goal",
+          "description": "Quest complete! You can now click 'Save' if you want to save this goal.",
+          "action": "wait",
+          "duration": 3000,
+          "successMessage": "🎉 Quest complete! Click 'Save' to create the goal (optional). 🏆"
         }
       ]
     }
