@@ -16,12 +16,14 @@
   "quests": [
     {
       "id": "employee-leave-balance",
-      "name": "View Leave Balance",
+      "name": "⏱️ Quick Check: Time Off Stash",
       "category": "employee",
-      "description": "Check your remaining vacation days",
+      "description": "Check your vacation days instantly",
       "difficulty": "Easy",
       "points": 100,
       "icon": "🏖️",
+      "tagline": "Check your vacation days instantly",
+      "victoryText": "Balance retrieved! You've got vacation days waiting!",
       "steps": [
         {
           "id": 1,
@@ -46,12 +48,14 @@
     },
     {
       "id": "employee-my-goals",
-      "name": "Show My Goals",
+      "name": "🎯 Mission Control: My Goals",
       "category": "employee",
-      "description": "View your performance goals",
+      "description": "See what you're crushing this quarter",
       "difficulty": "Easy",
       "points": 100,
       "icon": "🎯",
+      "tagline": "See what you're crushing this quarter",
+      "victoryText": "Goals loaded! You're on track!",
       "steps": [
         {
           "id": 1,
@@ -76,12 +80,14 @@
     },
     {
       "id": "employee-cost-center",
-      "name": "View Cost Center",
+      "name": "💰 Money Trail: Find My Cost Center",
       "category": "employee",
-      "description": "View your cost center info",
+      "description": "Discover where your budget lives",
       "difficulty": "Easy",
       "points": 100,
-      "icon": "🍄",
+      "icon": "💰",
+      "tagline": "Discover where your budget lives",
+      "victoryText": "Cost center found! Financial ninja status!",
       "steps": [
         {
           "id": 1,
@@ -108,12 +114,14 @@
     },
     {
       "id": "employee-rental-policy",
-      "name": "Company Rental Car Policy",
+      "name": "🚗 Road Rules: Rental Policy",
       "category": "employee",
-      "description": "Learn about rental car policies",
+      "description": "Master company car guidelines",
       "difficulty": "Easy",
       "points": 100,
       "icon": "🚗",
+      "tagline": "Master company car guidelines",
+      "victoryText": "Policy mastered! Ready to roll!",
       "steps": [
         {
           "id": 1,
@@ -138,12 +146,14 @@
     },
     {
       "id": "employee-request-time-off",
-      "name": "Request Time Off",
+      "name": "🌴 Boss Level: Tomorrow Off",
       "category": "employee",
-      "description": "Request time off for tomorrow",
+      "description": "Request vacation lightning-fast",
       "difficulty": "Easy",
       "points": 100,
-      "icon": "📅",
+      "icon": "🌴",
+      "tagline": "Request vacation lightning-fast",
+      "victoryText": "Request sent! Boss notified!",
       "steps": [
         {
           "id": 1,
@@ -168,12 +178,14 @@
     },
     {
       "id": "employee-assigned-learning",
-      "name": "View My Assigned Learning",
+      "name": "📚 Power-Up: Learning Path",
       "category": "employee",
-      "description": "Check your assigned learning courses (Unlocks after completing previous 5 quests)",
-      "difficulty": "Easy",
+      "description": "🔒 UNLOCK: Complete 5 quests to level up",
+      "difficulty": "Medium",
       "points": 150,
       "icon": "📚",
+      "tagline": "🔒 UNLOCK: Complete 5 quests to level up",
+      "victoryText": "Courses unlocked! Brain gains incoming!",
       "requiresQuests": [
         "employee-leave-balance",
         "employee-my-goals",
@@ -205,12 +217,14 @@
     },
     {
       "id": "manager-pending-approvals",
-      "name": "Pending Approvals",
+      "name": "⚡ Lightning Round: Approval Spree",
       "category": "manager",
-      "description": "Check items awaiting your approval",
+      "description": "Clear your queue at lightspeed",
       "difficulty": "Medium",
       "points": 150,
-      "icon": "✅",
+      "icon": "⚡",
+      "tagline": "Clear your queue at lightspeed",
+      "victoryText": "All approvals cleared! Team loves you!",
       "steps": [
         {
           "id": 1,
@@ -235,12 +249,14 @@
     },
     {
       "id": "manager-my-team",
-      "name": "Show My Team",
+      "name": "👥 Squad Check: Meet Your Team",
       "category": "manager",
-      "description": "View your direct reports and explore first member profile",
+      "description": "See who's on your roster",
       "difficulty": "Hard",
       "points": 200,
       "icon": "👥",
+      "tagline": "See who's on your roster",
+      "victoryText": "Team roster loaded! Leadership unlocked!",
       "steps": [
         {
           "id": 1,
@@ -275,12 +291,14 @@
     },
     {
       "id": "manager-spot-award",
-      "name": "Give Spot Award",
+      "name": "🏅 Hero Moment: Recognize Excellence",
       "category": "manager",
-      "description": "Recognize an employee with a spot award (Unlocks after completing previous 2 manager quests)",
+      "description": "🔒 UNLOCK: Complete 2 manager quests",
       "difficulty": "Hard",
       "points": 200,
       "icon": "🏅",
+      "tagline": "🔒 UNLOCK: Complete 2 manager quests",
+      "victoryText": "Award sent! You made someone's day!",
       "requiresQuests": [
         "manager-pending-approvals",
         "manager-my-team"
@@ -354,13 +372,15 @@
     },
     {
       "id": "agent-goal-creation",
-      "name": "AI Goal Creation",
-      "description": "Create a development goal using AI assistance",
+      "name": "🤖 AI Wizard: Goal Generator",
+      "description": "Create perfect goals with AI magic",
       "category": "agent",
-      "icon": "🎯",
+      "icon": "🤖",
       "points": 200,
       "estimatedTime": "4 minutes",
-      "difficulty": "intermediate",
+      "difficulty": "Hard",
+      "tagline": "Create perfect goals with AI magic",
+      "victoryText": "Goal crafted by AI! Wizard status achieved!",
       "steps": [
         {
           "id": 1,

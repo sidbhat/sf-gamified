@@ -265,14 +265,8 @@
 
       logger.success('Quest completed successfully');
 
-      // Auto-reopen quest selection after 3 seconds (removed manual "Show Quests" button)
-      setTimeout(async () => {
-        try {
-          await handleShowQuestSelection();
-        } catch (error) {
-          logger.error('Failed to reopen quest selection', error);
-        }
-      }, 3000);
+      // DON'T auto-redirect - user should manually click "Show Quests" button
+      // This allows them time to enjoy the victory screen and use share buttons
 
     } catch (error) {
       logger.error('Quest execution failed', error);

@@ -832,6 +832,8 @@ class QuestOverlay {
     const questName = quest.name || 'Unknown Quest';
     const questPoints = quest.points || 0;
     const questCategory = quest.category || 'employee';
+    const questDifficulty = quest.difficulty || 'Easy';
+    const questId = quest.id || 'unknown';
     const totalSteps = stepResults.length;
     const successfulSteps = stepResults.filter(r => r.status === 'success').length;
     const failedStepsCount = failedSteps.length;
@@ -888,6 +890,16 @@ class QuestOverlay {
           </div>
         </div>
         <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
+        
+        <!-- Share button (only show for full success) -->
+        ${isFullSuccess ? `
+        <div class="share-actions">
+          <button class="share-btn primary" id="share-linkedin-btn">
+            📤 Share on LinkedIn
+          </button>
+        </div>
+        ` : ''}
+        
         <button class="show-quests-btn" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
           🗺️ Show Quests
         </button>
@@ -896,6 +908,16 @@ class QuestOverlay {
 
     this.container.innerHTML = html;
     this.show();
+
+    // Add share button event listeners (only if full success)
+    if (isFullSuccess) {
+      this.setupShareButtons({
+        id: questId,
+        name: questName,
+        points: questPoints,
+        difficulty: questDifficulty
+      });
+    }
 
     // Trigger confetti only for full success (wrapped in try-catch for safety)
     if (isFullSuccess && window.JouleQuestConfetti) {
@@ -908,6 +930,60 @@ class QuestOverlay {
 
     // DON'T auto-hide - keep quest complete screen visible
     // User will click "Show Quests" button or close manually
+  }
+
+  /**
+   * Setup share button event listener
+   * @param {Object} questData - Quest data for sharing
+   */
+  setupShareButtons(questData) {
+    const shareLinkedInBtn = this.container.querySelector('#share-linkedin-btn');
+
+    if (shareLinkedInBtn) {
+      shareLinkedInBtn.addEventListener('click', () => {
+        try {
+          // Generate shareable text
+          const shareText = `🏆 Just completed "${questData.name}"!
+
+💎 Points: ${questData.points}
+${this.getDifficultyEmoji(questData.difficulty)} Difficulty: ${questData.difficulty}
+
+🎮 Training with Joule Quest - zero-risk SAP learning
+👉 Get it: [Chrome Web Store Link]
+
+#JouleQuest #SAPSkills #SuccessFactors #Joule`;
+
+          // Create LinkedIn share URL with encoded text
+          const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://chrome.google.com/webstore')}&summary=${encodeURIComponent(shareText)}`;
+
+          // Open LinkedIn in new tab
+          window.open(linkedInUrl, '_blank');
+
+          // Show success feedback
+          shareLinkedInBtn.textContent = '✅ Opened LinkedIn!';
+          shareLinkedInBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+          
+          setTimeout(() => {
+            shareLinkedInBtn.textContent = '📤 Share on LinkedIn';
+            shareLinkedInBtn.style.background = '';
+          }, 2000);
+        } catch (error) {
+          console.error('LinkedIn share error:', error);
+          alert('❌ Failed to open LinkedIn. Please try again.');
+        }
+      });
+    }
+  }
+
+  /**
+   * Get difficulty emoji
+   */
+  getDifficultyEmoji(difficulty) {
+    return {
+      'Easy': '⭐',
+      'Medium': '⚡',
+      'Hard': '🔥'
+    }[difficulty] || '⭐';
   }
 
   /**
