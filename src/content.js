@@ -278,14 +278,9 @@
   async function continueQuestFromStep(quest, startStepIndex, mode) {
     logger.info(`Continuing quest from step ${startStepIndex + 1}`);
     
-    // CRITICAL FIX: Clear any saved quest state at the start
-    // This prevents loops if user manually refreshes during execution
-    try {
-      await chrome.storage.local.remove('activeQuestState');
-      logger.info('Cleared quest state at start of continuation to prevent loops');
-    } catch (error) {
-      logger.error('Failed to clear quest state', error);
-    }
+    // CRITICAL: Don't clear state at start - we might have more navigation steps coming
+    // State will be cleared intelligently after we're past all page reloads
+    logger.info('Quest state preserved - checking for additional navigation steps');
     
     runner.failedSteps = runner.failedSteps || [];
     runner.stepResults = runner.stepResults || [];
@@ -332,6 +327,26 @@
         
         if (overlay) {
           overlay.showStepSuccess(step.successMessage, isAgentQuest);
+        }
+
+        // SMART STATE CLEARING: Clear state after steps that cause page reloads
+        // But only if the NEXT step won't cause another reload
+        const currentStep = steps[i];
+        const nextStep = steps[i + 1];
+        
+        // Actions that might cause page reloads
+        const reloadActions = ['navigate', 'click_button'];
+        const currentMightReload = reloadActions.includes(currentStep.action);
+        const nextWillReload = nextStep && reloadActions.includes(nextStep.action);
+        
+        // Clear state if current step might have caused reload AND next won't
+        if (currentMightReload && !nextWillReload) {
+          try {
+            await chrome.storage.local.remove('activeQuestState');
+            logger.info(`Cleared quest state after ${step.name} - no more reloads expected`);
+          } catch (error) {
+            logger.error('Failed to clear quest state', error);
+          }
         }
 
         await new Promise(resolve => setTimeout(resolve, 3000));
