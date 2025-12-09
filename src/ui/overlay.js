@@ -778,6 +778,43 @@ class QuestOverlay {
   }
 
   /**
+   * Show step skipped message (optional step that was skipped)
+   * @param {Object} step - Step configuration
+   * @param {string} reason - Reason for skipping
+   * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
+   */
+  showStepSkipped(step, reason, isAgentQuest = false) {
+    this.logger.info('Showing step skipped', { step, reason, isAgentQuest });
+
+    const html = `
+      <div class="joule-quest-card quest-warning">
+        <!-- Mascot (hidden for agent quests) -->
+        ${!isAgentQuest ? `
+        <div class="quest-mascot" data-state="waiting">
+          ${this.getMascotSVG('waiting', true)}
+        </div>
+        ` : ''}
+        
+        <div class="warning-icon">⏭️</div>
+        <h3>Step Skipped</h3>
+        <h4>${step.name}</h4>
+        <p style="font-size: 14px; opacity: 0.9; margin: 12px 0;">
+          ${reason}
+        </p>
+        <p style="opacity: 0.7; font-size: 13px; margin-top: 12px;">
+          💡 This step is optional - continuing quest...
+        </p>
+      </div>
+    `;
+
+    this.container.innerHTML = html;
+    this.show();
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => this.hide(), 3000);
+  }
+
+  /**
    * Show quest complete screen with step results summary
    * @param {Object} quest - Quest configuration
    * @param {Array} stepResults - Array of step result objects

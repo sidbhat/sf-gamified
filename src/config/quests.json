@@ -303,6 +303,7 @@
           "prompt": "Give Spot Award",
           "waitForResponse": true,
           "responseKeywords": ["who", "employee", "recipient", "name"],
+          "errorKeywords": ["sorry", "couldn't", "unable", "don't have", "not available", "not found", "permission", "not authorized", "can't find"],
           "successMessage": "Joule is asking 'who do you...' ✅"
         },
         {
@@ -313,6 +314,8 @@
           "prompt": "Jada Baker",
           "waitForResponse": true,
           "responseKeywords": ["select", "choose", "view", "option", "award"],
+          "errorKeywords": ["not found", "couldn't find", "don't recognize", "no matches", "invalid", "doesn't exist"],
+          "optional": true,
           "successMessage": "Employee name entered ✅"
         },
         {
@@ -323,6 +326,8 @@
           "prompt": "1",
           "waitForResponse": true,
           "responseKeywords": ["message", "reason", "comment", "note"],
+          "errorKeywords": ["invalid", "must be", "should be", "not allowed", "out of range"],
+          "optional": true,
           "successMessage": "Award amount entered ✅"
         },
         {
@@ -333,6 +338,8 @@
           "prompt": "Thanks for your help with the client presentation!",
           "waitForResponse": true,
           "responseKeywords": ["send", "submit", "confirm", "complete"],
+          "errorKeywords": ["required", "must enter", "cannot be empty", "too short", "too long"],
+          "optional": true,
           "successMessage": "Award message typed and sent ✅"
         },
         {

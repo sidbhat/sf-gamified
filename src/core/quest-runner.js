@@ -386,7 +386,7 @@ class QuestRunner {
   }
 
   /**
-   * Execute type and send action
+   * Execute type and send action with smart response analysis
    * @param {Object} step - Step configuration
    */
   async executeTypeAndSendAction(step) {
@@ -401,7 +401,65 @@ class QuestRunner {
       throw new Error('Failed to send prompt');
     }
 
-    // If we got a response, show it in the overlay
+    // Analyze response if we got one
+    if (result.response) {
+      const analysis = this.jouleHandler.analyzeJouleResponse(
+        result.response,
+        step.responseKeywords || [],
+        step.errorKeywords || []
+      );
+      
+      this.logger.info('Response analysis:', analysis);
+      
+      // Handle error responses
+      if (analysis.type === 'error') {
+        const errorMsg = `${step.name} failed: ${analysis.message}`;
+        this.logger.warn(errorMsg);
+        
+        // If step is optional, skip gracefully
+        if (step.optional) {
+          this.logger.info(`Step is optional, marking as skipped and continuing quest`);
+          
+          // Track as skipped
+          this.stepResults.push({
+            stepIndex: this.currentStepIndex,
+            stepName: step.name,
+            status: 'skipped',
+            error: analysis.message,
+            errorType: 'OPTIONAL_STEP_FAILED'
+          });
+          
+          // Show skip message
+          if (this.overlay && this.currentQuest && this.currentQuest.steps) {
+            const isAgentQuest = this.currentQuest.category === 'agent';
+            this.overlay.showStepSkipped(
+              step,
+              `⚠️ ${analysis.message}`,
+              isAgentQuest
+            );
+            await this.sleep(3000);
+          }
+          
+          return; // Continue to next step
+        }
+        
+        // Not optional, throw error
+        throw new Error(errorMsg);
+      }
+      
+      // Handle quick actions response
+      if (analysis.type === 'quick_actions' && analysis.suggestedAction === 'click_first_button') {
+        this.logger.info('Quick actions detected, attempting to click first option');
+        try {
+          await this.jouleHandler.selectFirstOption();
+          this.logger.success('Quick action selected successfully');
+        } catch (e) {
+          this.logger.warn('Could not select quick action, continuing anyway', e);
+        }
+      }
+    }
+
+    // Show response in overlay
     // CRITICAL: Check if quest still exists (might have completed during async operation)
     if (result.response && this.overlay && this.currentQuest && this.currentQuest.steps) {
       const isAgentQuest = this.currentQuest.category === 'agent';

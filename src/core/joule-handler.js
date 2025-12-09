@@ -520,6 +520,146 @@ class JouleHandler {
   }
 
   /**
+   * Analyze Joule response to detect patterns and determine next action
+   * @param {string} response - Joule's response text
+   * @param {string[]} successKeywords - Expected success keywords
+   * @param {string[]} errorKeywords - Error detection keywords
+   * @returns {Object} Analysis result with type, confidence, and suggested action
+   */
+  analyzeJouleResponse(response, successKeywords = [], errorKeywords = []) {
+    if (!response) {
+      return {
+        type: 'empty',
+        confidence: 100,
+        indicators: ['No response received'],
+        suggestedAction: 'retry',
+        message: 'No response from Joule'
+      };
+    }
+
+    const lowerResponse = response.toLowerCase();
+    const indicators = [];
+    let type = 'unknown';
+    let confidence = 0;
+    let suggestedAction = 'continue';
+    let message = '';
+
+    // 1. Check for explicit errors first (highest priority)
+    if (errorKeywords && errorKeywords.length > 0) {
+      const errorMatches = errorKeywords.filter(keyword => 
+        lowerResponse.includes(keyword.toLowerCase())
+      );
+      
+      if (errorMatches.length > 0) {
+        type = 'error';
+        confidence = Math.min(100, 60 + (errorMatches.length * 20));
+        indicators.push(...errorMatches.map(k => `Error keyword: "${k}"`));
+        suggestedAction = 'skip';
+        message = `Joule indicated an error or limitation: ${errorMatches.join(', ')}`;
+        
+        return { type, confidence, indicators, suggestedAction, message };
+      }
+    }
+
+    // 2. Check for success keywords
+    if (successKeywords && successKeywords.length > 0) {
+      const successMatches = successKeywords.filter(keyword =>
+        lowerResponse.includes(keyword.toLowerCase())
+      );
+      
+      if (successMatches.length > 0) {
+        type = 'success';
+        confidence = Math.min(100, 50 + (successMatches.length * 15));
+        indicators.push(...successMatches.map(k => `Success keyword: "${k}"`));
+        suggestedAction = 'continue';
+        message = 'Response matches expected keywords';
+        
+        return { type, confidence, indicators, suggestedAction, message };
+      }
+    }
+
+    // 3. Detect quick actions (button/option lists)
+    const quickActionIndicators = [
+      'select an option',
+      'choose from',
+      'please select',
+      'pick one',
+      'which would you like',
+      'here are your options'
+    ];
+    
+    const hasQuickActions = quickActionIndicators.some(indicator =>
+      lowerResponse.includes(indicator)
+    );
+    
+    if (hasQuickActions) {
+      type = 'quick_actions';
+      confidence = 80;
+      indicators.push('Quick action menu detected');
+      suggestedAction = 'click_first_button';
+      message = 'Joule presented a list of options to choose from';
+      
+      return { type, confidence, indicators, suggestedAction, message };
+    }
+
+    // 4. Detect clarification requests
+    const clarificationIndicators = [
+      'can you clarify',
+      'which one',
+      'did you mean',
+      'please specify',
+      'could you be more specific',
+      'i need more information'
+    ];
+    
+    const needsClarification = clarificationIndicators.some(indicator =>
+      lowerResponse.includes(indicator)
+    );
+    
+    if (needsClarification) {
+      type = 'clarification';
+      confidence = 75;
+      indicators.push('Clarification request detected');
+      suggestedAction = 'continue';
+      message = 'Joule needs additional information';
+      
+      return { type, confidence, indicators, suggestedAction, message };
+    }
+
+    // 5. Detect partial success
+    const partialIndicators = [
+      "here's what i found",
+      'some information',
+      'limited results',
+      'partial',
+      'only showing'
+    ];
+    
+    const isPartial = partialIndicators.some(indicator =>
+      lowerResponse.includes(indicator)
+    );
+    
+    if (isPartial) {
+      type = 'partial';
+      confidence = 60;
+      indicators.push('Partial result detected');
+      suggestedAction = 'continue';
+      message = 'Joule provided partial information';
+      
+      return { type, confidence, indicators, suggestedAction, message };
+    }
+
+    // 6. Default: unknown but likely successful if response exists
+    type = 'success';
+    confidence = 40;
+    indicators.push('Response received but pattern unclear');
+    suggestedAction = 'continue';
+    message = 'Response received, proceeding with caution';
+
+    return { type, confidence, indicators, suggestedAction, message };
+  }
+
+  /**
    * Format text to proper sentence case
    * Capitalizes first letter of sentences (after . ! ?)
    * @param {string} text - Text to format
