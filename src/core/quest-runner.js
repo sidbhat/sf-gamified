@@ -492,22 +492,8 @@ class QuestRunner {
       }
     }
 
-    // Show response in overlay
-    // CRITICAL: Check if quest still exists (might have completed during async operation)
-    if (result.response && this.overlay && this.currentQuest && this.currentQuest.steps) {
-      const isAgentQuest = this.currentQuest.category === 'agent';
-      const responseText = result.response.substring(0, 300); // Limit to 300 chars
-      const truncated = result.response.length > 300 ? '...' : '';
-      this.overlay.showStep(
-        step,
-        this.currentStepIndex + 1,
-        this.currentQuest.steps.length,
-        responseText + truncated,
-        isAgentQuest
-      );
-      // Keep it visible so user can read the response
-      await this.sleep(5000);
-    }
+    // Response is already shown in runDemoMode flow via showStepSuccess
+    // No need to show it again here to avoid duplicate display
   }
 
   /**

@@ -263,15 +263,67 @@ class QuestOverlay {
   showQuestSelection(quests, completedQuests, stats, journeys = {}, solution = null) {
     this.logger.info('Showing quest selection', { quests, completedQuests, stats, journeys, solution });
 
-    const employeeQuests = quests.filter(q => q.category === 'employee');
-    const managerQuests = quests.filter(q => q.category === 'manager');
-    const agentQuests = quests.filter(q => q.category === 'agent');
+    // Get unique categories from available quests
+    const categories = [...new Set(quests.map(q => q.category))];
     
-    // Get journey info with defaults
-    const employeeJourney = journeys.employee || { name: 'Employee Journey', description: 'Complete employee quests' };
-    const managerJourney = journeys.manager || { name: 'Manager Journey', description: 'Complete manager quests' };
-    const agentJourney = journeys.agent || { name: 'AI Agent Workflows', description: 'Master GenAI-powered workflows' };
+    // Group quests by category
+    const questsByCategory = {};
+    categories.forEach(cat => {
+      questsByCategory[cat] = quests.filter(q => q.category === cat);
+    });
     
+    this.logger.info('Quest categories', { categories, questsByCategory });
+    
+    // Define tab configurations per solution
+    const getTabConfig = () => {
+      if (solution.id === 's4hana') {
+        return [
+          { 
+            id: 's4hana-sales', 
+            label: 'Sales', 
+            icon: '📊',
+            journey: journeys['s4hana-sales'] || { name: 'Sales & Billing', description: 'Sales operations' }
+          },
+          { 
+            id: 's4hana-procurement', 
+            label: 'Procurement', 
+            icon: '🛒',
+            journey: journeys['s4hana-procurement'] || { name: 'Procurement', description: 'Purchase orders' }
+          },
+          { 
+            id: 's4hana-delivery', 
+            label: 'Delivery', 
+            icon: '📦',
+            journey: journeys['s4hana-delivery'] || { name: 'Delivery', description: 'Shipping operations' }
+          }
+        ];
+      } else {
+        // SuccessFactors
+        return [
+          { 
+            id: 'employee', 
+            label: 'Employee', 
+            icon: '👤',
+            journey: journeys.employee || { name: 'Employee Journey', description: 'Employee quests' }
+          },
+          { 
+            id: 'manager', 
+            label: 'Manager', 
+            icon: '👔',
+            journey: journeys.manager || { name: 'Manager Journey', description: 'Manager quests' }
+          },
+          { 
+            id: 'agent', 
+            label: 'Agent', 
+            icon: '⚡',
+            journey: journeys.agent || { name: 'AI Agent', description: 'AI workflows' }
+          }
+        ];
+      }
+    };
+
+    const tabConfig = getTabConfig();
+
     const renderQuestNodes = (questList, category) => {
       return questList.map((quest, index) => {
         const isCompleted = completedQuests.includes(quest.id);
@@ -304,6 +356,47 @@ class QuestOverlay {
             </div>
           </div>
           ${index < questList.length - 1 ? `<div class="path-line ${isCompleted ? 'completed' : ''}"></div>` : ''}
+        `;
+      }).join('');
+    };
+
+    // Render tabs dynamically based on solution
+    const renderTabs = () => {
+      return tabConfig.map((tab, index) => `
+        <button class="tab-btn ${index === 0 ? 'active' : ''}" data-category="${tab.id}">
+          ${tab.icon} ${tab.label}
+        </button>
+      `).join('');
+    };
+
+    // Render category content dynamically
+    const renderCategories = () => {
+      return tabConfig.map((tab, index) => {
+        const categoryQuests = questsByCategory[tab.id] || [];
+        const completedCount = categoryQuests.filter(q => completedQuests.includes(q.id)).length;
+        const totalCount = categoryQuests.length;
+        const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+        return `
+          <div class="quest-category ${index === 0 ? 'active' : ''}" data-category="${tab.id}">
+            <div class="journey-progress">
+              <div class="progress-label">
+                <span>🗺️ ${tab.journey.name}</span>
+                <strong>${completedCount} / ${totalCount}</strong>
+              </div>
+              <div class="journey-bar">
+                <div class="journey-fill" style="width: ${progress}%">
+                  <span class="journey-sparkle">✨</span>
+                </div>
+              </div>
+            </div>
+            <div class="quest-map-selection">
+              <div class="map-start">🚩 START</div>
+              ${renderQuestNodes(categoryQuests, tab.id)}
+              <div class="path-line"></div>
+              <div class="map-end">🏆 GOAL!</div>
+            </div>
+          </div>
         `;
       }).join('');
     };
@@ -362,91 +455,11 @@ class QuestOverlay {
         </div>
 
         <div class="selection-tabs">
-          <button class="tab-btn active" data-category="employee">
-            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M4 20v-1a6 6 0 0112 0v1"/>
-              <path d="M17 12l3-3m0 0l-3-3m3 3h-5"/>
-            </svg>
-            Employee
-          </button>
-          <button class="tab-btn" data-category="manager">
-            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="5" r="3"/>
-              <circle cx="6" cy="15" r="2.5"/>
-              <circle cx="18" cy="15" r="2.5"/>
-              <path d="M12 8v4M9 12l-2.5 2M15 12l2.5 2"/>
-            </svg>
-            Manager
-          </button>
-          <button class="tab-btn" data-category="agent">
-            <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-            </svg>
-            Agent
-          </button>
+          ${renderTabs()}
         </div>
 
         <div class="selection-content">
-          <div class="quest-category active" data-category="employee">
-            <div class="journey-progress">
-              <div class="progress-label">
-                <span>🗺️ ${employeeJourney.name}</span>
-                <strong>${employeeQuests.filter(q => completedQuests.includes(q.id)).length} / ${employeeQuests.length}</strong>
-              </div>
-              <div class="journey-bar">
-                <div class="journey-fill" style="width: ${(employeeQuests.filter(q => completedQuests.includes(q.id)).length / employeeQuests.length) * 100}%">
-                  <span class="journey-sparkle">✨</span>
-                </div>
-              </div>
-            </div>
-            <div class="quest-map-selection">
-              <div class="map-start">🚩 START</div>
-              ${renderQuestNodes(employeeQuests, 'employee')}
-              <div class="path-line"></div>
-              <div class="map-end">🏆 GOAL!</div>
-            </div>
-          </div>
-
-          <div class="quest-category" data-category="manager">
-            <div class="journey-progress">
-              <div class="progress-label">
-                <span>🗺️ ${managerJourney.name}</span>
-                <strong>${managerQuests.filter(q => completedQuests.includes(q.id)).length} / ${managerQuests.length}</strong>
-              </div>
-              <div class="journey-bar">
-                <div class="journey-fill" style="width: ${(managerQuests.filter(q => completedQuests.includes(q.id)).length / managerQuests.length) * 100}%">
-                  <span class="journey-sparkle">✨</span>
-                </div>
-              </div>
-            </div>
-            <div class="quest-map-selection">
-              <div class="map-start">🚩 START</div>
-              ${renderQuestNodes(managerQuests, 'manager')}
-              <div class="path-line"></div>
-              <div class="map-end">🏆 GOAL!</div>
-            </div>
-          </div>
-
-          <div class="quest-category" data-category="agent">
-            <div class="journey-progress">
-              <div class="progress-label">
-                <span>⚡ ${agentJourney.name}</span>
-                <strong>${agentQuests.filter(q => completedQuests.includes(q.id)).length} / ${agentQuests.length}</strong>
-              </div>
-              <div class="journey-bar">
-                <div class="journey-fill" style="width: ${(agentQuests.filter(q => completedQuests.includes(q.id)).length / agentQuests.length) * 100}%">
-                  <span class="journey-sparkle">✨</span>
-                </div>
-              </div>
-            </div>
-            <div class="quest-map-selection">
-              <div class="map-start">🚩 START</div>
-              ${renderQuestNodes(agentQuests, 'agent')}
-              <div class="path-line"></div>
-              <div class="map-end">🏆 GOAL!</div>
-            </div>
-          </div>
+          ${renderCategories()}
         </div>
       </div>
     `;
@@ -477,10 +490,10 @@ class QuestOverlay {
         const confirmed = confirm('⚠️ Reset All Progress?\n\nThis will:\n• Delete all completed quests\n• Reset points to 0\n• Start fresh\n\nThis action cannot be undone. Continue?');
         
         if (confirmed) {
-          // Clear storage
-          if (window.JouleQuestStorage) {
-            await window.JouleQuestStorage.clearAllProgress();
-            this.logger.info('All progress reset');
+          // Clear storage for current solution
+          if (window.JouleQuestStorage && this.currentSolution) {
+            await window.JouleQuestStorage.resetAllProgress(this.currentSolution.id);
+            this.logger.info('All progress reset for solution', { solution: this.currentSolution.id });
           }
           
           // Reload the overlay to show fresh state
@@ -915,33 +928,17 @@ class QuestOverlay {
         </div>
         <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
         
-        <!-- Action buttons - Quest button first, then Share (only for full success) -->
+        <!-- Action button -->
         <div class="quest-complete-actions">
           <button class="show-quests-btn primary" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
             🗺️ Show Quests
           </button>
-          
-          ${isFullSuccess ? `
-          <button class="share-btn" id="share-linkedin-btn">
-            📤 Share on LinkedIn
-          </button>
-          ` : ''}
         </div>
       </div>
     `;
 
     this.container.innerHTML = html;
     this.show();
-
-    // Add share button event listeners (only if full success)
-    if (isFullSuccess) {
-      this.setupShareButtons({
-        id: questId,
-        name: questName,
-        points: questPoints,
-        difficulty: questDifficulty
-      });
-    }
 
     // Trigger confetti only for full success (wrapped in try-catch for safety)
     if (isFullSuccess && window.JouleQuestConfetti) {

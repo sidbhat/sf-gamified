@@ -56,22 +56,24 @@ class StorageManager {
   }
 
   /**
-   * Save user statistics
+   * Save user statistics for a specific solution
+   * @param {string} solutionId - Solution ID (e.g., 'successfactors', 's4hana')
    * @param {Object} stats - Statistics data
    */
-  async saveUserStats(stats) {
-    this.logger.info('Saving user stats', stats);
+  async saveUserStats(stats, solutionId = 'successfactors') {
+    this.logger.info('Saving user stats', { stats, solutionId });
 
     try {
-      const existing = await this.getUserStats();
+      const existing = await this.getUserStats(solutionId);
       const updated = {
         ...existing,
         ...stats,
         lastUpdated: Date.now()
       };
 
-      await chrome.storage.local.set({ user_stats: updated });
-      this.logger.success('User stats saved');
+      const key = `user_stats_${solutionId}`;
+      await chrome.storage.local.set({ [key]: updated });
+      this.logger.success('User stats saved', { solutionId });
     } catch (error) {
       this.logger.error('Failed to save user stats', error);
       throw error;
@@ -79,18 +81,20 @@ class StorageManager {
   }
 
   /**
-   * Get user statistics
+   * Get user statistics for a specific solution
+   * @param {string} solutionId - Solution ID (e.g., 'successfactors', 's4hana')
    * @returns {Promise<Object>} Statistics data
    */
-  async getUserStats() {
-    this.logger.info('Getting user stats');
+  async getUserStats(solutionId = 'successfactors') {
+    this.logger.info('Getting user stats', { solutionId });
 
     try {
-      const result = await chrome.storage.local.get('user_stats');
+      const key = `user_stats_${solutionId}`;
+      const result = await chrome.storage.local.get(key);
       
-      if (result.user_stats) {
-        this.logger.success('User stats retrieved', result.user_stats);
-        return result.user_stats;
+      if (result[key]) {
+        this.logger.success('User stats retrieved', result[key]);
+        return result[key];
       }
 
       // Return default stats if none exist
@@ -110,23 +114,24 @@ class StorageManager {
   }
 
   /**
-   * Increment quest completion
+   * Increment quest completion for a specific solution
    * @param {number} points - Points earned
+   * @param {string} solutionId - Solution ID
    */
-  async incrementQuestCompletion(points) {
-    this.logger.info('Incrementing quest completion', { points });
+  async incrementQuestCompletion(points, solutionId = 'successfactors') {
+    this.logger.info('Incrementing quest completion', { points, solutionId });
 
     try {
-      const stats = await this.getUserStats();
+      const stats = await this.getUserStats(solutionId);
       
       await this.saveUserStats({
         totalPoints: (stats.totalPoints || 0) + points,
         questsCompleted: (stats.questsCompleted || 0) + 1,
         questsAttempted: (stats.questsAttempted || 0) + 1,
         lastQuestDate: Date.now()
-      });
+      }, solutionId);
 
-      this.logger.success('Quest completion incremented');
+      this.logger.success('Quest completion incremented', { solutionId });
     } catch (error) {
       this.logger.error('Failed to increment quest completion', error);
       throw error;
@@ -180,20 +185,28 @@ class StorageManager {
   }
 
   /**
-   * Reset all progress (points, completed quests)
+   * Reset all progress for a specific solution (points, completed quests)
    * Used by the refresh button
+   * @param {string} solutionId - Solution ID to reset
    */
-  async resetAllProgress() {
-    this.logger.warn('Resetting all progress');
+  async resetAllProgress(solutionId = 'successfactors') {
+    this.logger.warn('Resetting all progress', { solutionId });
 
     try {
-      // Clear quest progress
+      // Clear quest progress for this solution
       const result = await chrome.storage.local.get(null);
       const keysToRemove = [];
 
       for (const key in result) {
         if (key.startsWith('quest_progress_')) {
-          keysToRemove.push(key);
+          const questId = key.replace('quest_progress_', '');
+          // Only remove quests that belong to this solution
+          // Quest IDs have solution prefix (e.g., 's4hana-', 'employee-', 'manager-')
+          if (solutionId === 's4hana' && questId.startsWith('s4hana-')) {
+            keysToRemove.push(key);
+          } else if (solutionId === 'successfactors' && !questId.startsWith('s4hana-')) {
+            keysToRemove.push(key);
+          }
         }
       }
 
@@ -201,15 +214,15 @@ class StorageManager {
         await chrome.storage.local.remove(keysToRemove);
       }
 
-      // Reset user stats
+      // Reset user stats for this solution
       await this.saveUserStats({
         totalPoints: 0,
         questsCompleted: 0,
         questsAttempted: 0,
         lastQuestDate: null
-      });
+      }, solutionId);
 
-      this.logger.success('All progress reset');
+      this.logger.success('All progress reset', { solutionId });
     } catch (error) {
       this.logger.error('Failed to reset progress', error);
       throw error;
@@ -239,11 +252,12 @@ class StorageManager {
   }
 
   /**
-   * Get all completed quests
+   * Get all completed quests (optionally filtered by solution)
+   * @param {string} solutionId - Optional solution ID to filter by
    * @returns {Promise<string[]>} Array of completed quest IDs
    */
-  async getCompletedQuests() {
-    this.logger.info('Getting completed quests');
+  async getCompletedQuests(solutionId = null) {
+    this.logger.info('Getting completed quests', { solutionId });
 
     try {
       const result = await chrome.storage.local.get(null);
@@ -254,7 +268,17 @@ class StorageManager {
           const progress = result[key];
           if (progress.completed) {
             const questId = key.replace('quest_progress_', '');
-            completedQuests.push(questId);
+            
+            // Filter by solution if specified
+            if (solutionId) {
+              if (solutionId === 's4hana' && questId.startsWith('s4hana-')) {
+                completedQuests.push(questId);
+              } else if (solutionId === 'successfactors' && !questId.startsWith('s4hana-')) {
+                completedQuests.push(questId);
+              }
+            } else {
+              completedQuests.push(questId);
+            }
           }
         }
       }
