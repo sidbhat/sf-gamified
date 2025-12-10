@@ -52,7 +52,32 @@ class QuestRunner {
    * @param {Object} quest - Quest configuration from JSON
    * @param {string} mode - 'demo' or 'real'
    */
-  async startQuest(quest, mode = 'demo') {
+  async startQuest(questData, mode = 'demo') {
+    let quest;
+    const questId = questData.id || questData.questId;
+
+    if (questId && (!questData.name || !questData.steps)) {
+      this.logger.info('Partial quest data received, fetching full quest object', { questId });
+      const allQuests = await this.getAllQuests();
+      const foundQuest = allQuests.find(q => q.id === questId);
+      
+      if (foundQuest) {
+        quest = { ...foundQuest, ...questData }; // Merge to preserve properties
+      } else {
+        quest = questData; // Let it fail validation below
+      }
+    } else {
+      quest = questData;
+    }
+
+    if (!quest || !quest.name || !quest.steps) {
+      this.logger.error('Failed to start quest: Invalid or incomplete quest data.', { received: questData, processed: quest });
+      if (this.overlay) {
+        this.overlay.showError('Could not start quest. Quest data is missing or invalid.');
+      }
+      return;
+    }
+    
     this.logger.quest(quest.name, 'Starting quest', { mode });
 
     // CRITICAL FIX: Always force reset before starting a new quest
@@ -74,11 +99,15 @@ class QuestRunner {
     this.isRunning = true;
     this.mode = mode;
 
-    // CRITICAL FIX: Show overlay IMMEDIATELY before any async operations
-    // This prevents UX blackout where user clicks quest but nothing happens for 3-10 seconds
+    // CRITICAL FIX: Show overlay IMMEDIATELY with Start Quest button
+    // User must click "Start Quest" to begin - this gives them time to read the story
     if (this.overlay) {
       this.overlay.showQuestStart(quest);
     }
+
+    // CRITICAL: Wait for user to click "Start Quest" button
+    // This replaces the old 5-second auto-start with user-controlled pacing
+    await this.waitForQuestStartConfirmation(quest.id);
 
     try {
       // Execute quest based on mode
@@ -90,9 +119,13 @@ class QuestRunner {
 
       this.logger.quest(quest.name, 'Quest completed successfully');
       
+      // Get all quests and completed quests for next quest logic
+      const allQuests = await this.getAllQuests();
+      const completedQuests = await this.getCompletedQuests();
+      
       // Show completion overlay with step results
       if (this.overlay) {
-        this.overlay.showQuestComplete(quest, this.stepResults, this.failedSteps);
+        this.overlay.showQuestComplete(quest, this.stepResults, this.failedSteps, allQuests, completedQuests);
       }
     } catch (error) {
       this.logger.error('Quest failed', error);
@@ -144,8 +177,8 @@ class QuestRunner {
         this.overlay.showStep(step, i + 1, stepsLength, null, isAgentQuest);
       }
 
-      // Wait so user can read what the step will do
-      await this.sleep(2000);
+      // Wait so user can read what the step will do (shorter since intro was already shown)
+      await this.sleep(1500);
 
       try {
         await this.executeStep(step);
@@ -1000,6 +1033,72 @@ class QuestRunner {
       isRunning: this.isRunning,
       mode: this.mode
     };
+  }
+
+  /**
+   * Wait for user to click "Start Quest" button
+   * @param {string} questId - Quest ID to wait for
+   * @returns {Promise<void>}
+   */
+  waitForQuestStartConfirmation(questId) {
+    return new Promise((resolve) => {
+      const handler = (event) => {
+        if (event.data.type === 'QUEST_START_CONFIRMED' && event.data.questId === questId) {
+          window.removeEventListener('message', handler);
+          this.logger.info('User confirmed quest start, proceeding with execution');
+          resolve();
+        }
+      };
+      
+      window.addEventListener('message', handler);
+      this.logger.info('Waiting for user to click Start Quest button...');
+    });
+  }
+
+  /**
+   * Get all quests from configuration
+   * @returns {Promise<Array>} All quests filtered by current solution
+   */
+  async getAllQuests() {
+    try {
+      // Fetch quests from configuration file
+      const response = await fetch(chrome.runtime.getURL('src/config/quests.json'));
+      const questsData = await response.json();
+      
+      // Filter quests by current solution
+      const allQuests = questsData.quests.filter(quest => 
+        !quest.solutions || quest.solutions.includes(this.currentSolution?.id)
+      );
+      
+      this.logger.info('All quests loaded', { 
+        total: questsData.quests.length,
+        filtered: allQuests.length,
+        solution: this.currentSolution?.id
+      });
+      
+      return allQuests;
+    } catch (error) {
+      this.logger.error('Failed to get all quests', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get completed quest IDs from storage
+   * @returns {Promise<Array>} Array of completed quest IDs
+   */
+  async getCompletedQuests() {
+    try {
+      // Get completed quests from storage
+      if (window.JouleQuestStorage) {
+        const stats = await window.JouleQuestStorage.getUserStats(this.currentSolution?.id);
+        return stats.completedQuests || [];
+      }
+      return [];
+    } catch (error) {
+      this.logger.error('Failed to get completed quests', error);
+      return [];
+    }
   }
 
   /**

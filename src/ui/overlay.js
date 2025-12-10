@@ -346,6 +346,10 @@ class QuestOverlay {
    */
   showAlertDialog({ title, message, buttonText = 'OK', icon = 'ℹ️' }) {
     return new Promise((resolve) => {
+      // CRITICAL: Save current overlay content before showing dialog
+      const savedContent = this.container.innerHTML;
+      const wasVisible = this.isVisible;
+      
       const html = `
         <div class="joule-quest-card quest-alert-dialog">
           <div class="alert-icon">${icon}</div>
@@ -363,20 +367,34 @@ class QuestOverlay {
 
       const okBtn = this.container.querySelector('#alert-ok-btn');
 
+      const restoreContent = () => {
+        // Restore previous overlay content
+        this.container.innerHTML = savedContent;
+        if (wasVisible) {
+          this.show();
+          // Re-attach event listeners for quest selection if it was showing
+          if (savedContent.includes('quest-selection')) {
+            this.setupQuestSelectionListeners();
+          }
+        } else {
+          this.hide();
+        }
+      };
+
       const cleanup = () => {
         document.removeEventListener('keydown', escHandler);
+        restoreContent();
+        resolve();
       };
 
       const escHandler = (e) => {
         if (e.key === 'Escape' || e.key === 'Enter') {
           cleanup();
-          resolve();
         }
       };
 
       okBtn.addEventListener('click', () => {
         cleanup();
-        resolve();
       });
 
       document.addEventListener('keydown', escHandler);
@@ -431,13 +449,13 @@ class QuestOverlay {
           { 
             id: 's4hana-procurement', 
             label: 'Procurement', 
-            icon: '📦',
+            icon: '�',
             journey: journeys['s4hana-procurement'] || { name: 'Procurement', description: 'Purchase orders' }
           },
           { 
             id: 's4hana-delivery', 
             label: 'Delivery', 
-            icon: '📦',
+            icon: '�',
             journey: journeys['s4hana-delivery'] || { name: 'Delivery', description: 'Shipping operations' }
           }
         ];
@@ -726,6 +744,11 @@ class QuestOverlay {
       return;
     }
 
+    // Extract quest properties with defaults
+    const questName = quest.name || 'Unknown Quest';
+    const questPoints = quest.points || 0;
+    const questDifficulty = quest.difficulty || 'Easy';
+
     // Add page-level border indicator immediately when quest starts
     document.body.classList.add('quest-running');
 
@@ -739,49 +762,53 @@ class QuestOverlay {
 
     const html = `
       <div class="joule-quest-card quest-start">
-        <svg class="joule-icon" width="64" height="64" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="startGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:rgba(255,255,255,0.95)"/>
-              <stop offset="100%" style="stop-color:rgba(255,255,255,0.85)"/>
-            </linearGradient>
-          </defs>
-          <circle cx="25" cy="30" r="20" fill="url(#startGradient)" opacity="0.9"/>
-          <g opacity="0.85">
-            <path d="M 25 12 A 18 18 0 0 1 39 22 L 32 25 A 10 10 0 0 0 25 18 Z" fill="url(#startGradient)"/>
-            <path d="M 39 22 A 18 18 0 0 1 39 38 L 32 35 A 10 10 0 0 0 32 25 Z" fill="url(#startGradient)"/>
-            <path d="M 39 38 A 18 18 0 0 1 25 48 L 25 40 A 10 10 0 0 0 32 35 Z" fill="url(#startGradient)"/>
-            <path d="M 25 48 A 18 18 0 0 1 11 38 L 18 35 A 10 10 0 0 0 25 40 Z" fill="url(#startGradient)"/>
-            <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" fill="url(#startGradient)"/>
-            <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" fill="url(#startGradient)"/>
-          </g>
-          <circle cx="25" cy="30" r="10" fill="rgba(118,75,162,0.7)"/>
-          <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
-          <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
-          <circle cx="25" cy="30" r="4" fill="white"/>
-        </svg>
+        <div class="complete-icon">🎯</div>
+        
+        <h2>Ready to Start?</h2>
+        <h3>${questName}</h3>
         
         ${storyContextHTML}
         
-        <h2>Quest Started!</h2>
-        <h3>${quest.name}</h3>
-        <p>${quest.description}</p>
         <div class="quest-info">
-          <span class="difficulty">${quest.difficulty}</span>
-          <span class="points">${quest.points} points</span>
+          <span class="difficulty">${questDifficulty}</span>
+          <span class="points">${questPoints} points</span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 0%"></div>
+        
+        <p class="congrats">Read the story above, then click Start Quest when you're ready!</p>
+        
+        <!-- Start Quest button -->
+        <div class="quest-start-actions">
+          <button class="action-btn primary-btn" id="start-quest-btn">
+            <span>▶️ Start Quest</span>
+          </button>
+          <button class="action-btn secondary-btn" id="cancel-quest-btn">
+            <span>✕ Cancel</span>
+          </button>
         </div>
-        <p class="step-counter">Step 1 of ${quest.steps.length}</p>
       </div>
     `;
 
     this.container.innerHTML = html;
     this.show();
 
-    // DON'T auto-hide - let the quest runner control visibility
-    // The next step will be shown automatically
+    // Setup button listeners
+    const startBtn = this.container.querySelector('#start-quest-btn');
+    const cancelBtn = this.container.querySelector('#cancel-quest-btn');
+
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        this.logger.info('User clicked Start Quest button');
+        // Signal quest runner to continue
+        window.postMessage({ type: 'QUEST_START_CONFIRMED', questId: quest.id }, '*');
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        this.logger.info('User cancelled quest');
+        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
+      });
+    }
   }
 
   /**
@@ -1012,9 +1039,11 @@ class QuestOverlay {
    * @param {Object} quest - Quest configuration
    * @param {Array} stepResults - Array of step result objects
    * @param {Array} failedSteps - Array of failed step indices
+   * @param {Array} allQuests - All quests to determine next quest
+   * @param {Array} completedQuests - List of completed quest IDs to check journey completion
    */
-  showQuestComplete(quest, stepResults = [], failedSteps = []) {
-    this.logger.info('Showing quest complete', { quest, stepResults, failedSteps });
+  showQuestComplete(quest, stepResults = [], failedSteps = [], allQuests = [], completedQuests = []) {
+    this.logger.info('Showing quest complete', { quest, stepResults, failedSteps, allQuests, completedQuests });
 
     // Defensive: ensure quest object has required properties
     if (!quest) {
@@ -1031,6 +1060,38 @@ class QuestOverlay {
     const successfulSteps = stepResults.filter(r => r.status === 'success').length;
     const failedStepsCount = failedSteps.length;
 
+    // Find next quest in same category
+    const categoryQuests = allQuests.filter(q => q.category === questCategory);
+    const currentIndex = categoryQuests.findIndex(q => q.id === questId);
+    
+    this.logger.info('Next quest calculation:', {
+      questId,
+      questCategory,
+      totalCategoryQuests: categoryQuests.length,
+      currentIndex,
+      categoryQuestIds: categoryQuests.map(q => q.id),
+      hasNextQuest: currentIndex >= 0 && currentIndex < categoryQuests.length - 1
+    });
+    
+    const nextQuest = currentIndex >= 0 && currentIndex < categoryQuests.length - 1 
+      ? categoryQuests[currentIndex + 1] 
+      : null;
+    
+    this.logger.info('Next quest result:', { nextQuest: nextQuest ? nextQuest.name : 'none' });
+
+    // Check if ALL quests across ALL categories are complete (entire story complete)
+    // After this quest completes, add it to the completed list for checking
+    const allQuestIds = allQuests.map(q => q.id);
+    const completedAfterThisQuest = [...new Set([...completedQuests, questId])];
+    const isEntireStoryComplete = completedAfterThisQuest.length === allQuestIds.length;
+    
+    this.logger.info('Story completion check:', {
+      totalQuests: allQuestIds.length,
+      completedBefore: completedQuests.length,
+      completedAfter: completedAfterThisQuest.length,
+      isComplete: isEntireStoryComplete
+    });
+
     // Remove page-level border indicator when quest completes
     document.body.classList.remove('quest-running');
 
@@ -1043,27 +1104,7 @@ class QuestOverlay {
     // Hide arrow for agent quests
     const isAgentQuest = questCategory === 'agent';
 
-    // Build step summary if there were failures
-    let stepSummary = '';
-    if (failedStepsCount > 0) {
-      const failedStepsList = stepResults
-        .filter(r => r.status === 'error')
-        .map(r => `<li>❌ Step ${r.stepIndex + 1}: ${r.stepName}</li>`)
-        .join('');
-      
-      stepSummary = `
-        <div class="step-summary">
-          <p style="font-size: 13px; margin-bottom: 8px;">
-            <strong>Steps:</strong> ${successfulSteps}/${totalSteps} completed
-          </p>
-          <ul style="text-align: left; font-size: 12px; opacity: 0.9; margin: 0; padding-left: 20px;">
-            ${failedStepsList}
-          </ul>
-        </div>
-      `;
-    }
-
-    // Build story continuation section if available
+    // Build story continuation section if available (replaces step summary for consistency)
     const storyContinuationHTML = quest.storyOutro || quest.nextQuestHint ? `
       <div class="story-continuation">
         ${quest.storyOutro ? `<p class="story-outro">${quest.storyOutro}</p>` : ''}
@@ -1083,8 +1124,14 @@ class QuestOverlay {
         <div class="complete-icon">${completionIcon}</div>
         <h2>${completionTitle}</h2>
         <h3>${questName}</h3>
-        ${stepSummary}
+        
         ${storyContinuationHTML}
+        
+        <div class="quest-info">
+          <span class="difficulty">${questDifficulty}</span>
+          <span class="points">${questPoints} points</span>
+        </div>
+        
         <div class="rewards">
           <div class="reward-item">
             <span class="reward-icon">⭐</span>
@@ -1093,14 +1140,21 @@ class QuestOverlay {
         </div>
         <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
         
-        <!-- Action buttons -->
-        <div class="quest-complete-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px;">
-          <button class="download-badge-btn primary" id="download-badge-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-            <span>📥 Download Badge</span>
+        <!-- Action buttons: Side-by-side layout matching intro screen -->
+        <div class="quest-complete-actions">
+          ${nextQuest ? `
+            <button class="action-btn primary-btn" id="next-quest-btn" data-quest-id="${nextQuest.id}">
+              <span>▶️ Next Quest</span>
+            </button>
+          ` : ''}
+          <button class="action-btn secondary-btn" id="show-quests-btn">
+            <span>🗺️ All Quests</span>
           </button>
-          <button class="show-quests-btn primary" id="show-quests-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
-            <span>🗺️ Show Quests</span>
-          </button>
+          ${isEntireStoryComplete ? `
+            <button class="action-btn success-btn" id="download-badge-btn">
+              <span>🏆 Badge</span>
+            </button>
+          ` : ''}
         </div>
       </div>
     `;
@@ -1117,7 +1171,31 @@ class QuestOverlay {
       }
     }
 
-    // Setup "Download Badge" button event listener
+    // Setup "Next Quest" button event listener (if exists)
+    const nextQuestBtn = this.container.querySelector('#next-quest-btn');
+    if (nextQuestBtn) {
+      nextQuestBtn.addEventListener('click', () => {
+        const nextQuestId = nextQuestBtn.dataset.questId;
+        this.logger.info('Next Quest button clicked', { nextQuestId });
+        
+        // Hide current overlay
+        this.hide();
+        
+        // Start next quest
+        window.postMessage({ type: 'START_QUEST', questId: nextQuestId, isReplay: false }, '*');
+      });
+    }
+    
+    // Setup "Show All Quests" button event listener
+    const showQuestsBtn = this.container.querySelector('#show-quests-btn');
+    if (showQuestsBtn) {
+      showQuestsBtn.addEventListener('click', () => {
+        this.logger.info('Show All Quests button clicked');
+        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
+      });
+    }
+
+    // Setup "Download Badge" button event listener (only if journey complete)
     const downloadBadgeBtn = this.container.querySelector('#download-badge-btn');
     if (downloadBadgeBtn) {
       downloadBadgeBtn.addEventListener('click', async () => {
@@ -1148,10 +1226,10 @@ class QuestOverlay {
           // Generate badge using ShareCardGenerator
           if (window.ShareCardGenerator) {
             const generator = new window.ShareCardGenerator();
-            const canvas = generator.generateCard(questData, userStats);
+            const canvas = generator.generateCard(quest, userStats);
             
             // Download the badge
-            await generator.downloadCard(canvas, questId);
+            await generator.downloadCard(canvas, quest.id);
             
             // Show success feedback
             downloadBadgeBtn.innerHTML = '<span>✅ Downloaded!</span>';
@@ -1180,16 +1258,6 @@ class QuestOverlay {
         }
       });
     }
-    
-    // Setup "Show Quests" button event listener
-    const showQuestsBtn = this.container.querySelector('#show-quests-btn');
-    if (showQuestsBtn) {
-      showQuestsBtn.addEventListener('click', () => {
-        this.logger.info('Show Quests button clicked');
-        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
-      });
-    }
-
     // Users can manually return to quest selection via button
     // No auto-timeout - let them read the story at their own pace
   }

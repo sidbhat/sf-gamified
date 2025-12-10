@@ -115,8 +115,8 @@
       "solutions": ["successfactors"],
       "storyArc": "Your First Week",
       "storyChapter": "Day 1: Understanding Structure",
-      "storyIntro": "2 PM team intro call just ended. Everyone casually mentioned their cost center codes like it's common knowledge. 'CC-1234 here!' 'CC-5678 team!' You smiled and nodded, but internally panicked - what's YOURS? Better figure this out before the next meeting!",
-      "storyOutro": "Got it! You're CC-1234. Now when people ask, you won't freeze up. This also helps you understand where your work fits in the bigger picture. Tomorrow you have your first client meeting - better check the company travel policy!",
+      "storyIntro": "2 PM team intro call just ended. Everyone casually mentioned their cost center codes like it's common knowledge. You smiled and nodded, but internally panicked - what's YOURS? Better figure this out before the next meeting!",
+      "storyOutro": "Got it! Now when people ask about your cost center, you won't freeze up. This also helps you understand where your work fits in the bigger picture. Tomorrow you have your first client meeting - better check the company travel policy!",
       "nextQuestHint": "Tomorrow's mission: Learn the rental car policy before booking travel",
       "steps": [
         {
@@ -155,8 +155,8 @@
       "solutions": ["successfactors"],
       "storyArc": "Your First Week",
       "storyChapter": "Day 2: First Business Trip",
-      "storyIntro": "Tuesday morning. Sarah just asked you to visit a client in the next city tomorrow. 'Book a rental car - keep it within policy!' she said. Policy? WHAT policy? You were about to book that fancy Tesla, but maybe you should check the guidelines first...",
-      "storyOutro": "Smart! Only mid-size sedans are approved, and there's a daily rate cap. You just saved yourself an awkward expense report rejection. The Tesla dream will have to wait. Now that you know the rules, let's test the time-off request system before you need it for real!",
+      "storyIntro": "Tuesday morning. Sarah just asked you to visit a client in the next city tomorrow. 'Book a rental car - keep it within policy!' she said. Policy? WHAT policy? You should check the guidelines before booking!",
+      "storyOutro": "Smart! Now you know the approved vehicle types and daily rate limits. You just saved yourself an awkward expense report rejection. Now that you know the rules, let's test the time-off request system before you need it for real!",
       "nextQuestHint": "Time to test the system: Request a day off and see how it works",
       "requiresQuests": [
         "employee-leave-balance",
@@ -286,8 +286,8 @@
       "solutions": ["successfactors"],
       "storyArc": "Your First Week",
       "storyChapter": "Week 2: Professional Identity",
-      "storyIntro": "Tuesday. You're creating your email signature but realize you're not 100% sure of your exact email format. Is it firstname.lastname@ or first.last@ or firstnamelastname@? Let's confirm before you embarrass yourself on client emails!",
-      "storyOutro": "There it is! firstname.lastname@company.com - locked in. Updated your signature, business cards ordered, LinkedIn profile updated. You're looking professional now! Next, let's verify your official job title is correct...",
+      "storyIntro": "Tuesday. You're creating your email signature but realize you're not 100% sure of your exact email format. Let's confirm before you embarrass yourself on client emails!",
+      "storyOutro": "There it is! Now you know your exact email format. Updated your signature, business cards ordered, LinkedIn profile updated. You're looking professional now! Next, let's verify your official job title is correct...",
       "nextQuestHint": "Confirm your job title and role details are accurate",
       "requiresQuests": [
         "employee-leave-balance",
@@ -312,7 +312,7 @@
           "name": "View Email",
           "description": "Retrieving your email address...",
           "action": "type_and_send",
-          "prompt": "View email",
+          "prompt": "View my email",
           "waitForResponse": true,
           "responseKeywords": ["email", "@", "address", "contact"],
           "successMessage": "Email retrieved! 🏆"
@@ -332,8 +332,8 @@
       "solutions": ["successfactors"],
       "storyArc": "Your First Week",
       "storyChapter": "Week 2: Career Foundation",
-      "storyIntro": "Wednesday. You're updating your LinkedIn and realize you want to use the EXACT official title the company has for you. Is it 'Sales Associate' or 'Sales Representative' or 'Associate Sales Rep'? Details matter for your professional brand!",
-      "storyOutro": "Perfect! Your official title is 'Senior Sales Associate.' That's going straight on LinkedIn. You're building your professional identity, piece by piece. Almost forgot - when's your company birthday for next year's celebration?",
+      "storyIntro": "Wednesday. You're updating your LinkedIn and realize you want to use the EXACT official title the company has for you. Details matter for your professional brand!",
+      "storyOutro": "Perfect! Now you have your official title confirmed. That's going straight on LinkedIn. You're building your professional identity, piece by piece. Almost forgot - when's your company birthday for next year's celebration?",
       "nextQuestHint": "Find your birthday in the system (for company celebrations)",
       "requiresQuests": [
         "employee-leave-balance",
@@ -358,7 +358,7 @@
           "name": "View Job Info",
           "description": "Retrieving your job information...",
           "action": "type_and_send",
-          "prompt": "View job",
+          "prompt": "View my job",
           "waitForResponse": true,
           "responseKeywords": ["job", "title", "position", "role"],
           "successMessage": "Job details displayed! 🏆"
@@ -404,7 +404,7 @@
           "name": "View Birthday",
           "description": "Retrieving your birthday...",
           "action": "type_and_send",
-          "prompt": "View birthday",
+          "prompt": "View my birthday",
           "waitForResponse": true,
           "responseKeywords": ["birthday", "birth", "date", "born"],
           "successMessage": "Birthday displayed! 🏆"
@@ -695,7 +695,7 @@
       "storyArc": "The New Manager",
       "storyChapter": "Month 1: Compensation Review",
       "storyIntro": "One month in. Annual review season is approaching, and your boss wants your compensation recommendations by Friday. You need to understand current salaries, market rates, and pay equity across your team. Let's get the data to make fair, informed decisions!",
-      "storyOutro": "Wow. The data shows Jada (4-year veteran, top performer) is actually paid 15% below market rate. That's a retention risk you need to address. Meanwhile, Marcus is right at market. This insight will shape your review recommendations. Data-driven leadership wins!",
+      "storyOutro": "Wow. The compensation data reveals important insights about market positioning and pay equity across your team. This data will shape your review recommendations and help you advocate for your high performers. Data-driven leadership wins!",
       "nextQuestHint": "Back up compensation decisions with workforce metrics and analytics",
       "requiresQuests": [
         "manager-pending-approvals",
@@ -753,7 +753,7 @@
       "storyArc": "The New Manager",
       "storyChapter": "Month 1: Strategic Thinking",
       "storyIntro": "Week 6 as manager. You're presenting to leadership next week about team performance. You need hard data: headcount trends, retention rates, diversity metrics. Your boss wants 'insights, not anecdotes.' Time to pull the analytics that tell your team's story!",
-      "storyOutro": "The metrics are compelling! Your team has 95% retention (company average is 85%), strong performance ratings, and balanced diversity. These numbers back up your promotion requests and hiring proposals. You're thinking strategically now, not just tactically. Management = data + people!",
+      "storyOutro": "The metrics are compelling! Your team shows strong retention rates, solid performance ratings, and balanced composition. These numbers back up your promotion requests and hiring proposals. You're thinking strategically now, not just tactically. Management = data + people!",
       "nextQuestHint": "Practice continuous improvement: Request feedback on your own leadership",
       "requiresQuests": [
         "manager-pending-approvals",
@@ -1286,7 +1286,7 @@
       "storyArc": "Sales Hero's Journey",
       "storyChapter": "Week 2: Cash Flow Analysis",
       "storyIntro": "Wednesday. CFO needs cash flow projections. All invoices with payment terms 0001 (NET 30) need review for collection timing. This affects quarterly cash position. Finance is waiting on your data to update the board deck!",
-      "storyOutro": "Payment terms 0001 invoices found! Total outstanding: $847K due within 30 days. CFO has her cash flow number. You're not just finding data - you're enabling strategic financial planning. Now let's hunt for the really big tickets...",
+      "storyOutro": "Payment terms 0001 invoices found! CFO now has her cash flow numbers for financial planning. You're not just finding data - you're enabling strategic financial planning. Now let's hunt for the really big tickets...",
       "nextQuestHint": "Executive visibility: Find all invoices over $10,000 USD",
       "requiresQuests": [
         "s4hana-billing-customer",
@@ -1328,7 +1328,7 @@
       "storyArc": "Sales Hero's Journey",
       "storyChapter": "Week 2: Executive Dashboard",
       "storyIntro": "Thursday. Board meeting prep. CEO wants to see all 'material deals' - invoices over $10K. These represent your major revenue drivers. Sales leadership needs this list to tell the growth story. Find the big fish!",
-      "storyOutro": "Eight major deals totaling $156K! These are the orders that matter most to revenue. CEO's dashboard is now complete. You're providing executive-level intelligence. Finance just pinged you - they need billing request tracking...",
+      "storyOutro": "Multiple major deals found! These are the orders that matter most to revenue. CEO's dashboard is now complete. You're providing executive-level intelligence. Finance just pinged you - they need billing request tracking...",
       "nextQuestHint": "Track billing requests: Find all pending docs for customer USCU-P-005",
       "requiresQuests": [
         "s4hana-billing-customer",
@@ -1458,7 +1458,7 @@
       "storyArc": "Sales Hero's Journey",
       "storyChapter": "Week 3: Product Performance",
       "storyIntro": "Wednesday. Product team wants to analyze PC_SUPP_1 sales performance. How many units sold? What revenue? Which customers bought it? They need every invoice to build their quarterly report. Your mission: product-level billing intelligence!",
-      "storyOutro": "Product billing complete! PC_SUPP_1 generated $45K across six customers this quarter. Product team now knows this is a winner worth promoting. Your data shapes product strategy! Let's check another sales org's billing...",
+      "storyOutro": "Product billing complete! PC_SUPP_1 performance data is now available for the product team's quarterly analysis. Your data shapes product strategy! Let's check another sales org's billing...",
       "nextQuestHint": "Multi-region skills: Pull billing for Sales Org 1710 (different region)",
       "requiresQuests": [
         "s4hana-billing-customer",
@@ -1546,7 +1546,7 @@
       "storyArc": "Sales Hero's Journey",
       "storyChapter": "Week 4: Crisis Management",
       "storyIntro": "Monday, Week 4. Finance called an emergency meeting: 'We found errors in some billing docs.' Pricing mistakes, missing data, system glitches. These need fixing BEFORE customers notice. Find every problem invoice so the team can correct them today!",
-      "storyOutro": "All problem invoices identified! Six documents with errors ranging from pricing to tax calculations. Finance is fixing them now before they go to customers. You caught these errors early - that's $12K in potential disputes avoided! 🏆 SALES OPERATIONS MASTERY UNLOCKED! You're now the billing hero your company needs!",
+      "storyOutro": "All problem invoices identified! Multiple documents with errors ranging from pricing to tax calculations. Finance is fixing them now before they go to customers. You caught these errors early and prevented potential disputes! 🏆 SALES OPERATIONS MASTERY UNLOCKED! You're now the billing hero your company needs!",
       "nextQuestHint": "🎓 Sales Journey Complete! Ready for Procurement or Delivery paths?",
       "requiresQuests": [
         "s4hana-billing-requests-customer",
@@ -1708,7 +1708,7 @@
       "storyArc": "Procurement Champion",
       "storyChapter": "Week 2: Vendor Relations",
       "storyIntro": "Monday, Week 2. Supplier 17300001 is on the phone: 'We're reviewing our relationship with your company. Can you tell us our YTD order volume?' They're deciding whether to offer you volume discounts. Find every PO from this supplier - negotiating power awaits!",
-      "storyOutro": "Found all their POs! $340K YTD - solid volume. You told the supplier, they're offering 8% bulk discount on future orders. Your quick data retrieval just saved the company thousands! Vendor relationships = strategic procurement. Let's organize by purchasing group...",
+      "storyOutro": "Found all their POs! Solid YTD volume. You told the supplier the numbers, and they're considering bulk discounts on future orders. Your quick data retrieval strengthens vendor negotiations! Vendor relationships = strategic procurement. Let's organize by purchasing group...",
       "nextQuestHint": "Team organization: Pull POs for purchasing group 001",
       "requiresQuests": [
         "s4hana-po-material",
@@ -1751,7 +1751,7 @@
       "storyArc": "Procurement Champion",
       "storyChapter": "Week 2: Team Accountability",
       "storyIntro": "Tuesday. Weekly team meeting. Each purchasing group reports their active POs and spending. Your group (001) needs their numbers. How many open POs? Total committed spend? Your team lead is waiting. Find your group's POs and look prepared!",
-      "storyOutro": "Group 001 POs compiled! Eighteen active POs, $567K committed spend, everything on track. You presented confidently in the meeting. Your team lead nodded approvingly. Now let's dive into purchase requisitions - the precursor to POs...",
+      "storyOutro": "Group 001 POs compiled! Multiple active POs with committed spend, everything on track. You presented confidently in the meeting. Your team lead nodded approvingly. Now let's dive into purchase requisitions - the precursor to POs...",
       "nextQuestHint": "Master requisitions: Find PRs above 100 EUR threshold",
       "requiresQuests": [
         "s4hana-po-material",
@@ -1794,7 +1794,7 @@
       "storyArc": "Procurement Champion",
       "storyChapter": "Week 3: Approval Authority",
       "storyIntro": "Wednesday. New company policy: All requisitions over 100 EUR need VP approval before becoming POs. Your job: find every req above this threshold that's waiting for conversion. Finance needs this for budget forecasting. High-value requisitions = big commitments!",
-      "storyOutro": "Found fourteen requisitions over 100 EUR totaling €8,400 in pending commitments. VP is reviewing them now. You're controlling the financial gates - ensuring proper approval before committing company money. Budget discipline starts here! Let's organize reqs by purchasing group...",
+      "storyOutro": "Found multiple requisitions over 100 EUR with significant pending commitments. VP is reviewing them now. You're controlling the financial gates - ensuring proper approval before committing company money. Budget discipline starts here! Let's organize reqs by purchasing group...",
       "nextQuestHint": "Organize requisitions: Pull all req items for purchasing group 001",
       "requiresQuests": [
         "s4hana-po-supplier",
@@ -1989,7 +1989,7 @@
       "description": "Find delivery document details",
       "difficulty": "Easy",
       "points": 100,
-      "icon": "📦",
+      "icon": "📄",
       "tagline": "Find delivery document details",
       "victoryText": "Document found! Details master!",
       "solutions": ["s4hana"],
