@@ -32,7 +32,7 @@
   "quests": [
     {
       "id": "employee-leave-balance",
-      "name": "⏱️ Quick Check: Time Off Stash",
+      "name": "Quick Check: Time Off Stash",
       "category": "employee",
       "description": "Check your vacation days instantly",
       "difficulty": "Easy",
@@ -65,7 +65,7 @@
     },
     {
       "id": "employee-my-goals",
-      "name": "🎯 Mission Control: My Goals",
+      "name": "Mission Control: My Goals",
       "category": "employee",
       "description": "See what you're crushing this quarter",
       "difficulty": "Easy",
@@ -98,7 +98,7 @@
     },
     {
       "id": "employee-cost-center",
-      "name": "💰 Money Trail: Find My Cost Center",
+      "name": "Money Trail: Find My Cost Center",
       "category": "employee",
       "description": "Discover where your budget lives",
       "difficulty": "Easy",
@@ -133,7 +133,7 @@
     },
     {
       "id": "employee-rental-policy",
-      "name": "🚗 Road Rules: Rental Policy",
+      "name": "Road Rules: Rental Policy",
       "category": "employee",
       "description": "Master company car guidelines",
       "difficulty": "Easy",
@@ -171,7 +171,7 @@
     },
     {
       "id": "employee-request-time-off",
-      "name": "🌴 Boss Level: Tomorrow Off",
+      "name": "Boss Level: Tomorrow Off",
       "category": "employee",
       "description": "Request vacation lightning-fast",
       "difficulty": "Easy",
@@ -209,7 +209,7 @@
     },
     {
       "id": "employee-assigned-learning",
-      "name": "📚 Power-Up: Learning Path",
+      "name": "Power-Up: Learning Path",
       "category": "employee",
       "description": "Discover your assigned training",
       "difficulty": "Medium",
@@ -249,7 +249,7 @@
     },
     {
       "id": "employee-view-email",
-      "name": "📧 Contact Check: View My Email",
+      "name": "Contact Check: View My Email",
       "category": "employee",
       "description": "Find your email in seconds",
       "difficulty": "Easy",
@@ -290,7 +290,7 @@
     },
     {
       "id": "employee-view-job",
-      "name": "💼 Career Path: View My Job Info",
+      "name": "Career Path: View My Job Info",
       "category": "employee",
       "description": "See your title and role details",
       "difficulty": "Easy",
@@ -331,7 +331,7 @@
     },
     {
       "id": "employee-view-birthday",
-      "name": "🎂 Birthday Tracker: My Celebration",
+      "name": "Birthday Tracker: My Celebration",
       "category": "employee",
       "description": "Never forget your cake day!",
       "difficulty": "Easy",
@@ -372,7 +372,7 @@
     },
     {
       "id": "manager-pending-approvals",
-      "name": "⚡ Lightning Round: Approval Spree",
+      "name": "Lightning Round: Approval Spree",
       "category": "manager",
       "description": "Clear your queue at lightspeed",
       "difficulty": "Medium",
@@ -405,7 +405,7 @@
     },
     {
       "id": "manager-my-team",
-      "name": "👥 Squad Check: Meet Your Team",
+      "name": "Squad Check: Meet Your Team",
       "category": "manager",
       "description": "See who's on your roster",
       "difficulty": "Hard",
@@ -448,7 +448,7 @@
     },
     {
       "id": "manager-spot-award",
-      "name": "🏅 Hero Moment: Recognize Excellence",
+      "name": "Hero Moment: Recognize Excellence",
       "category": "manager",
       "description": "Reward your team's hard work",
       "difficulty": "Hard",
@@ -530,7 +530,7 @@
     },
     {
       "id": "manager-give-feedback",
-      "name": "💬 Feedback Master: Give Kudos",
+      "name": "Feedback Master: Give Kudos",
       "category": "manager",
       "description": "Boost morale with recognition",
       "difficulty": "Medium",
@@ -580,7 +580,7 @@
     },
     {
       "id": "manager-team-hire-dates",
-      "name": "📊 Team Intel: Hire Dates",
+      "name": "Team Intel: Hire Dates",
       "category": "manager",
       "description": "Know your team's tenure",
       "difficulty": "Medium",
@@ -617,7 +617,7 @@
     },
     {
       "id": "manager-compensation-insight",
-      "name": "💰 Compensation Wizard: Team Insights",
+      "name": "Compensation Wizard: Team Insights",
       "category": "manager",
       "description": "Understand team pay landscape",
       "difficulty": "Hard",
@@ -670,7 +670,7 @@
     },
     {
       "id": "manager-view-metrics",
-      "name": "📈 Data Detective: View Metrics",
+      "name": "Data Detective: View Metrics",
       "category": "manager",
       "description": "Unlock workforce analytics",
       "difficulty": "Hard",
@@ -710,7 +710,7 @@
     },
     {
       "id": "manager-request-feedback",
-      "name": "🎯 Goal Guru: Request Feedback",
+      "name": "Goal Guru: Request Feedback",
       "category": "manager",
       "description": "Drive growth with insights",
       "difficulty": "Hard",
@@ -763,7 +763,7 @@
     },
     {
       "id": "manager-worker-profile",
-      "name": "🔍 People Search: Team Profiles",
+      "name": "People Search: Team Profiles",
       "category": "manager",
       "description": "Deep dive into team details",
       "difficulty": "Hard",
@@ -816,7 +816,7 @@
     },
     {
       "id": "agent-goal-creation",
-      "name": "🤖 AI Wizard: Goal Generator",
+      "name": "AI Wizard: Goal Generator",
       "description": "Create perfect goals with AI magic",
       "category": "agent",
       "icon": "🤖",
@@ -889,7 +889,7 @@
     },
     {
       "id": "s4hana-sales-open-orders",
-      "name": "📋 Order Detective: Open Sales",
+      "name": "Order Detective: Open Sales",
       "category": "s4hana-sales",
       "description": "Find all your open sales orders",
       "difficulty": "Easy",
@@ -922,7 +922,7 @@
     },
     {
       "id": "s4hana-sales-not-delivered",
-      "name": "🚚 Delivery Tracker: Not Yet Shipped",
+      "name": "Delivery Tracker: Not Yet Shipped",
       "category": "s4hana-sales",
       "description": "Track orders awaiting delivery",
       "difficulty": "Easy",
@@ -955,7 +955,7 @@
     },
     {
       "id": "s4hana-sales-ship-to-party",
-      "name": "🎯 Customer Hunter: Ship-To Search",
+      "name": "Customer Hunter: Ship-To Search",
       "category": "s4hana-sales",
       "description": "Find orders by ship-to party",
       "difficulty": "Medium",
@@ -988,7 +988,7 @@
     },
     {
       "id": "s4hana-delivery-due-shipping",
-      "name": "📦 Shipping Alert: Due for Dispatch",
+      "name": "Shipping Alert: Due for Dispatch",
       "category": "s4hana-delivery",
       "description": "Check deliveries ready to ship",
       "difficulty": "Easy",
@@ -1021,7 +1021,7 @@
     },
     {
       "id": "s4hana-sales-intelli-corp",
-      "name": "🏢 Corporate Quest: Intelli Orders",
+      "name": "Corporate Quest: Intelli Orders",
       "category": "s4hana-sales",
       "description": "Find all Intelli Corp sales",
       "difficulty": "Easy",
@@ -1054,7 +1054,7 @@
     },
     {
       "id": "s4hana-sales-order-status",
-      "name": "🔍 Status Check: Order 470909",
+      "name": "Status Check: Order 470909",
       "category": "s4hana-sales",
       "description": "Check specific order status",
       "difficulty": "Easy",
@@ -1087,7 +1087,7 @@
     },
     {
       "id": "s4hana-billing-customer",
-      "name": "💳 Billing Scout: Customer USCU-CUS23",
+      "name": "Billing Scout: Customer USCU-CUS23",
       "category": "s4hana-sales",
       "description": "Find customer billing documents",
       "difficulty": "Easy",
@@ -1120,7 +1120,7 @@
     },
     {
       "id": "s4hana-billing-sales-org",
-      "name": "🏭 Org Filter: Sales Org 1010",
+      "name": "Org Filter: Sales Org 1010",
       "category": "s4hana-sales",
       "description": "Filter by sales organization",
       "difficulty": "Easy",
@@ -1153,7 +1153,7 @@
     },
     {
       "id": "s4hana-billing-payment-terms",
-      "name": "💰 Payment Hunter: Terms 0001",
+      "name": "Payment Hunter: Terms 0001",
       "category": "s4hana-sales",
       "description": "Find bills by payment terms",
       "difficulty": "Medium",
@@ -1186,7 +1186,7 @@
     },
     {
       "id": "s4hana-billing-high-value",
-      "name": "💎 Big Ticket: Over $10K USD",
+      "name": "Big Ticket: Over $10K USD",
       "category": "s4hana-sales",
       "description": "Find high-value billing docs",
       "difficulty": "Medium",
@@ -1219,7 +1219,7 @@
     },
     {
       "id": "s4hana-billing-requests-customer",
-      "name": "📬 Request Tracker: Customer P-005",
+      "name": "Request Tracker: Customer P-005",
       "category": "s4hana-sales",
       "description": "Track billing requests by customer",
       "difficulty": "Easy",
@@ -1252,7 +1252,7 @@
     },
     {
       "id": "s4hana-billing-ref-document",
-      "name": "🔗 Reference Hunter: Doc 1000000022",
+      "name": "Reference Hunter: Doc 1000000022",
       "category": "s4hana-sales",
       "description": "Find bills by reference doc",
       "difficulty": "Medium",
@@ -1285,7 +1285,7 @@
     },
     {
       "id": "s4hana-billing-product",
-      "name": "📦 Product Search: PC_SUPP_1",
+      "name": "Product Search: PC_SUPP_1",
       "category": "s4hana-sales",
       "description": "Find billing by product code",
       "difficulty": "Easy",
@@ -1318,7 +1318,7 @@
     },
     {
       "id": "s4hana-billing-org-1710",
-      "name": "🏪 Org Quest: Sales Org 1710",
+      "name": "Org Quest: Sales Org 1710",
       "category": "s4hana-sales",
       "description": "Track another sales org billing",
       "difficulty": "Easy",
@@ -1351,7 +1351,7 @@
     },
     {
       "id": "s4hana-billing-issues",
-      "name": "⚠️ Issue Alert: Problem Billing",
+      "name": "Issue Alert: Problem Billing",
       "category": "s4hana-sales",
       "description": "Find billing documents with issues",
       "difficulty": "Medium",
@@ -1384,7 +1384,7 @@
     },
     {
       "id": "s4hana-po-material",
-      "name": "🔩 Material Hunt: PO for TG0011",
+      "name": "Material Hunt: PO for TG0011",
       "category": "s4hana-procurement",
       "description": "Find PO items by material",
       "difficulty": "Easy",
@@ -1417,7 +1417,7 @@
     },
     {
       "id": "s4hana-po-plant",
-      "name": "🏭 Plant Filter: PO for 1710",
+      "name": "Plant Filter: PO for 1710",
       "category": "s4hana-procurement",
       "description": "Find PO items by plant",
       "difficulty": "Easy",
@@ -1450,7 +1450,7 @@
     },
     {
       "id": "s4hana-po-item-category",
-      "name": "📑 Category Check: PO Item Type",
+      "name": "Category Check: PO Item Type",
       "category": "s4hana-procurement",
       "description": "Check PO item category",
       "difficulty": "Medium",
@@ -1483,7 +1483,7 @@
     },
     {
       "id": "s4hana-po-supplier",
-      "name": "🤝 Supplier Scout: Vendor 17300001",
+      "name": "Supplier Scout: Vendor 17300001",
       "category": "s4hana-procurement",
       "description": "Find POs by supplier ID",
       "difficulty": "Easy",
@@ -1516,7 +1516,7 @@
     },
     {
       "id": "s4hana-po-purch-group",
-      "name": "👔 Buyer Quest: Purch Group 001",
+      "name": "Buyer Quest: Purch Group 001",
       "category": "s4hana-procurement",
       "description": "Find POs by purchasing group",
       "difficulty": "Easy",
@@ -1549,7 +1549,7 @@
     },
     {
       "id": "s4hana-pr-value-filter",
-      "name": "💶 Value Hunter: 100 EUR PR",
+      "name": "Value Hunter: 100 EUR PR",
       "category": "s4hana-procurement",
       "description": "Find PRs by value threshold",
       "difficulty": "Medium",
@@ -1582,7 +1582,7 @@
     },
     {
       "id": "s4hana-pr-purch-group",
-      "name": "📋 PR Group: Requisition 001",
+      "name": "PR Group: Requisition 001",
       "category": "s4hana-procurement",
       "description": "Track PRs by purchasing group",
       "difficulty": "Easy",
@@ -1615,7 +1615,7 @@
     },
     {
       "id": "s4hana-pr-followon-status",
-      "name": "🔄 Follow-On: PR 10438000 Status",
+      "name": "Follow-On: PR 10438000 Status",
       "category": "s4hana-procurement",
       "description": "Check PR follow-on document status",
       "difficulty": "Hard",
@@ -1648,7 +1648,7 @@
     },
     {
       "id": "s4hana-delivery-lookup",
-      "name": "🔍 Delivery Finder: Doc 80000048",
+      "name": "Delivery Finder: Doc 80000048",
       "category": "s4hana-delivery",
       "description": "Look up specific delivery",
       "difficulty": "Easy",
@@ -1681,7 +1681,7 @@
     },
     {
       "id": "s4hana-delivery-document",
-      "name": "📦 Document Scout: Delivery 80000048",
+      "name": "Document Scout: Delivery 80000048",
       "category": "s4hana-delivery",
       "description": "Find delivery document details",
       "difficulty": "Easy",
@@ -1714,7 +1714,7 @@
     },
     {
       "id": "s4hana-delivery-picking-status",
-      "name": "📋 Pick Status: Delivery 80000048",
+      "name": "Pick Status: Delivery 80000048",
       "category": "s4hana-delivery",
       "description": "Check overall picking status",
       "difficulty": "Medium",
@@ -1747,7 +1747,7 @@
     },
     {
       "id": "s4hana-delivery-ready-picking",
-      "name": "✅ Ready Check: Picking Queue",
+      "name": "Ready Check: Picking Queue",
       "category": "s4hana-delivery",
       "description": "Find deliveries ready for picking",
       "difficulty": "Easy",
@@ -1780,7 +1780,7 @@
     },
     {
       "id": "s4hana-delivery-goods-issue-date",
-      "name": "📅 Date Check: Planned Issue 80000048",
+      "name": "Date Check: Planned Issue 80000048",
       "category": "s4hana-delivery",
       "description": "Check planned goods issue date",
       "difficulty": "Easy",
