@@ -131,11 +131,6 @@ The extension uses intelligent DOM detection to track your progress through each
 5. Click "Start Quest" and follow the on-screen guidance
 6. Complete steps and earn your first points!
 
-🎉 WHAT USERS SAY
-
-"The step-by-step guidance is perfect for visual learners. I finally understand how to use Joule properly." - Employee
-
-
 📈 ROADMAP
 
 Future features in development:
