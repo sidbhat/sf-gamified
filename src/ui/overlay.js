@@ -729,6 +729,14 @@ class QuestOverlay {
     // Add page-level border indicator immediately when quest starts
     document.body.classList.add('quest-running');
 
+    // Build story context section if available
+    const storyContextHTML = quest.storyChapter || quest.storyIntro ? `
+      <div class="story-context">
+        ${quest.storyChapter ? `<div class="story-chapter">📖 ${quest.storyChapter}</div>` : ''}
+        ${quest.storyIntro ? `<p class="story-intro">${quest.storyIntro}</p>` : ''}
+      </div>
+    ` : '';
+
     const html = `
       <div class="joule-quest-card quest-start">
         <svg class="joule-icon" width="64" height="64" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
@@ -752,6 +760,9 @@ class QuestOverlay {
           <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
           <circle cx="25" cy="30" r="4" fill="white"/>
         </svg>
+        
+        ${storyContextHTML}
+        
         <h2>Quest Started!</h2>
         <h3>${quest.name}</h3>
         <p>${quest.description}</p>
@@ -1052,6 +1063,14 @@ class QuestOverlay {
       `;
     }
 
+    // Build story continuation section if available
+    const storyContinuationHTML = quest.storyOutro || quest.nextQuestHint ? `
+      <div class="story-continuation">
+        ${quest.storyOutro ? `<p class="story-outro">${quest.storyOutro}</p>` : ''}
+        ${quest.nextQuestHint ? `<div class="next-hint">🔜 Next: ${quest.nextQuestHint}</div>` : ''}
+      </div>
+    ` : '';
+
     const html = `
       <div class="joule-quest-card ${completionColor}">
         <!-- Mascot (hidden for agent quests) -->
@@ -1065,6 +1084,7 @@ class QuestOverlay {
         <h2>${completionTitle}</h2>
         <h3>${questName}</h3>
         ${stepSummary}
+        ${storyContinuationHTML}
         <div class="rewards">
           <div class="reward-item">
             <span class="reward-icon">⭐</span>

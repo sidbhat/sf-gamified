@@ -707,6 +707,36 @@ body.quest-running::before {
   }
 }
 
+/* Story Context - Quest Start */
+.story-context {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.story-context .story-chapter {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+  color: #FFD700;
+}
+
+.story-context .story-intro {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.95;
+  margin: 0;
+  font-style: italic;
+}
+
 .quest-start h2 {
   margin: 0 0 8px 0;
   font-size: 24px;
@@ -1074,6 +1104,38 @@ body.quest-running::before {
 
 .step-summary li:last-child {
   border-bottom: none;
+}
+
+/* Story Continuation - Quest Complete */
+.story-continuation {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.story-continuation .story-outro {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.95;
+  margin: 0 0 12px 0;
+  font-style: italic;
+}
+
+.story-continuation .next-hint {
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin: 0;
+  color: #FFD700;
 }
 
 /* Quest Error */
