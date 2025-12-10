@@ -964,6 +964,10 @@
       "tagline": "Find orders by ship-to party",
       "victoryText": "Customer orders found! Search master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-sales-open-orders",
+        "s4hana-sales-not-delivered"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1030,6 +1034,11 @@
       "tagline": "Find all Intelli Corp sales",
       "victoryText": "Intelli Corp orders found! Account master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-sales-open-orders",
+        "s4hana-sales-not-delivered",
+        "s4hana-sales-ship-to-party"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1063,6 +1072,11 @@
       "tagline": "Check specific order status",
       "victoryText": "Order status found! Tracking expert!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-sales-open-orders",
+        "s4hana-sales-not-delivered",
+        "s4hana-sales-ship-to-party"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1096,6 +1110,13 @@
       "tagline": "Find customer billing documents",
       "victoryText": "Billing docs found! Finance ninja!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-sales-open-orders",
+        "s4hana-sales-not-delivered",
+        "s4hana-sales-ship-to-party",
+        "s4hana-sales-intelli-corp",
+        "s4hana-sales-order-status"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1129,6 +1150,13 @@
       "tagline": "Filter by sales organization",
       "victoryText": "Org billing found! Organization pro!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-sales-open-orders",
+        "s4hana-sales-not-delivered",
+        "s4hana-sales-ship-to-party",
+        "s4hana-sales-intelli-corp",
+        "s4hana-sales-order-status"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1162,6 +1190,10 @@
       "tagline": "Find bills by payment terms",
       "victoryText": "Payment terms filtered! Finance wizard!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1195,6 +1227,10 @@
       "tagline": "Find high-value billing docs",
       "victoryText": "High-value bills found! Revenue tracker!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1228,6 +1264,12 @@
       "tagline": "Track billing requests by customer",
       "victoryText": "Billing requests found! Request master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org",
+        "s4hana-billing-payment-terms",
+        "s4hana-billing-high-value"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1261,6 +1303,12 @@
       "tagline": "Find bills by reference doc",
       "victoryText": "Reference doc found! Link tracker!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org",
+        "s4hana-billing-payment-terms",
+        "s4hana-billing-high-value"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1294,6 +1342,12 @@
       "tagline": "Find billing by product code",
       "victoryText": "Product billing found! Catalog pro!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org",
+        "s4hana-billing-payment-terms",
+        "s4hana-billing-high-value"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1327,6 +1381,12 @@
       "tagline": "Track another sales org billing",
       "victoryText": "Org 1710 billing found! Multi-org master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-customer",
+        "s4hana-billing-sales-org",
+        "s4hana-billing-payment-terms",
+        "s4hana-billing-high-value"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1360,6 +1420,12 @@
       "tagline": "Find billing documents with issues",
       "victoryText": "Issues found! Troubleshooter!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-billing-requests-customer",
+        "s4hana-billing-ref-document",
+        "s4hana-billing-product",
+        "s4hana-billing-org-1710"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1459,6 +1525,10 @@
       "tagline": "Check PO item category",
       "victoryText": "Item category found! Classification pro!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-po-material",
+        "s4hana-po-plant"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1492,6 +1562,11 @@
       "tagline": "Find POs by supplier ID",
       "victoryText": "Supplier POs found! Vendor master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-po-material",
+        "s4hana-po-plant",
+        "s4hana-po-item-category"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1525,6 +1600,11 @@
       "tagline": "Find POs by purchasing group",
       "victoryText": "Purch group POs found! Buyer champion!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-po-material",
+        "s4hana-po-plant",
+        "s4hana-po-item-category"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1558,6 +1638,10 @@
       "tagline": "Find PRs by value threshold",
       "victoryText": "Value PRs found! Finance tracker!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-po-supplier",
+        "s4hana-po-purch-group"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1591,6 +1675,10 @@
       "tagline": "Track PRs by purchasing group",
       "victoryText": "Group PRs found! Requisition pro!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-po-supplier",
+        "s4hana-po-purch-group"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1624,6 +1712,10 @@
       "tagline": "Check PR follow-on document status",
       "victoryText": "Follow-on status found! Process expert!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-pr-value-filter",
+        "s4hana-pr-purch-group"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1690,6 +1782,10 @@
       "tagline": "Find delivery document details",
       "victoryText": "Document found! Details master!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-delivery-due-shipping",
+        "s4hana-delivery-lookup"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1723,6 +1819,9 @@
       "tagline": "Check overall picking status",
       "victoryText": "Picking status found! Warehouse pro!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-delivery-document"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1756,6 +1855,11 @@
       "tagline": "Find deliveries ready for picking",
       "victoryText": "Picking queue found! Warehouse wizard!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-delivery-due-shipping",
+        "s4hana-delivery-lookup",
+        "s4hana-delivery-document"
+      ],
       "steps": [
         {
           "id": 1,
@@ -1789,6 +1893,10 @@
       "tagline": "Check planned goods issue date",
       "victoryText": "Issue date found! Planning expert!",
       "solutions": ["s4hana"],
+      "requiresQuests": [
+        "s4hana-delivery-picking-status",
+        "s4hana-delivery-ready-picking"
+      ],
       "steps": [
         {
           "id": 1,
