@@ -122,6 +122,11 @@
       "icon": "🚗",
       "tagline": "Master company car guidelines",
       "victoryText": "Policy mastered! Ready to roll!",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center"
+      ],
       "steps": [
         {
           "id": 1,
@@ -154,6 +159,11 @@
       "icon": "🌴",
       "tagline": "Request vacation lightning-fast",
       "victoryText": "Request sent! Boss notified!",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center"
+      ],
       "steps": [
         {
           "id": 1,
@@ -180,11 +190,11 @@
       "id": "employee-assigned-learning",
       "name": "📚 Power-Up: Learning Path",
       "category": "employee",
-      "description": "🔒 UNLOCK: Complete 5 quests to level up",
+      "description": "Discover your assigned training",
       "difficulty": "Medium",
       "points": 150,
       "icon": "📚",
-      "tagline": "🔒 UNLOCK: Complete 5 quests to level up",
+      "tagline": "Discover your assigned training",
       "victoryText": "Courses unlocked! Brain gains incoming!",
       "requiresQuests": [
         "employee-leave-balance",
@@ -212,6 +222,126 @@
           "waitForResponse": true,
           "responseKeywords": ["learning", "course", "training", "assigned", "development", "education"],
           "successMessage": "Learning assignments retrieved! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "employee-view-email",
+      "name": "📧 Contact Check: View My Email",
+      "category": "employee",
+      "description": "Find your email in seconds",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "📧",
+      "tagline": "Find your email in seconds",
+      "victoryText": "Email retrieved! Stay connected!",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center",
+        "employee-rental-policy",
+        "employee-request-time-off",
+        "employee-assigned-learning"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Email",
+          "description": "Retrieving your email address...",
+          "action": "type_and_send",
+          "prompt": "View email",
+          "waitForResponse": true,
+          "responseKeywords": ["email", "@", "address", "contact"],
+          "successMessage": "Email retrieved! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "employee-view-job",
+      "name": "💼 Career Path: View My Job Info",
+      "category": "employee",
+      "description": "See your title and role details",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "💼",
+      "tagline": "See your title and role details",
+      "victoryText": "Job info loaded! Career mapped!",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center",
+        "employee-rental-policy",
+        "employee-request-time-off",
+        "employee-assigned-learning"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Job Info",
+          "description": "Retrieving your job information...",
+          "action": "type_and_send",
+          "prompt": "View job",
+          "waitForResponse": true,
+          "responseKeywords": ["job", "title", "position", "role"],
+          "successMessage": "Job details displayed! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "employee-view-birthday",
+      "name": "🎂 Birthday Tracker: My Celebration",
+      "category": "employee",
+      "description": "Never forget your cake day!",
+      "difficulty": "Easy",
+      "points": 100,
+      "icon": "🎂",
+      "tagline": "Never forget your cake day!",
+      "victoryText": "Birthday retrieved! Celebrate!",
+      "requiresQuests": [
+        "employee-leave-balance",
+        "employee-my-goals",
+        "employee-cost-center",
+        "employee-rental-policy",
+        "employee-request-time-off",
+        "employee-assigned-learning"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Birthday",
+          "description": "Retrieving your birthday...",
+          "action": "type_and_send",
+          "prompt": "View birthday",
+          "waitForResponse": true,
+          "responseKeywords": ["birthday", "birth", "date", "born"],
+          "successMessage": "Birthday displayed! 🏆"
         }
       ]
     },
@@ -293,11 +423,11 @@
       "id": "manager-spot-award",
       "name": "🏅 Hero Moment: Recognize Excellence",
       "category": "manager",
-      "description": "🔒 UNLOCK: Complete 2 manager quests",
+      "description": "Reward your team's hard work",
       "difficulty": "Hard",
       "points": 200,
       "icon": "🏅",
-      "tagline": "🔒 UNLOCK: Complete 2 manager quests",
+      "tagline": "Reward your team's hard work",
       "victoryText": "Award sent! You made someone's day!",
       "requiresQuests": [
         "manager-pending-approvals",
@@ -367,6 +497,286 @@
           "action": "wait",
           "duration": 3000,
           "successMessage": "🎉 Quest complete! Click 'Send' to submit the award (optional). 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-give-feedback",
+      "name": "💬 Feedback Master: Give Kudos",
+      "category": "manager",
+      "description": "Boost morale with recognition",
+      "difficulty": "Medium",
+      "points": 150,
+      "icon": "💬",
+      "tagline": "Boost morale with recognition",
+      "victoryText": "Feedback ready! You made their day!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Give Feedback",
+          "description": "Initiating feedback...",
+          "action": "type_and_send",
+          "prompt": "Give feedback",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "employee", "name", "recipient"],
+          "errorKeywords": ["sorry", "couldn't", "unable"],
+          "successMessage": "Joule is asking who... ✅"
+        },
+        {
+          "id": 3,
+          "name": "Enter Employee Name",
+          "description": "Entering employee name...",
+          "action": "type_and_send",
+          "prompt": "Jada Baker",
+          "waitForResponse": true,
+          "responseKeywords": ["feedback", "comment", "message", "what"],
+          "errorKeywords": ["not found", "couldn't find"],
+          "optional": true,
+          "successMessage": "🎉 Quest complete! Type feedback message (optional). 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-team-hire-dates",
+      "name": "📊 Team Intel: Hire Dates",
+      "category": "manager",
+      "description": "Know your team's tenure",
+      "difficulty": "Medium",
+      "points": 150,
+      "icon": "📊",
+      "tagline": "Know your team's tenure",
+      "victoryText": "Hire dates loaded! Team history revealed!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Team Hire Dates",
+          "description": "Retrieving team hire dates...",
+          "action": "type_and_send",
+          "prompt": "View team's hire dates",
+          "waitForResponse": true,
+          "responseKeywords": ["hire", "date", "team", "joined", "started"],
+          "successMessage": "Team hire dates displayed! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-compensation-insight",
+      "name": "💰 Compensation Wizard: Team Insights",
+      "category": "manager",
+      "description": "Understand team pay landscape",
+      "difficulty": "Hard",
+      "points": 200,
+      "icon": "💰",
+      "tagline": "Understand team pay landscape",
+      "victoryText": "Insights unlocked! Data-driven decisions!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team",
+        "manager-spot-award",
+        "manager-give-feedback",
+        "manager-team-hire-dates"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Request Compensation Insight",
+          "description": "Requesting compensation data...",
+          "action": "type_and_send",
+          "prompt": "Show me compensation insight",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "employee", "name"],
+          "errorKeywords": ["sorry", "couldn't", "unable"],
+          "successMessage": "Joule is asking who... ✅"
+        },
+        {
+          "id": 3,
+          "name": "Enter Employee Name",
+          "description": "Entering employee name...",
+          "action": "type_and_send",
+          "prompt": "Jada Baker",
+          "waitForResponse": true,
+          "responseKeywords": ["compensation", "salary", "pay", "insight"],
+          "errorKeywords": ["not found", "couldn't find"],
+          "optional": true,
+          "successMessage": "Compensation insights displayed! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-view-metrics",
+      "name": "📈 Data Detective: View Metrics",
+      "category": "manager",
+      "description": "Unlock workforce analytics",
+      "difficulty": "Hard",
+      "points": 200,
+      "icon": "📈",
+      "tagline": "Unlock workforce analytics",
+      "victoryText": "Metrics unlocked! Data wizard status!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team",
+        "manager-spot-award",
+        "manager-give-feedback",
+        "manager-team-hire-dates"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Workforce Metrics",
+          "description": "Retrieving workforce metrics...",
+          "action": "type_and_send",
+          "prompt": "Show me some workforce metrics",
+          "waitForResponse": true,
+          "responseKeywords": ["metric", "data", "analytics", "report", "workforce"],
+          "successMessage": "Metrics displayed! 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-request-feedback",
+      "name": "🎯 Goal Guru: Request Feedback",
+      "category": "manager",
+      "description": "Drive growth with insights",
+      "difficulty": "Hard",
+      "points": 200,
+      "icon": "🎯",
+      "tagline": "Drive growth with insights",
+      "victoryText": "Feedback requested! Growth unlocked!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team",
+        "manager-spot-award",
+        "manager-give-feedback",
+        "manager-team-hire-dates"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "Request Feedback",
+          "description": "Initiating feedback request...",
+          "action": "type_and_send",
+          "prompt": "Request feedback",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "from", "name", "employee"],
+          "errorKeywords": ["sorry", "couldn't", "unable"],
+          "successMessage": "Joule is asking who... ✅"
+        },
+        {
+          "id": 3,
+          "name": "Enter Employee Name",
+          "description": "Entering employee name...",
+          "action": "type_and_send",
+          "prompt": "Jada Baker",
+          "waitForResponse": true,
+          "responseKeywords": ["feedback", "topic", "area", "about"],
+          "errorKeywords": ["not found", "couldn't find"],
+          "optional": true,
+          "successMessage": "🎉 Quest complete! Specify topic (optional). 🏆"
+        }
+      ]
+    },
+    {
+      "id": "manager-worker-profile",
+      "name": "🔍 People Search: Team Profiles",
+      "category": "manager",
+      "description": "Deep dive into team details",
+      "difficulty": "Hard",
+      "points": 200,
+      "icon": "🔍",
+      "tagline": "Deep dive into team details",
+      "victoryText": "Profile loaded! People expert status!",
+      "requiresQuests": [
+        "manager-pending-approvals",
+        "manager-my-team",
+        "manager-spot-award",
+        "manager-give-feedback",
+        "manager-team-hire-dates"
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "name": "Open Joule",
+          "description": "Opening Joule AI assistant...",
+          "action": "click",
+          "selector": "joule.chatButton",
+          "waitForResponse": false,
+          "successMessage": "Joule opened! 🎮"
+        },
+        {
+          "id": 2,
+          "name": "View Worker Profile",
+          "description": "Requesting worker profile...",
+          "action": "type_and_send",
+          "prompt": "View worker profile",
+          "waitForResponse": true,
+          "responseKeywords": ["who", "employee", "name"],
+          "errorKeywords": ["sorry", "couldn't", "unable"],
+          "successMessage": "Joule is asking who... ✅"
+        },
+        {
+          "id": 3,
+          "name": "Enter Employee Name",
+          "description": "Entering employee name...",
+          "action": "type_and_send",
+          "prompt": "Jada Baker",
+          "waitForResponse": true,
+          "responseKeywords": ["profile", "information", "details", "employee"],
+          "errorKeywords": ["not found", "couldn't find"],
+          "optional": true,
+          "successMessage": "Worker profile displayed! 🏆"
         }
       ]
     },

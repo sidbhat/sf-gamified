@@ -891,18 +891,18 @@ class QuestOverlay {
         </div>
         <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
         
-        <!-- Share button (only show for full success) -->
-        ${isFullSuccess ? `
-        <div class="share-actions">
-          <button class="share-btn primary" id="share-linkedin-btn">
+        <!-- Action buttons - Quest button first, then Share (only for full success) -->
+        <div class="quest-complete-actions">
+          <button class="show-quests-btn primary" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
+            🗺️ Show Quests
+          </button>
+          
+          ${isFullSuccess ? `
+          <button class="share-btn" id="share-linkedin-btn">
             📤 Share on LinkedIn
           </button>
+          ` : ''}
         </div>
-        ` : ''}
-        
-        <button class="show-quests-btn" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
-          🗺️ Show Quests
-        </button>
       </div>
     `;
 
@@ -942,16 +942,15 @@ class QuestOverlay {
     if (shareLinkedInBtn) {
       shareLinkedInBtn.addEventListener('click', () => {
         try {
-          // Generate shareable text
-          const shareText = `🏆 Just completed "${questData.name}"!
+          // Generate simplified shareable text
+          const shareText = `🏆 Just completed "${questData.name}" in Joule Quest!
 
-💎 Points: ${questData.points}
-${this.getDifficultyEmoji(questData.difficulty)} Difficulty: ${questData.difficulty}
+💎 ${questData.points} points earned
+${this.getDifficultyEmoji(questData.difficulty)} ${questData.difficulty} difficulty
 
-🎮 Training with Joule Quest - zero-risk SAP learning
-👉 Get it: [Chrome Web Store Link]
+Master SAP SuccessFactors Joule with zero-risk, gamified training.
 
-#JouleQuest #SAPSkills #SuccessFactors #Joule`;
+#JouleQuest #SAPSkills #SuccessFactors`;
 
           // Create LinkedIn share URL with encoded text
           const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://chrome.google.com/webstore')}&summary=${encodeURIComponent(shareText)}`;
@@ -960,7 +959,7 @@ ${this.getDifficultyEmoji(questData.difficulty)} Difficulty: ${questData.difficu
           window.open(linkedInUrl, '_blank');
 
           // Show success feedback
-          shareLinkedInBtn.textContent = '✅ Opened LinkedIn!';
+          shareLinkedInBtn.textContent = '✅ Shared!';
           shareLinkedInBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
           
           setTimeout(() => {

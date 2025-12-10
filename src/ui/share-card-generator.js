@@ -131,15 +131,14 @@ class ShareCardGenerator {
    * Generate shareable text for clipboard
    */
   generateShareText(questData) {
-    return `🏆 Just completed "${questData.name}"!
+    return `🏆 Just completed "${questData.name}" in Joule Quest!
 
-💎 Points: ${questData.points}
-${this.getDifficultyEmoji(questData.difficulty)} Difficulty: ${questData.difficulty}
+💎 ${questData.points} points earned
+${this.getDifficultyEmoji(questData.difficulty)} ${questData.difficulty} difficulty
 
-🎮 Training with Joule Quest - zero-risk SAP learning
-👉 Get it: [Chrome Web Store Link]
+Master SAP SuccessFactors Joule with zero-risk, gamified training.
 
-#JouleQuest #SAPSkills #SuccessFactors #Joule`;
+#JouleQuest #SAPSkills #SuccessFactors`;
   }
 
   /**
