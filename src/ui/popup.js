@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       !tab.url.includes('sfsales') &&
       !tab.url.includes('hcm') &&
       !tab.url.toLowerCase().includes('s4hana') &&
-      !tab.url.toLowerCase().includes('s/4hana')
+      !tab.url.toLowerCase().includes('s/4hana') &&
+      !tab.url.toLowerCase().includes('nqo')
     )) {
       showError('Please navigate to SAP SuccessFactors or S/4HANA first');
       return;
