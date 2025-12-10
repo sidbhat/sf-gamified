@@ -1,0 +1,63 @@
+{
+  "solutions": [
+    {
+      "id": "s4hana",
+      "name": "SAP S/4HANA",
+      "shortName": "S/4HANA",
+      "badge": "S/4HANA",
+      "theme": {
+        "primary": "#ff6b35",
+        "secondary": "#ff9e00",
+        "accent": "#00b4d8",
+        "gradient": "linear-gradient(135deg, #ff6b35 0%, #ff9e00 100%)"
+      },
+      "icon": "🏭",
+      "detection": {
+        "urlPatterns": [
+          "s4hana",
+          "s/4hana"
+        ],
+        "priority": 2
+      },
+      "jouleConfig": {
+        "chatButtonSelector": "joule.chatButton",
+        "responseDelay": 2000,
+        "maxRetries": 3,
+        "supportsCards": true,
+        "cardClickActions": ["Open", "..."]
+      }
+    },
+    {
+      "id": "successfactors",
+      "name": "SuccessFactors HCM",
+      "shortName": "HCM",
+      "badge": "HCM",
+      "theme": {
+        "primary": "#7b2cbf",
+        "secondary": "#9d4edd",
+        "accent": "#c77dff",
+        "gradient": "linear-gradient(135deg, #7b2cbf 0%, #9d4edd 100%)"
+      },
+      "icon": "👥",
+      "detection": {
+        "urlPatterns": [
+          "successfactors.com",
+          "successfactors.eu",
+          "hr.cloud.sap",
+          "sfsales",
+          "hcm",
+          "hr"
+        ],
+        "priority": 1
+      },
+      "jouleConfig": {
+        "chatButtonSelector": "joule.chatButton",
+        "responseDelay": 2000,
+        "maxRetries": 3,
+        "supportsCards": false,
+        "cardClickActions": []
+      }
+    }
+  ],
+  "fallback": "successfactors"
+}

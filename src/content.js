@@ -10,19 +10,34 @@
   logger.info('Content script loaded');
 
   // Load configuration files
-  let selectors, quests;
+  let selectors, quests, solutions, solutionDetector, currentSolution;
 
   try {
     // Fetch configurations (NO user credentials stored - extension uses browser's authenticated session)
-    const [selectorsResponse, questsResponse] = await Promise.all([
+    const [selectorsResponse, questsResponse, solutionsResponse] = await Promise.all([
       fetch(chrome.runtime.getURL('src/config/selectors.json')),
-      fetch(chrome.runtime.getURL('src/config/quests.json'))
+      fetch(chrome.runtime.getURL('src/config/quests.json')),
+      fetch(chrome.runtime.getURL('src/config/solutions.json'))
     ]);
 
     selectors = await selectorsResponse.json();
     quests = await questsResponse.json();
+    solutions = await solutionsResponse.json();
 
-    logger.success('Configurations loaded', { selectors, quests });
+    logger.success('Configurations loaded', { selectors, quests, solutions });
+
+    // Initialize solution detector
+    const SolutionDetector = window.JouleSolutionDetector;
+    solutionDetector = new SolutionDetector(solutions);
+    
+    // Detect current SAP solution
+    currentSolution = solutionDetector.detect();
+    logger.success('Solution detected', { 
+      solution: currentSolution.name,
+      badge: currentSolution.badge,
+      theme: currentSolution.theme 
+    });
+
   } catch (error) {
     logger.error('Failed to load configurations', error);
     return;
@@ -34,9 +49,9 @@
   const storage = window.JouleQuestStorage;
 
   overlay.init();
-  await runner.init(selectors, overlay);
+  await runner.init(selectors, overlay, currentSolution);
 
-  logger.success('All components initialized');
+  logger.success('All components initialized', { solution: currentSolution.name });
 
   // Check if there's an active quest state from navigation (page reload)
   try {
@@ -179,9 +194,10 @@
 
   /**
    * Handle show quest selection command
+   * Filters quests based on detected SAP solution
    */
   async function handleShowQuestSelection() {
-    logger.info('Showing quest selection overlay');
+    logger.info('Showing quest selection overlay', { solution: currentSolution.name });
 
     try {
       // CRITICAL FIX: Force reset runner state to prevent "another quest already running" error
@@ -195,14 +211,46 @@
         runner.forceReset();
       }
 
+      // Filter quests by current solution
+      const availableQuests = quests.quests.filter(quest => 
+        !quest.solutions || quest.solutions.includes(currentSolution.id)
+      );
+
+      // Filter journeys by current solution
+      const availableJourneys = Object.entries(quests.journeys)
+        .filter(([_, journey]) => 
+          !journey.solutions || journey.solutions.includes(currentSolution.id)
+        )
+        .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {});
+
+      logger.info('Quests filtered by solution', {
+        solution: currentSolution.name,
+        totalQuests: quests.quests.length,
+        availableQuests: availableQuests.length,
+        totalJourneys: Object.keys(quests.journeys).length,
+        availableJourneys: Object.keys(availableJourneys).length
+      });
+
       // Get completed quests and stats
       const completedQuests = await storage.getCompletedQuests();
       const stats = await storage.getUserStats();
 
-      // Show quest selection overlay (centered on screen) with journey metadata
-      overlay.showQuestSelection(quests.quests, completedQuests, stats, quests.journeys);
+      // Apply solution theme to overlay
+      overlay.applySolutionTheme(currentSolution);
 
-      logger.success('Quest selection overlay displayed');
+      // Show quest selection overlay (centered on screen) with journey metadata and solution badge
+      overlay.showQuestSelection(
+        availableQuests, 
+        completedQuests, 
+        stats, 
+        availableJourneys,
+        currentSolution
+      );
+
+      logger.success('Quest selection overlay displayed', { 
+        solution: currentSolution.name,
+        questCount: availableQuests.length 
+      });
     } catch (error) {
       logger.error('Failed to show quest selection', error);
       overlay.showError('Failed to load quests. Please refresh the page and try again.');

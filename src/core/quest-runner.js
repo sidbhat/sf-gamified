@@ -15,18 +15,32 @@ class QuestRunner {
     this.selectors = null;
     this.failedSteps = []; // Track steps that failed
     this.stepResults = []; // Track all step results (success/error/skipped)
+    this.currentSolution = null; // Current SAP solution
+    this.errorHandler = null; // Solution-aware error handler
   }
 
   /**
    * Initialize runner with configurations
    * @param {Object} selectors - Selector configuration
    * @param {Object} overlay - Overlay instance for UI feedback
+   * @param {Object} solution - Current SAP solution configuration
    */
-  async init(selectors, overlay) {
-    this.logger.info('Initializing QuestRunner');
+  async init(selectors, overlay, solution) {
+    this.logger.info('Initializing QuestRunner', { solution: solution.name });
     this.selectors = selectors;
     this.overlay = overlay;
+    this.currentSolution = solution;
+    
+    // Initialize solution-aware error handler
+    const ErrorHandler = window.JouleQuestErrorHandler;
+    this.errorHandler = new ErrorHandler(solution);
+    
     await this.jouleHandler.init(selectors);
+    
+    this.logger.success('QuestRunner initialized', {
+      solution: solution.name,
+      jouleConfig: solution.jouleConfig
+    });
   }
 
   /**
@@ -149,46 +163,65 @@ class QuestRunner {
       } catch (error) {
         this.logger.error(`Step ${i + 1} failed: ${error.message}`, error);
         
-        // Determine error type for better messaging
+        // Use error handler to classify and handle error
         let errorType = 'UNKNOWN_ERROR';
         const errorMsg = error.message.toLowerCase();
         
         if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
           errorType = 'JOULE_NOT_FOUND';
-        } else if (errorMsg.includes('iframe') && errorMsg.includes('not found')) {
-          errorType = 'JOULE_IFRAME_NOT_FOUND';
-        } else if (errorMsg.includes('timeout')) {
-          errorType = 'STEP_TIMEOUT';
-        } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
-          errorType = 'ELEMENT_NOT_FOUND';
-        } else if (errorMsg.includes('prompt') || errorMsg.includes('send')) {
-          errorType = 'PROMPT_SEND_FAILED';
         } else if (errorMsg.includes('button')) {
           errorType = 'BUTTON_NOT_FOUND';
-        } else if (errorMsg.includes('input')) {
-          errorType = 'INPUT_FIELD_NOT_FOUND';
+        } else if (errorMsg.includes('card')) {
+          errorType = 'CARD_NOT_FOUND';
+        } else if (errorMsg.includes('timeout')) {
+          errorType = 'RESPONSE_TIMEOUT';
+        } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
+          errorType = 'SELECTOR_NOT_FOUND';
         }
         
-        // Track failed step
-        this.failedSteps.push(i);
-        this.stepResults.push({
-          stepIndex: i,
-          stepName: step.name,
-          status: 'error',
-          error: error.message,
-          errorType: errorType
+        // Handle error with solution context
+        const errorObj = this.errorHandler.handle(errorType, {
+          step: step.name,
+          stepIndex: i + 1,
+          quest: this.currentQuest.name
         });
         
-        // Show error state in overlay with error type for better messaging
-        if (this.overlay) {
-          this.overlay.showStepError(step, errorType, error.message, isAgentQuest);
+        // Check if quest can continue (considers optional steps)
+        const canContinue = this.errorHandler.canContinue(errorObj, step.optional);
+        
+        if (canContinue) {
+          // Track failed or skipped step
+          const status = step.optional ? 'skipped' : 'error';
+          this.stepResults.push({
+            stepIndex: i,
+            stepName: step.name,
+            status: status,
+            error: errorObj.message,
+            errorType: errorType
+          });
+          
+          if (!step.optional) {
+            this.failedSteps.push(i);
+          }
+          
+          // Show error state in overlay
+          if (this.overlay) {
+            if (step.optional) {
+              this.overlay.showStepSkipped(step, errorObj.recovery, isAgentQuest);
+            } else {
+              this.overlay.showStepError(step, errorType, error.message, isAgentQuest);
+            }
+          }
+          
+          // Wait before continuing (longer for non-optional errors)
+          await this.sleep(step.optional ? 3000 : 5000);
+          
+          this.logger.warn(`⚠️ Step ${i + 1} ${step.optional ? 'skipped' : 'failed'} but continuing quest...`);
+        } else {
+          // Critical error - cannot continue
+          this.logger.error('Critical error - quest cannot continue', errorObj);
+          throw error;
         }
-        
-        // Wait before continuing to next step (longer for error to be read)
-        await this.sleep(5000);
-        
-        // Log that we're continuing despite error
-        this.logger.warn(`⚠️ Step ${i + 1} failed but continuing quest...`);
       }
     }
 

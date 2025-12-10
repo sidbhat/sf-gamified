@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Joule Quest for SAP SuccessFactors",
-  "version": "1.0.4",
-  "description": "Master SAP Joule AI through gamified quests. Interactive learning - earn points, complete challenges, and become a Joule expert!",
+  "name": "Joule Quest for SAP Solutions",
+  "version": "1.1.0",
+  "description": "Master SAP Joule AI across SuccessFactors and S/4HANA. Gamified learning - earn points, complete challenges, become an expert!",
   "permissions": [
     "storage",
     "activeTab"
@@ -27,7 +27,9 @@
         "src/utils/logger.js",
         "src/utils/error-messages.js",
         "src/utils/shadow-dom-helper.js",
+        "src/utils/solution-detector.js",
         "src/core/storage-manager.js",
+        "src/core/error-handler.js",
         "src/ui/confetti.js",
         "src/ui/overlay.js",
         "src/core/joule-handler.js",
