@@ -14,7 +14,8 @@
     "https://*.sapdas.cloud.sap/*",
     "https://*.s4hana.cloud.sap/*",
     "https://*.s4hana.ondemand.com/*",
-    "https://*.nqo.cloud.sap/*"
+    "https://*.nqo.cloud.sap/*",
+    "https://*.hana.ondemand.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -28,6 +29,7 @@
         "https://*.s4hana.cloud.sap/*",
         "https://*.s4hana.ondemand.com/*",
         "https://*.nqo.cloud.sap/*",
+        "https://*.hana.ondemand.com/*",
         "https://*.cloud.sap/*"
       ],
       "js": [
@@ -83,6 +85,7 @@
         "https://*.s4hana.cloud.sap/*",
         "https://*.s4hana.ondemand.com/*",
         "https://*.nqo.cloud.sap/*",
+        "https://*.hana.ondemand.com/*",
         "https://*.cloud.sap/*"
       ]
     }
