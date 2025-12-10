@@ -724,9 +724,10 @@ body.quest-running::before {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  opacity: 0.9;
+  opacity: 1;
   margin-bottom: 8px;
-  color: #FFD700;
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .story-context .story-intro {
@@ -1127,15 +1128,16 @@ body.quest-running::before {
 }
 
 .story-continuation .next-hint {
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 12px;
   font-weight: 600;
-  opacity: 0.95;
+  opacity: 1;
   margin: 0;
-  color: #FFD700;
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Quest Error */
