@@ -15,7 +15,8 @@
       "detection": {
         "urlPatterns": [
           "s4hana",
-          "s/4hana"
+          "s/4hana",
+          "nqo"
         ],
         "priority": 2
       },
