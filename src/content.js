@@ -6,8 +6,22 @@
 (async function() {
   'use strict';
 
+  // CRITICAL: Only run in top-level window, NOT in iframes
+  // This prevents the extension from running in embedded iframes like WalkMe, Help panels, etc.
+  if (window !== window.top) {
+    console.log('[JouleQuest] Skipping content script - running in iframe, not top window');
+    return;
+  }
+
+  // CRITICAL: Prevent multiple content script injections in same tab
+  if (window.JOULE_QUEST_INITIALIZED) {
+    console.warn('[JouleQuest] Content script already initialized, skipping duplicate injection');
+    return;
+  }
+  window.JOULE_QUEST_INITIALIZED = true;
+
   const logger = window.JouleQuestLogger;
-  logger.info('Content script loaded');
+  logger.info('Content script loaded in top-level window');
 
   // Load configuration files
   let selectors, quests, solutions, solutionDetector, currentSolution;
@@ -54,11 +68,27 @@
   logger.success('All components initialized', { solution: currentSolution.name });
 
   // Check if there's an active quest state from navigation (page reload)
+  // CRITICAL FIX: Use tab-specific storage key to prevent cross-tab contamination
   try {
-    const result = await chrome.storage.local.get('activeQuestState');
-    if (result.activeQuestState) {
-      const questState = result.activeQuestState;
-      logger.info('Found active quest state from navigation', questState);
+    // Get current tab ID
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tabId = tabs[0]?.id || 'unknown';
+    const storageKey = `activeQuestState_tab${tabId}`;
+    
+    logger.info('Checking for tab-specific quest state', { tabId, storageKey });
+    
+    const result = await chrome.storage.local.get(storageKey);
+    if (result[storageKey]) {
+      const questState = result[storageKey];
+      logger.info('Found active quest state from navigation (tab-specific)', { questState, storageKey });
+      
+      // CRITICAL: Verify this quest state belongs to current solution
+      if (questState.solutionId && questState.solutionId !== currentSolution.id) {
+        logger.warn(`Quest state is for different solution (${questState.solutionId} vs ${currentSolution.id}), ignoring`);
+        await chrome.storage.local.remove(storageKey);
+        logger.info('Cleared mismatched solution quest state');
+        return; // Don't resume quest from different solution
+      }
       
       // CRITICAL FIX: Check if quest state is stale (older than 30 seconds)
       // This prevents auto-restart loops from manual page refreshes
@@ -67,7 +97,7 @@
       
       if (age > MAX_STATE_AGE) {
         logger.warn(`Quest state is stale (${age}ms old), ignoring and clearing`);
-        await chrome.storage.local.remove('activeQuestState');
+        await chrome.storage.local.remove(storageKey);
         logger.info('Cleared stale quest state');
       } else {
         // State is fresh, this is a legitimate navigation
@@ -87,12 +117,12 @@
           // Calculate next step index
           const nextStepIndex = questState.currentStepIndex + 1;
           
-          // Check if quest is already complete
-          if (nextStepIndex >= quest.steps.length) {
-            logger.warn('Quest already completed');
-            await chrome.storage.local.remove('activeQuestState');
-            return;
-          }
+        // Check if quest is already complete
+        if (nextStepIndex >= quest.steps.length) {
+          logger.warn('Quest already completed');
+          await chrome.storage.local.remove(storageKey);
+          return;
+        }
           
           // Set runner state to resume from next step
           runner.currentQuest = quest;
@@ -128,21 +158,32 @@
     logger.error('Failed to restore quest state', error);
     // Clear state on error to prevent stuck loops
     try {
-      await chrome.storage.local.remove('activeQuestState');
-      logger.info('Cleared quest state due to error');
+      // Try to get tab ID for cleanup
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      const tabId = tabs[0]?.id;
+      if (tabId) {
+        const storageKey = `activeQuestState_tab${tabId}`;
+        await chrome.storage.local.remove(storageKey);
+        logger.info('Cleared quest state due to error');
+      }
     } catch (clearError) {
       logger.error('Failed to clear quest state', clearError);
     }
   }
 
+  // DEBUGGING: Track message handler invocations
+  let messageHandlerCallCount = 0;
+
   // Listen for messages from popup or background
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    logger.info('Message received', message);
+    messageHandlerCallCount++;
+    logger.info(`[DEBUG] Message received (#${messageHandlerCallCount})`, message);
 
     (async () => {
       try {
         switch (message.action) {
           case 'showQuestSelection':
+            logger.info(`[DEBUG] showQuestSelection triggered (#${messageHandlerCallCount})`);
             await handleShowQuestSelection();
             sendResponse({ success: true });
             break;
@@ -188,26 +229,37 @@
     if (event.data.type === 'START_QUEST') {
       handleStartQuest(event.data.questId, 'demo', event.data.isReplay);
     } else if (event.data.type === 'SHOW_QUEST_SELECTION') {
+      logger.info('[DEBUG] SHOW_QUEST_SELECTION window message received');
       handleShowQuestSelection();
     }
   });
+
+  // DEBUGGING: Track handleShowQuestSelection invocations
+  let showQuestSelectionCallCount = 0;
 
   /**
    * Handle show quest selection command
    * Filters quests based on detected SAP solution
    */
   async function handleShowQuestSelection() {
-    logger.info('Showing quest selection overlay', { solution: currentSolution.name });
+    showQuestSelectionCallCount++;
+    logger.info(`[DEBUG] handleShowQuestSelection called (#${showQuestSelectionCallCount})`, { solution: currentSolution.name });
+    
+    // DEBUGGING: Check DOM state before proceeding
+    const existingOverlays = document.querySelectorAll('#joule-quest-overlay, .joule-quest-overlay');
+    logger.info(`[DEBUG] Existing overlays in DOM BEFORE processing: ${existingOverlays.length}`, {
+      overlayIds: Array.from(existingOverlays).map(el => el.id || el.className)
+    });
 
     try {
       // CRITICAL FIX: Force reset runner state to prevent "another quest already running" error
       // This clears any stuck quest state from previous runs
       if (runner.isQuestRunning()) {
-        logger.warn('Quest is running, force resetting state');
+        logger.warn('[DEBUG] Quest is running, force resetting state');
         runner.forceReset();
       } else {
         // Even if not running, do a safety reset to ensure clean state
-        logger.info('Safety reset of quest runner state');
+        logger.info('[DEBUG] Safety reset of quest runner state');
         runner.forceReset();
       }
 
@@ -223,7 +275,7 @@
         )
         .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {});
 
-      logger.info('Quests filtered by solution', {
+      logger.info('[DEBUG] Quests filtered by solution', {
         solution: currentSolution.name,
         totalQuests: quests.quests.length,
         availableQuests: availableQuests.length,
@@ -236,9 +288,11 @@
       const stats = await storage.getUserStats(currentSolution.id);
 
       // Apply solution theme to overlay
+      logger.info('[DEBUG] Applying solution theme');
       overlay.applySolutionTheme(currentSolution);
 
       // Show quest selection overlay (centered on screen) with journey metadata and solution badge
+      logger.info('[DEBUG] Calling overlay.showQuestSelection()');
       overlay.showQuestSelection(
         availableQuests, 
         completedQuests, 
@@ -247,12 +301,18 @@
         currentSolution
       );
 
-      logger.success('Quest selection overlay displayed', { 
+      // DEBUGGING: Check DOM state after processing
+      const overlaysAfter = document.querySelectorAll('#joule-quest-overlay, .joule-quest-overlay');
+      logger.info(`[DEBUG] Overlays in DOM AFTER processing: ${overlaysAfter.length}`, {
+        overlayIds: Array.from(overlaysAfter).map(el => el.id || el.className)
+      });
+
+      logger.success('[DEBUG] Quest selection overlay displayed', { 
         solution: currentSolution.name,
         questCount: availableQuests.length 
       });
     } catch (error) {
-      logger.error('Failed to show quest selection', error);
+      logger.error('[DEBUG] Failed to show quest selection', error);
       overlay.showError('Failed to load quests. Please refresh the page and try again.');
       throw error;
     }
@@ -346,10 +406,15 @@
     for (let i = startStepIndex; i < stepsLength; i++) {
       if (!runner.currentQuest || !runner.currentQuest.steps) {
         logger.warn('Quest was stopped during execution');
-        // CRITICAL: Clear state when stopping
+        // CRITICAL: Clear state when stopping (tab-specific)
         try {
-          await chrome.storage.local.remove('activeQuestState');
-          logger.info('Cleared quest state after stop');
+          const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+          const tabId = tabs[0]?.id;
+          if (tabId) {
+            const storageKey = `activeQuestState_tab${tabId}`;
+            await chrome.storage.local.remove(storageKey);
+            logger.info('Cleared quest state after stop');
+          }
         } catch (error) {
           logger.error('Failed to clear quest state on stop', error);
         }
@@ -394,8 +459,13 @@
         // Clear state if current step might have caused reload AND next won't
         if (currentMightReload && !nextWillReload) {
           try {
-            await chrome.storage.local.remove('activeQuestState');
-            logger.info(`Cleared quest state after ${step.name} - no more reloads expected`);
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+            const tabId = tabs[0]?.id;
+            if (tabId) {
+              const storageKey = `activeQuestState_tab${tabId}`;
+              await chrome.storage.local.remove(storageKey);
+              logger.info(`Cleared quest state after ${step.name} - no more reloads expected`);
+            }
           } catch (error) {
             logger.error('Failed to clear quest state', error);
           }
@@ -441,10 +511,15 @@
       logger.error('Failed to save progress', error);
     }
     
-    // CRITICAL FIX: Final cleanup - ensure state is cleared when quest completes
+    // CRITICAL FIX: Final cleanup - ensure state is cleared when quest completes (tab-specific)
     try {
-      await chrome.storage.local.remove('activeQuestState');
-      logger.info('Final cleanup: Cleared quest state after completion');
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      const tabId = tabs[0]?.id;
+      if (tabId) {
+        const storageKey = `activeQuestState_tab${tabId}`;
+        await chrome.storage.local.remove(storageKey);
+        logger.info('Final cleanup: Cleared quest state after completion');
+      }
     } catch (error) {
       logger.error('Failed final quest state cleanup', error);
     }

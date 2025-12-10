@@ -35,7 +35,11 @@ class QuestRunner {
     const ErrorHandler = window.JouleQuestErrorHandler;
     this.errorHandler = new ErrorHandler(solution);
     
-    await this.jouleHandler.init(selectors);
+    // CRITICAL FIX: Don't initialize jouleHandler here!
+    // This was causing Joule iframe to open when clicking extension icon
+    // because waitForJouleIframe() searches for the iframe and triggers it
+    // We'll initialize jouleHandler lazily when a quest actually starts
+    this.logger.info('Deferring jouleHandler initialization until quest starts');
     
     this.logger.success('QuestRunner initialized', {
       solution: solution.name,
@@ -58,11 +62,25 @@ class QuestRunner {
       this.forceReset();
     }
 
-    // CRITICAL: Destroy any existing overlay to prevent stacking
-    if (this.overlay) {
-      this.overlay.destroy();
-      // Reinitialize to create fresh container
+    // CRITICAL: Ensure overlay container exists and is ready
+    // Don't destroy/recreate - just ensure it's initialized
+    if (this.overlay && !this.overlay.container) {
       this.overlay.init();
+    }
+
+    // CRITICAL FIX: Lazy initialize jouleHandler ONLY when quest starts
+    // This prevents Joule from opening when user just clicks extension icon to see quest selection
+    // Only initialize if quest uses Joule actions (type_and_send, click, etc.)
+    const questUsesJoule = quest.steps.some(step => 
+      ['click', 'type_and_send', 'select_first_option', 'click_first_button', 'click_button_by_text'].includes(step.action)
+    );
+    
+    if (questUsesJoule && this.selectors) {
+      this.logger.info('Quest uses Joule, initializing jouleHandler now...');
+      await this.jouleHandler.init(this.selectors);
+      this.logger.success('JouleHandler initialized');
+    } else {
+      this.logger.info('Quest does not use Joule, skipping jouleHandler initialization');
     }
 
     this.currentQuest = quest;
@@ -609,18 +627,27 @@ class QuestRunner {
   async executeNavigateAction(step) {
     this.logger.info(`Navigating to: ${step.url}`);
     
+    // CRITICAL FIX: Get current tab ID to make quest state tab-specific
+    // This prevents cross-tab contamination when SF and S/4HANA tabs are both open
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tabId = tabs[0]?.id || 'unknown';
+    
     // Save quest state to storage before navigation (page will reload)
     const questState = {
       questId: this.currentQuest.id,
       questName: this.currentQuest.name,
       currentStepIndex: this.currentStepIndex,
       mode: this.mode,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      tabId: tabId,  // Track which tab this quest belongs to
+      solutionId: this.currentSolution?.id || 'unknown'  // Track which solution
     };
     
     try {
-      await chrome.storage.local.set({ activeQuestState: questState });
-      this.logger.info('Quest state saved before navigation', questState);
+      // Use tab-specific storage key to prevent cross-tab conflicts
+      const storageKey = `activeQuestState_tab${tabId}`;
+      await chrome.storage.local.set({ [storageKey]: questState });
+      this.logger.info('Quest state saved before navigation (tab-specific)', { questState, storageKey });
     } catch (error) {
       this.logger.error('Failed to save quest state', error);
     }

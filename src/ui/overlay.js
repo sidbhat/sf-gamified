@@ -149,6 +149,12 @@ class QuestOverlay {
    * Initialize overlay
    */
   init() {
+    // CRITICAL: Prevent re-initialization if already initialized
+    if (this.container && document.body.contains(this.container)) {
+      this.logger.warn('Overlay already initialized, skipping init()');
+      return;
+    }
+    
     this.logger.info('Initializing overlay');
     this.createContainer();
   }
@@ -157,19 +163,29 @@ class QuestOverlay {
    * Create overlay container
    */
   createContainer() {
-    // Remove existing overlay if any
-    const existing = document.getElementById('joule-quest-overlay');
-    if (existing) {
-      existing.remove();
+    // NUCLEAR OPTION: Remove ALL existing overlays before doing anything
+    this.logger.info('createContainer called - checking for existing overlays');
+    
+    const allExisting = document.querySelectorAll('[id="joule-quest-overlay"], .joule-quest-overlay, [class*="joule-quest"]');
+    if (allExisting.length > 0) {
+      this.logger.warn(`FOUND ${allExisting.length} existing overlay-related elements, removing ALL`);
+      allExisting.forEach((el, index) => {
+        this.logger.info(`Removing element ${index}: ${el.id || el.className}`);
+        el.remove();
+      });
     }
 
-    // Create overlay container
+    // NOW create single new container
     this.container = document.createElement('div');
     this.container.id = 'joule-quest-overlay';
     this.container.className = 'joule-quest-overlay hidden';
     
     document.body.appendChild(this.container);
-    this.logger.success('Overlay container created');
+    this.logger.success('Overlay container created - should be ONLY ONE now');
+    
+    // Verify only one exists
+    const verify = document.querySelectorAll('#joule-quest-overlay');
+    this.logger.info(`Verification: ${verify.length} overlay(s) in DOM`);
   }
 
   /**
@@ -253,6 +269,105 @@ class QuestOverlay {
   }
 
   /**
+   * Show custom confirmation dialog (replaces ugly browser confirm())
+   * @param {Object} options - Dialog options
+   * @returns {Promise<boolean>} True if user confirms, false if cancels
+   */
+  showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', icon = '❓' }) {
+    return new Promise((resolve) => {
+      const html = `
+        <div class="joule-quest-card quest-confirm-dialog">
+          <div class="confirm-icon">${icon}</div>
+          <h3>${title}</h3>
+          <p style="white-space: pre-line; margin: 16px 0 24px 0;">${message}</p>
+          
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button class="confirm-btn" id="confirm-yes-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+              ${confirmText}
+            </button>
+            <button class="cancel-btn" id="confirm-no-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+              ${cancelText}
+            </button>
+          </div>
+        </div>
+      `;
+
+      this.container.innerHTML = html;
+      this.show();
+
+      const yesBtn = this.container.querySelector('#confirm-yes-btn');
+      const noBtn = this.container.querySelector('#confirm-no-btn');
+
+      const cleanup = () => {
+        document.removeEventListener('keydown', escHandler);
+      };
+
+      const escHandler = (e) => {
+        if (e.key === 'Escape') {
+          cleanup();
+          resolve(false);
+        }
+      };
+
+      yesBtn.addEventListener('click', () => {
+        cleanup();
+        resolve(true);
+      });
+
+      noBtn.addEventListener('click', () => {
+        cleanup();
+        resolve(false);
+      });
+
+      document.addEventListener('keydown', escHandler);
+    });
+  }
+
+  /**
+   * Show custom alert dialog (replaces ugly browser alert())
+   * @param {Object} options - Dialog options
+   * @returns {Promise<void>} Resolves when user dismisses
+   */
+  showAlertDialog({ title, message, buttonText = 'OK', icon = 'ℹ️' }) {
+    return new Promise((resolve) => {
+      const html = `
+        <div class="joule-quest-card quest-alert-dialog">
+          <div class="alert-icon">${icon}</div>
+          <h3>${title}</h3>
+          <p style="white-space: pre-line; margin: 16px 0 24px 0;">${message}</p>
+          
+          <button class="ok-btn" id="alert-ok-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 48px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+            ${buttonText}
+          </button>
+        </div>
+      `;
+
+      this.container.innerHTML = html;
+      this.show();
+
+      const okBtn = this.container.querySelector('#alert-ok-btn');
+
+      const cleanup = () => {
+        document.removeEventListener('keydown', escHandler);
+      };
+
+      const escHandler = (e) => {
+        if (e.key === 'Escape' || e.key === 'Enter') {
+          cleanup();
+          resolve();
+        }
+      };
+
+      okBtn.addEventListener('click', () => {
+        cleanup();
+        resolve();
+      });
+
+      document.addEventListener('keydown', escHandler);
+    });
+  }
+
+  /**
    * Show quest selection screen
    * @param {Array} quests - Array of all quests
    * @param {Array} completedQuests - Array of completed quest IDs
@@ -261,7 +376,20 @@ class QuestOverlay {
    * @param {Object} solution - Current SAP solution configuration
    */
   showQuestSelection(quests, completedQuests, stats, journeys = {}, solution = null) {
-    this.logger.info('Showing quest selection', { quests, completedQuests, stats, journeys, solution });
+    this.logger.info('[DEBUG] overlay.showQuestSelection() called', { quests, completedQuests, stats, journeys, solution });
+    
+    // DEBUGGING: Check container state
+    this.logger.info('[DEBUG] Container state:', {
+      containerExists: !!this.container,
+      containerInDOM: this.container && document.body.contains(this.container),
+      isVisible: this.isVisible
+    });
+    
+    // DEBUGGING: Check for existing overlays in DOM
+    const existingOverlays = document.querySelectorAll('#joule-quest-overlay, .joule-quest-overlay');
+    this.logger.info(`[DEBUG] Existing overlays in DOM at START of showQuestSelection: ${existingOverlays.length}`, {
+      overlayIds: Array.from(existingOverlays).map(el => ({ id: el.id, class: el.className }))
+    });
 
     // Get unique categories from available quests
     const categories = [...new Set(quests.map(q => q.category))];
@@ -287,7 +415,7 @@ class QuestOverlay {
           { 
             id: 's4hana-procurement', 
             label: 'Procurement', 
-            icon: '🛒',
+            icon: '📦',
             journey: journeys['s4hana-procurement'] || { name: 'Procurement', description: 'Purchase orders' }
           },
           { 
@@ -487,7 +615,13 @@ class QuestOverlay {
     const resetBtn = this.container.querySelector('#quest-reset-btn');
     if (resetBtn) {
       resetBtn.addEventListener('click', async () => {
-        const confirmed = confirm('⚠️ Reset All Progress?\n\nThis will:\n• Delete all completed quests\n• Reset points to 0\n• Start fresh\n\nThis action cannot be undone. Continue?');
+        const confirmed = await this.showConfirmDialog({
+          title: 'Reset All Progress?',
+          message: 'This will:\n• Delete all completed quests\n• Reset points to 0\n• Start fresh\n\nThis action cannot be undone.',
+          confirmText: 'Reset Progress',
+          cancelText: 'Cancel',
+          icon: '⚠️'
+        });
         
         if (confirmed) {
           // Clear storage for current solution
@@ -530,19 +664,31 @@ class QuestOverlay {
     // Quest node clicks (persistent - doesn't hide quest selection)
     const questNodes = this.container.querySelectorAll('.quest-node');
     questNodes.forEach(node => {
-      node.addEventListener('click', () => {
+      node.addEventListener('click', async () => {
         const questId = node.dataset.questId;
         const isCompleted = node.dataset.completed === 'true';
         const isLocked = node.dataset.locked === 'true';
         
         // Prevent starting locked quests
         if (isLocked) {
-          alert('🔒 This quest is locked!\n\nComplete the previous quests first to unlock this one.');
+          await this.showAlertDialog({
+            title: 'Quest Locked',
+            message: 'Complete the previous quests first to unlock this one.',
+            buttonText: 'OK',
+            icon: '🔒'
+          });
           return;
         }
         
         if (isCompleted) {
-          const replay = confirm('🎯 Replay this quest?\n\nYou won\'t earn points again, but you can practice the quest flow.');
+          const replay = await this.showConfirmDialog({
+            title: 'Replay Quest?',
+            message: 'You won\'t earn points again, but you can practice the quest flow.',
+            confirmText: 'Replay',
+            cancelText: 'Cancel',
+            icon: '🎯'
+          });
+          
           if (replay) {
             if (window.soundEffects) window.soundEffects.playQuestStart();
             // DON'T hide quest selection - keep it visible
@@ -624,8 +770,8 @@ class QuestOverlay {
     this.container.innerHTML = html;
     this.show();
 
-    // Auto-hide after 3 seconds
-    setTimeout(() => this.hide(), 3000);
+    // DON'T auto-hide - let the quest runner control visibility
+    // The next step will be shown automatically
   }
 
   /**
@@ -975,7 +1121,7 @@ class QuestOverlay {
     const shareLinkedInBtn = this.container.querySelector('#share-linkedin-btn');
 
     if (shareLinkedInBtn) {
-      shareLinkedInBtn.addEventListener('click', () => {
+      shareLinkedInBtn.addEventListener('click', async () => {
         try {
           // Generate simplified shareable text
           const shareText = `🏆 Just completed "${questData.name}" in Joule Quest!
@@ -1003,7 +1149,14 @@ Master SAP SuccessFactors Joule with zero-risk, gamified training.
           }, 2000);
         } catch (error) {
           console.error('LinkedIn share error:', error);
-          alert('❌ Failed to open LinkedIn. Please try again.');
+          
+          // Use custom alert dialog instead of browser alert
+          await this.showAlertDialog({
+            title: 'Share Failed',
+            message: 'Failed to open LinkedIn. Please try again.',
+            buttonText: 'OK',
+            icon: '❌'
+          });
         }
       });
     }
@@ -1021,7 +1174,7 @@ Master SAP SuccessFactors Joule with zero-risk, gamified training.
   }
 
   /**
-   * Show error message
+   * Show error message with recovery options
    * @param {string} message - Error message
    */
   showError(message) {
@@ -1032,15 +1185,61 @@ Master SAP SuccessFactors Joule with zero-risk, gamified training.
 
     const html = `
       <div class="joule-quest-card quest-error">
+        <button class="close-btn" id="error-close-btn" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.1); border: none; color: white; font-size: 24px; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
+        
         <div class="error-icon">❌</div>
         <h3>Oops!</h3>
-        <p>${message}</p>
-        <button class="retry-button" onclick="window.location.reload()">Try Again</button>
+        <p style="margin: 16px 0 24px 0;">${message}</p>
+        
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="retry-button" id="retry-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+            🔄 Reload Page
+          </button>
+          <button class="cancel-button" id="cancel-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+            ✕ Close
+          </button>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
+          💡 Try closing this and clicking the extension icon again
+        </p>
       </div>
     `;
 
     this.container.innerHTML = html;
     this.show();
+
+    // Add event listeners for buttons
+    const closeBtn = this.container.querySelector('#error-close-btn');
+    const cancelBtn = this.container.querySelector('#cancel-btn');
+    const retryBtn = this.container.querySelector('#retry-btn');
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.hide();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        this.hide();
+      });
+    }
+
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => {
+        window.location.reload();
+      });
+    }
+
+    // ESC key to close
+    const escHandler = (e) => {
+      if (e.key === 'Escape' && this.isVisible) {
+        this.hide();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
   }
 
   /**

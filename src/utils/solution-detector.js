@@ -33,21 +33,51 @@ window.JouleSolutionDetector = (function() {
      */
     detect() {
       const url = window.location.href.toLowerCase();
-      logger.info('Detecting solution from URL', { url });
+      logger.info('🔍 [SOLUTION DETECTION] Starting detection', { 
+        originalUrl: window.location.href,
+        lowercaseUrl: url 
+      });
 
       // Sort solutions by priority (higher first)
       const sortedSolutions = [...this.solutions].sort(
         (a, b) => b.detection.priority - a.detection.priority
       );
 
+      logger.info('🔍 [SOLUTION DETECTION] Sorted solutions by priority', {
+        solutions: sortedSolutions.map(s => ({
+          id: s.id,
+          name: s.name,
+          priority: s.detection.priority,
+          patterns: s.detection.urlPatterns
+        }))
+      });
+
       // Check each solution's URL patterns
       for (const solution of sortedSolutions) {
+        logger.info(`🔍 [SOLUTION DETECTION] Checking solution: ${solution.name}`, {
+          solutionId: solution.id,
+          priority: solution.detection.priority,
+          patterns: solution.detection.urlPatterns
+        });
+
         for (const pattern of solution.detection.urlPatterns) {
-          if (url.includes(pattern.toLowerCase())) {
-            logger.success(`Solution detected: ${solution.name}`, {
+          const lowercasePattern = pattern.toLowerCase();
+          const matches = url.includes(lowercasePattern);
+          
+          logger.info(`🔍 [SOLUTION DETECTION] Pattern check`, {
+            pattern: pattern,
+            lowercasePattern: lowercasePattern,
+            url: url,
+            matches: matches,
+            method: `url.includes("${lowercasePattern}")`
+          });
+
+          if (matches) {
+            logger.success(`✅ [SOLUTION DETECTION] Solution detected: ${solution.name}`, {
               solutionId: solution.id,
               matchedPattern: pattern,
-              priority: solution.detection.priority
+              priority: solution.detection.priority,
+              url: url
             });
             
             this.currentSolution = solution;
@@ -58,10 +88,11 @@ window.JouleSolutionDetector = (function() {
 
       // No match found - use fallback
       const fallbackSolution = this.solutions.find(s => s.id === this.fallback);
-      logger.warn('No solution pattern matched - using fallback', {
+      logger.warn('⚠️ [SOLUTION DETECTION] No solution pattern matched - using fallback', {
         fallback: this.fallback,
-        solution: fallbackSolution.name,
-        url
+        solution: fallbackSolution ? fallbackSolution.name : 'NOT FOUND',
+        url: url,
+        allPatternsChecked: sortedSolutions.flatMap(s => s.detection.urlPatterns)
       });
 
       this.currentSolution = fallbackSolution;
