@@ -11,7 +11,9 @@
     "https://*.successfactors.com/*",
     "https://*.successfactors.eu/*",
     "https://*.hr.cloud.sap/*",
-    "https://*.sapdas.cloud.sap/*"
+    "https://*.sapdas.cloud.sap/*",
+    "https://*.s4hana.cloud.sap/*",
+    "https://*.s4hana.ondemand.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -21,7 +23,10 @@
       "matches": [
         "https://*.successfactors.com/*",
         "https://*.successfactors.eu/*",
-        "https://*.hr.cloud.sap/*"
+        "https://*.hr.cloud.sap/*",
+        "https://*.s4hana.cloud.sap/*",
+        "https://*.s4hana.ondemand.com/*",
+        "https://*.cloud.sap/*"
       ],
       "js": [
         "src/utils/logger.js",
@@ -72,7 +77,10 @@
       "matches": [
         "https://*.successfactors.com/*",
         "https://*.successfactors.eu/*",
-        "https://*.hr.cloud.sap/*"
+        "https://*.hr.cloud.sap/*",
+        "https://*.s4hana.cloud.sap/*",
+        "https://*.s4hana.ondemand.com/*",
+        "https://*.cloud.sap/*"
       ]
     }
   ]

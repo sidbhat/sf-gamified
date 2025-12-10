@@ -7,6 +7,7 @@ class QuestOverlay {
     this.logger = window.JouleQuestLogger;
     this.container = null;
     this.isVisible = false;
+    this.currentSolution = null;
   }
 
   /**
@@ -233,14 +234,34 @@ class QuestOverlay {
   }
 
   /**
+   * Apply solution theme to overlay
+   * @param {Object} solution - Solution configuration with theme
+   */
+  applySolutionTheme(solution) {
+    this.logger.info('Applying solution theme', { solution: solution.name });
+    this.currentSolution = solution;
+    
+    // Apply CSS custom properties for dynamic theming
+    if (this.container) {
+      this.container.style.setProperty('--solution-primary', solution.theme.primary);
+      this.container.style.setProperty('--solution-secondary', solution.theme.secondary);
+      this.container.style.setProperty('--solution-accent', solution.theme.accent);
+      this.container.style.setProperty('--solution-gradient', solution.theme.gradient);
+    }
+    
+    this.logger.success('Solution theme applied', { theme: solution.theme });
+  }
+
+  /**
    * Show quest selection screen
    * @param {Array} quests - Array of all quests
    * @param {Array} completedQuests - Array of completed quest IDs
    * @param {Object} stats - User statistics
    * @param {Object} journeys - Journey metadata (names and descriptions)
+   * @param {Object} solution - Current SAP solution configuration
    */
-  showQuestSelection(quests, completedQuests, stats, journeys = {}) {
-    this.logger.info('Showing quest selection', { quests, completedQuests, stats, journeys });
+  showQuestSelection(quests, completedQuests, stats, journeys = {}, solution = null) {
+    this.logger.info('Showing quest selection', { quests, completedQuests, stats, journeys, solution });
 
     const employeeQuests = quests.filter(q => q.category === 'employee');
     const managerQuests = quests.filter(q => q.category === 'manager');
@@ -296,8 +317,8 @@ class QuestOverlay {
             <svg class="logo-icon" width="36" height="36" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#667eea"/>
-                  <stop offset="100%" style="stop-color:#764ba2"/>
+                  <stop offset="0%" style="stop-color:${solution ? solution.theme.primary : '#667eea'}"/>
+                  <stop offset="100%" style="stop-color:${solution ? solution.theme.secondary : '#764ba2'}"/>
                 </linearGradient>
               </defs>
               <circle cx="25" cy="30" r="20" fill="url(#headerGradient)" opacity="0.9"/>
@@ -309,12 +330,15 @@ class QuestOverlay {
                 <path d="M 11 38 A 18 18 0 0 1 11 22 L 18 25 A 10 10 0 0 0 18 35 Z" fill="url(#headerGradient)"/>
                 <path d="M 11 22 A 18 18 0 0 1 25 12 L 25 18 A 10 10 0 0 0 18 25 Z" fill="url(#headerGradient)"/>
               </g>
-              <circle cx="25" cy="30" r="10" fill="#764ba2"/>
+              <circle cx="25" cy="30" r="10" fill="${solution ? solution.theme.secondary : '#764ba2'}"/>
               <line x1="25" y1="22" x2="25" y2="38" stroke="white" stroke-width="2.5"/>
               <line x1="17" y1="30" x2="33" y2="30" stroke="white" stroke-width="2.5"/>
               <circle cx="25" cy="30" r="4" fill="white"/>
             </svg>
-            <h2>Joule Quest</h2>
+            <div class="header-title">
+              <h2>Joule Quest</h2>
+              ${solution ? `<div class="solution-badge" style="background: ${solution.theme.primary}">${solution.badge}</div>` : ''}
+            </div>
           </div>
           
           <button class="close-btn" id="quest-close-btn">✕</button>
