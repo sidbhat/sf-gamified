@@ -40,6 +40,7 @@
         "src/core/storage-manager.js",
         "src/core/error-handler.js",
         "src/ui/confetti.js",
+        "src/ui/share-card-generator.js",
         "src/ui/overlay.js",
         "src/core/joule-handler.js",
         "src/core/quest-runner.js",
