@@ -930,7 +930,7 @@ class QuestOverlay {
         
         <!-- Action button -->
         <div class="quest-complete-actions">
-          <button class="show-quests-btn primary" onclick="window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*')">
+          <button class="show-quests-btn primary" id="show-quests-btn">
             🗺️ Show Quests
           </button>
         </div>
@@ -947,6 +947,15 @@ class QuestOverlay {
       } catch (error) {
         console.warn('[JouleQuest] Confetti error (non-critical):', error);
       }
+    }
+
+    // Setup "Show Quests" button event listener
+    const showQuestsBtn = this.container.querySelector('#show-quests-btn');
+    if (showQuestsBtn) {
+      showQuestsBtn.addEventListener('click', () => {
+        this.logger.info('Show Quests button clicked');
+        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
+      });
     }
 
     // DON'T auto-hide - keep quest complete screen visible
