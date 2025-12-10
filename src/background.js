@@ -127,22 +127,26 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 chrome.action.onClicked.addListener(async (tab) => {
   console.log('[MarioQuest] Extension icon clicked', tab);
   
-  // Check if we're on a SAP SF page
+  // Check if we're on a supported SAP page (SuccessFactors or S/4HANA)
   if (tab.url && (
     tab.url.includes('successfactors.com') ||
     tab.url.includes('successfactors.eu') ||
-    tab.url.includes('hr.cloud.sap')
+    tab.url.includes('hr.cloud.sap') ||
+    tab.url.includes('sfsales') ||
+    tab.url.includes('hcm') ||
+    tab.url.toLowerCase().includes('s4hana') ||
+    tab.url.toLowerCase().includes('s/4hana')
   )) {
-    console.log('[MarioQuest] On SAP SF page, popup will open');
+    console.log('[MarioQuest] On supported SAP page, popup will open');
   } else {
-    console.log('[MarioQuest] Not on SAP SF page');
+    console.log('[MarioQuest] Not on supported SAP page');
     
     // Show notification
     chrome.notifications.create({
       type: 'basic',
-      iconUrl: 'assets/icon48.png',
-      title: 'SF Joule Mario Quest',
-      message: 'Please navigate to SAP SuccessFactors to use this extension.'
+      iconUrl: 'assets/icons/icon-48.png',
+      title: 'Joule Quest',
+      message: 'Please navigate to SAP SuccessFactors or S/4HANA to use this extension.'
     });
   }
 });

@@ -15,13 +15,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // Check if on SAP SF page
+    // Check if on supported SAP page (SuccessFactors or S/4HANA)
     if (!tab.url || (
       !tab.url.includes('successfactors.com') &&
       !tab.url.includes('successfactors.eu') &&
-      !tab.url.includes('hr.cloud.sap')
+      !tab.url.includes('hr.cloud.sap') &&
+      !tab.url.includes('sfsales') &&
+      !tab.url.includes('hcm') &&
+      !tab.url.toLowerCase().includes('s4hana') &&
+      !tab.url.toLowerCase().includes('s/4hana')
     )) {
-      showError('Please navigate to SAP SuccessFactors first');
+      showError('Please navigate to SAP SuccessFactors or S/4HANA first');
       return;
     }
 
