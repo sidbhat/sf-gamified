@@ -34,9 +34,10 @@ class JouleHandler {
 
   /**
    * Wait for Joule iframe to exist in DOM and inject handler script
+   * OPTIMIZED: Reduced timeout from 10s to 3s since iframe is usually immediate
    */
-  async waitForJouleIframe(timeout = 10000) {
-    this.logger.info('Waiting for Joule iframe to be available');
+  async waitForJouleIframe(timeout = 3000) {
+    this.logger.info('Checking for Joule iframe (quick check)');
     
     const startTime = Date.now();
     
@@ -58,12 +59,12 @@ class JouleHandler {
         }
 
         if (Date.now() - startTime > timeout) {
-          this.logger.warn('Joule iframe not found yet, but continuing');
+          this.logger.info('Joule iframe not found yet (this is OK - will check again when needed)');
           resolve(null);
           return;
         }
 
-        setTimeout(checkForIframe, 500);
+        setTimeout(checkForIframe, 300);
       };
 
       checkForIframe();

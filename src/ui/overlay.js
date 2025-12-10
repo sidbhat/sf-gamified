@@ -275,6 +275,10 @@ class QuestOverlay {
    */
   showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', icon = '❓' }) {
     return new Promise((resolve) => {
+      // CRITICAL: Save current overlay content before showing dialog
+      const savedContent = this.container.innerHTML;
+      const wasVisible = this.isVisible;
+      
       const html = `
         <div class="joule-quest-card quest-confirm-dialog">
           <div class="confirm-icon">${icon}</div>
@@ -298,24 +302,36 @@ class QuestOverlay {
       const yesBtn = this.container.querySelector('#confirm-yes-btn');
       const noBtn = this.container.querySelector('#confirm-no-btn');
 
-      const cleanup = () => {
-        document.removeEventListener('keydown', escHandler);
+      const restoreContent = () => {
+        // Restore previous overlay content
+        this.container.innerHTML = savedContent;
+        if (wasVisible) {
+          this.show();
+          // Re-attach event listeners for quest selection if it was showing
+          if (savedContent.includes('quest-selection')) {
+            this.setupQuestSelectionListeners();
+          }
+        }
       };
 
       const escHandler = (e) => {
         if (e.key === 'Escape') {
-          cleanup();
+          document.removeEventListener('keydown', escHandler);
+          restoreContent();
           resolve(false);
         }
       };
 
       yesBtn.addEventListener('click', () => {
-        cleanup();
+        document.removeEventListener('keydown', escHandler);
+        // Hide overlay immediately so quest can start
+        this.hide();
         resolve(true);
       });
 
       noBtn.addEventListener('click', () => {
-        cleanup();
+        document.removeEventListener('keydown', escHandler);
+        restoreContent();
         resolve(false);
       });
 
@@ -653,25 +669,20 @@ class QuestOverlay {
         const contents = this.container.querySelectorAll('.quest-category');
         contents.forEach(c => c.classList.remove('active'));
         this.container.querySelector(`.quest-category[data-category="${category}"]`).classList.add('active');
-        
-        // Play sound
-        if (window.soundEffects) {
-          window.soundEffects.playClick();
-        }
       });
     });
 
     // Quest node clicks (persistent - doesn't hide quest selection)
     const questNodes = this.container.querySelectorAll('.quest-node');
     questNodes.forEach(node => {
-      node.addEventListener('click', async () => {
+      node.addEventListener('click', () => {
         const questId = node.dataset.questId;
         const isCompleted = node.dataset.completed === 'true';
         const isLocked = node.dataset.locked === 'true';
         
         // Prevent starting locked quests
         if (isLocked) {
-          await this.showAlertDialog({
+          this.showAlertDialog({
             title: 'Quest Locked',
             message: 'Complete the previous quests first to unlock this one.',
             buttonText: 'OK',
@@ -681,24 +692,12 @@ class QuestOverlay {
         }
         
         if (isCompleted) {
-          const replay = await this.showConfirmDialog({
-            title: 'Replay Quest?',
-            message: 'You won\'t earn points again, but you can practice the quest flow.',
-            confirmText: 'Replay',
-            cancelText: 'Cancel',
-            icon: '🎯'
-          });
-          
-          if (replay) {
-            if (window.soundEffects) window.soundEffects.playQuestStart();
-            // DON'T hide quest selection - keep it visible
-            // Trigger quest start with replay flag
-            window.postMessage({ type: 'START_QUEST', questId, isReplay: true }, '*');
-          }
+          // Replay immediately - no delays, no sounds, just execute
+          this.hide();
+          window.postMessage({ type: 'START_QUEST', questId, isReplay: true }, '*');
         } else {
-          if (window.soundEffects) window.soundEffects.playQuestStart();
-          // DON'T hide quest selection - keep it visible
-          // Trigger quest start
+          // New quest - immediate execution
+          this.hide();
           window.postMessage({ type: 'START_QUEST', questId, isReplay: false }, '*');
         }
       });
@@ -1074,10 +1073,13 @@ class QuestOverlay {
         </div>
         <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
         
-        <!-- Action button -->
-        <div class="quest-complete-actions">
-          <button class="show-quests-btn primary" id="show-quests-btn">
-            🗺️ Show Quests
+        <!-- Action buttons -->
+        <div class="quest-complete-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px;">
+          <button class="download-badge-btn primary" id="download-badge-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+            <span>📥 Download Badge</span>
+          </button>
+          <button class="show-quests-btn primary" id="show-quests-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+            <span>🗺️ Show Quests</span>
           </button>
         </div>
       </div>
@@ -1095,6 +1097,70 @@ class QuestOverlay {
       }
     }
 
+    // Setup "Download Badge" button event listener
+    const downloadBadgeBtn = this.container.querySelector('#download-badge-btn');
+    if (downloadBadgeBtn) {
+      downloadBadgeBtn.addEventListener('click', async () => {
+        try {
+          this.logger.info('Download Badge button clicked');
+          
+          // Get current user stats
+          const storage = window.JouleQuestStorage;
+          const stats = storage ? await storage.getUserStats(this.currentSolution?.id) : {};
+          
+          // Prepare quest data for badge generation
+          const questData = {
+            id: questId,
+            name: questName,
+            points: questPoints,
+            difficulty: questDifficulty,
+            category: questCategory,
+            solution: this.currentSolution?.id
+          };
+          
+          // Prepare user stats for badge
+          const userStats = {
+            totalPoints: stats.totalPoints || 0,
+            questsCompleted: stats.questsCompleted || 0,
+            streak: stats.streak || 0
+          };
+          
+          // Generate badge using ShareCardGenerator
+          if (window.ShareCardGenerator) {
+            const generator = new window.ShareCardGenerator();
+            const canvas = generator.generateCard(questData, userStats);
+            
+            // Download the badge
+            await generator.downloadCard(canvas, questId);
+            
+            // Show success feedback
+            downloadBadgeBtn.innerHTML = '<span>✅ Downloaded!</span>';
+            downloadBadgeBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            
+            setTimeout(() => {
+              downloadBadgeBtn.innerHTML = '<span>📥 Download Badge</span>';
+              downloadBadgeBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            }, 2000);
+            
+            this.logger.success('Badge downloaded successfully');
+          } else {
+            throw new Error('ShareCardGenerator not available');
+          }
+        } catch (error) {
+          this.logger.error('Failed to download badge', error);
+          
+          // Show error feedback
+          downloadBadgeBtn.innerHTML = '<span>❌ Failed</span>';
+          downloadBadgeBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+          
+          setTimeout(() => {
+            downloadBadgeBtn.innerHTML = '<span>📥 Download Badge</span>';
+            downloadBadgeBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+          }, 2000);
+        }
+      });
+    }
+    
     // Setup "Show Quests" button event listener
     const showQuestsBtn = this.container.querySelector('#show-quests-btn');
     if (showQuestsBtn) {
@@ -1104,13 +1170,14 @@ class QuestOverlay {
       });
     }
 
-    // Auto-hide after 8 seconds to prevent blocking Joule
-    // User can click "Show Quests" earlier if desired
+    // After 5 seconds, automatically return to quest selection
+    // So users can immediately start another quest
     setTimeout(() => {
       if (this.isVisible) {
-        this.hide();
+        this.logger.info('Auto-returning to quest selection after completion');
+        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
       }
-    }, 8000);
+    }, 5000);
   }
 
   /**

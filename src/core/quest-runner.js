@@ -68,27 +68,14 @@ class QuestRunner {
       this.overlay.init();
     }
 
-    // CRITICAL FIX: Lazy initialize jouleHandler ONLY when quest starts
-    // This prevents Joule from opening when user just clicks extension icon to see quest selection
-    // Only initialize if quest uses Joule actions (type_and_send, click, etc.)
-    const questUsesJoule = quest.steps.some(step => 
-      ['click', 'type_and_send', 'select_first_option', 'click_first_button', 'click_button_by_text'].includes(step.action)
-    );
-    
-    if (questUsesJoule && this.selectors) {
-      this.logger.info('Quest uses Joule, initializing jouleHandler now...');
-      await this.jouleHandler.init(this.selectors);
-      this.logger.success('JouleHandler initialized');
-    } else {
-      this.logger.info('Quest does not use Joule, skipping jouleHandler initialization');
-    }
 
     this.currentQuest = quest;
     this.currentStepIndex = 0;
     this.isRunning = true;
     this.mode = mode;
 
-    // Show overlay with quest info
+    // CRITICAL FIX: Show overlay IMMEDIATELY before any async operations
+    // This prevents UX blackout where user clicks quest but nothing happens for 3-10 seconds
     if (this.overlay) {
       this.overlay.showQuestStart(quest);
     }
