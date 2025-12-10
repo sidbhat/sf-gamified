@@ -958,8 +958,13 @@ class QuestOverlay {
       });
     }
 
-    // DON'T auto-hide - keep quest complete screen visible
-    // User will click "Show Quests" button or close manually
+    // Auto-hide after 8 seconds to prevent blocking Joule
+    // User can click "Show Quests" earlier if desired
+    setTimeout(() => {
+      if (this.isVisible) {
+        this.hide();
+      }
+    }, 8000);
   }
 
   /**
