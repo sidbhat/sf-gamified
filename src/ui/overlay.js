@@ -1190,14 +1190,8 @@ class QuestOverlay {
       });
     }
 
-    // After 5 seconds, automatically return to quest selection
-    // So users can immediately start another quest
-    setTimeout(() => {
-      if (this.isVisible) {
-        this.logger.info('Auto-returning to quest selection after completion');
-        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
-      }
-    }, 5000);
+    // Users can manually return to quest selection via button
+    // No auto-timeout - let them read the story at their own pace
   }
 
   /**
