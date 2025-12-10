@@ -231,9 +231,9 @@
         availableJourneys: Object.keys(availableJourneys).length
       });
 
-      // Get completed quests and stats
-      const completedQuests = await storage.getCompletedQuests();
-      const stats = await storage.getUserStats();
+      // Get completed quests and stats FOR THIS SOLUTION ONLY
+      const completedQuests = await storage.getCompletedQuests(currentSolution.id);
+      const stats = await storage.getUserStats(currentSolution.id);
 
       // Apply solution theme to overlay
       overlay.applySolutionTheme(currentSolution);
@@ -258,15 +258,6 @@
     }
   }
 
-  // Listen for quest start from overlay
-  window.addEventListener('message', (event) => {
-    if (event.source !== window) return;
-    
-    if (event.data.type === 'START_QUEST') {
-      handleStartQuest(event.data.questId, 'demo', event.data.isReplay);
-    }
-  });
-
   /**
    * Handle start quest command
    * @param {string} questId - Quest ID
@@ -287,7 +278,7 @@
       // Start the quest
       await runner.startQuest(quest, mode);
 
-      // Save progress (only if not replay)
+      // Save progress (only if not replay) FOR THIS SOLUTION
       if (!isReplay) {
         try {
           if (storage && typeof storage.saveQuestProgress === 'function') {
@@ -297,9 +288,9 @@
               mode: mode
             });
 
-            // Update stats
-            await storage.incrementQuestCompletion(quest.points);
-            logger.success('Quest progress saved to storage');
+            // Update stats FOR THIS SOLUTION
+            await storage.incrementQuestCompletion(quest.points, currentSolution.id);
+            logger.success('Quest progress saved to storage', { solution: currentSolution.id });
           } else {
             logger.warn('Storage manager not available, skipping save');
           }
@@ -437,15 +428,15 @@
       overlay.showQuestComplete(quest, runner.stepResults, runner.failedSteps);
     }
     
-    // Save progress
+    // Save progress FOR THIS SOLUTION
     try {
       await storage.saveQuestProgress(quest.id, {
         completed: true,
         completedAt: Date.now(),
         mode: mode
       });
-      await storage.incrementQuestCompletion(quest.points);
-      logger.success('Quest progress saved');
+      await storage.incrementQuestCompletion(quest.points, currentSolution.id);
+      logger.success('Quest progress saved', { solution: currentSolution.id });
     } catch (error) {
       logger.error('Failed to save progress', error);
     }
