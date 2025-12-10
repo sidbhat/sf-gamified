@@ -448,29 +448,34 @@ body.quest-running::before {
   align-items: center;
   gap: 0;
   flex: 1;
-  overflow-y: visible;
+  overflow-y: auto;
   overflow-x: hidden;
   padding: 12px 8px;
   margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
 }
 
 .quest-map-selection::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .quest-map-selection::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 8px 0;
 }
 
 .quest-map-selection::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 4px;
-  transition: background 0.3s ease;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
 .quest-map-selection::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 .quest-map-selection .map-start {
