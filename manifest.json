@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Joule Quest for SAP Solutions",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Master SAP Joule AI across SuccessFactors and S/4HANA. Gamified learning - earn points, complete challenges, become an expert!",
   "permissions": [
     "storage",
