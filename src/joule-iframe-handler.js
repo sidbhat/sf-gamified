@@ -848,9 +848,12 @@ class JouleIframeHandler {
    * Click button matching specific text
    * Searches for buttons, links, and clickable elements
    * CRITICAL: Only clicks the FIRST matching element, then returns immediately
+   * @param {string|string[]} buttonText - Text to search for (supports multiple languages as array)
    */
   async clickButtonByText(buttonText, requestId) {
-    this.logger.info(`Looking for clickable element with text: "${buttonText}"`);
+    // Support both string and array of button texts (for multi-language support)
+    const buttonTexts = Array.isArray(buttonText) ? buttonText : [buttonText];
+    this.logger.info(`Looking for clickable element with text: ${JSON.stringify(buttonTexts)}`);
     
     // Wait a bit for UI to be ready
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -882,9 +885,8 @@ class JouleIframeHandler {
     
     this.logger.info(`Found ${allElements.length} unique clickable elements (after deduplication)`);
     
-    // Find FIRST element matching text (case-insensitive)
+    // Find FIRST element matching ANY of the provided texts (case-insensitive)
     // IMPORTANT: Use .find() to get only the first match, not all matches
-    const searchText = buttonText.toLowerCase();
     const targetElement = allElements.find(el => {
       if (!el) return false; // Skip null elements
       
@@ -892,14 +894,17 @@ class JouleIframeHandler {
       const ariaLabel = (el.getAttribute('aria-label') || '').toLowerCase();
       const title = (el.getAttribute('title') || '').toLowerCase();
       
-      // Match exact text OR text that includes the search term
-      return elText === searchText || 
-             ariaLabel.includes(searchText) ||
-             title.includes(searchText);
+      // Check if ANY of the button texts match (supports multi-language)
+      return buttonTexts.some(searchText => {
+        const lowerSearchText = searchText.toLowerCase();
+        return elText === lowerSearchText || 
+               ariaLabel.includes(lowerSearchText) ||
+               title.includes(lowerSearchText);
+      });
     });
     
     if (!targetElement) {
-      this.logger.error(`Clickable element not found: "${buttonText}"`);
+      this.logger.error(`Clickable element not found for any of: ${JSON.stringify(buttonTexts)}`);
       this.logger.info('Available clickable elements:');
       allElements.slice(0, 20).forEach((el, i) => {
         this.logger.info(`  [${i}] tag=${el.tagName} text="${el.textContent.trim().substring(0, 50)}" class="${el.className}"`);
@@ -910,7 +915,7 @@ class JouleIframeHandler {
         requestId: requestId,
         data: { 
           success: false, 
-          error: `Clickable element not found: ${buttonText}`,
+          error: `Clickable element not found for any of: ${JSON.stringify(buttonTexts)}`,
           availableElements: allElements.slice(0, 10).map(el => ({
             tag: el.tagName,
             text: el.textContent.trim().substring(0, 50),

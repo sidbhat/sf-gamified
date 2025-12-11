@@ -23,15 +23,21 @@
       "textarea + button",
       "[role='textbox'] + button",
       "button[aria-label='Send']",
+      "button[aria-label='Senden']",
+      "button[aria-label='Envoyer']",
+      "button[aria-label='Enviar']",
       "button[aria-label*='Send message']",
       "button[aria-label*='send']",
+      "button[aria-label*='senden']",
       "button[type='submit']",
       "button[data-sap-ui*='send']",
       ".send-icon",
       "svg[aria-label='Send']",
       "[data-ui5-stable*='send'] button",
       "//button[@aria-label='Send']",
+      "//button[@aria-label='Senden']",
       "//button[contains(@aria-label, 'send')]",
+      "//button[contains(@aria-label, 'senden')]",
       "//button[@type='submit']",
       "//textarea/following-sibling::button",
       "//*[@role='textbox']/following-sibling::button"
@@ -45,12 +51,21 @@
     ],
     "closeButton": [
       "button[aria-label='Close']",
+      "button[aria-label='Schließen']",
+      "button[aria-label='Fermer']",
+      "button[aria-label='Cerrar']",
       "button[aria-label*='close']",
+      "button[aria-label*='schließen']",
       "button[title='Close']",
+      "button[title='Schließen']",
       "[aria-label='Close']",
+      "[aria-label='Schließen']",
       "//button[@aria-label='Close']",
+      "//button[@aria-label='Schließen']",
       "//button[contains(@aria-label, 'lose')]",
-      "//*[@aria-label='Close']"
+      "//button[contains(@aria-label, 'schließ')]",
+      "//*[@aria-label='Close']",
+      "//*[@aria-label='Schließen']"
     ]
   },
   "navigation": {
@@ -98,32 +113,53 @@
     ],
     "generateButton": [
       "button[aria-label*='Generate']",
+      "button[aria-label*='Generieren']",
+      "button[aria-label*='Générer']",
+      "button[aria-label*='Generar']",
       "button[id*='generate']",
+      "button[id*='generieren']",
       "button[aria-description*='Generate']",
+      "button[aria-description*='Generieren']",
       "[role='button'][aria-label*='Generate']",
+      "[role='button'][aria-label*='Generieren']",
       "ui5-button[data-sap-ui*='generate']",
       "button[data-sap-ui*='generate']",
       "//button[contains(@aria-label, 'Generate')]",
-      "//button[contains(@id, 'generate')]"
+      "//button[contains(@aria-label, 'Generieren')]",
+      "//button[contains(@id, 'generate')]",
+      "//button[contains(@id, 'generieren')]"
     ],
     "submitButton": [
       "button[type='submit']",
       "button[aria-label*='Submit']",
       "button[aria-label*='Save']",
+      "button[aria-label*='Senden']",
+      "button[aria-label*='Absenden']",
+      "button[aria-label*='Speichern']",
+      "button[aria-label*='Enregistrer']",
+      "button[aria-label*='Guardar']",
       "ui5-button",
       "ui5-button-xweb-goalmanagement",
       "[role='button'][aria-label*='Submit']",
       "[role='button'][aria-label*='Save']",
+      "[role='button'][aria-label*='Senden']",
+      "[role='button'][aria-label*='Speichern']",
       "//button[@type='submit']",
-      "//button[contains(@aria-label, 'Submit') or contains(@aria-label, 'Save')]"
+      "//button[contains(@aria-label, 'Submit') or contains(@aria-label, 'Save')]",
+      "//button[contains(@aria-label, 'Senden') or contains(@aria-label, 'Speichern')]"
     ],
     "saveButton": [
       "ui5-button-xweb-goalmanagement",
       "ui5-button",
       "button[aria-label*='Save']",
+      "button[aria-label*='Speichern']",
+      "button[aria-label*='Enregistrer']",
+      "button[aria-label*='Guardar']",
       "button[type='submit']",
       "[role='button'][aria-label*='Save']",
-      "//button[contains(@aria-label, 'Save')]"
+      "[role='button'][aria-label*='Speichern']",
+      "//button[contains(@aria-label, 'Save')]",
+      "//button[contains(@aria-label, 'Speichern')]"
     ]
   }
 }

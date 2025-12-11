@@ -494,7 +494,7 @@
           "name": "View First Employee Profile",
           "description": "Clicking Profile button for first team member...",
           "action": "click_button_by_text",
-          "buttonText": "Profile",
+          "buttonText": ["Profile", "Profil", "Perfil"],
           "waitForResponse": false,
           "responseKeywords": [],
           "successMessage": "Profile button clicked! 🏆✨"
