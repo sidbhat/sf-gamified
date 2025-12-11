@@ -41,9 +41,16 @@ class I18nManager {
    */
   async init() {
     try {
-      // Detect language
-      const detectedLanguage = await this.detectLanguage();
+      // Detect language (with retry logic for SAP framework)
+      const detectedLanguage = await this.detectLanguageWithRetry();
       console.log('[I18n] Detected language:', detectedLanguage);
+      console.log('[I18n] Detection details:', {
+        url: window.location.href,
+        urlParams: window.location.search,
+        localStorage_sapLanguage: localStorage.getItem('sap-language'),
+        localStorage_sapUiLanguage: localStorage.getItem('sap-ui-language'),
+        sessionStorage_sapLanguage: sessionStorage.getItem('sap-language')
+      });
       
       // Load translations
       await this.loadTranslations(detectedLanguage);
@@ -57,49 +64,80 @@ class I18nManager {
   }
 
   /**
+   * Detect language with retry logic for SAP framework initialization
+   * SAP UI5 Core may not be fully initialized on first attempt
+   */
+  async detectLanguageWithRetry() {
+    // First attempt - immediate detection
+    let language = await this.detectLanguage();
+    
+    // If we got a non-browser language, return it (SAP language was detected)
+    const browserLang = this.detectBrowserLanguage();
+    if (language !== browserLang) {
+      console.log('[I18n] SAP language detected immediately:', language);
+      return language;
+    }
+    
+    // If we only got browser language, SAP might not be initialized yet
+    // Try again after a short delay to allow SAP Core to initialize
+    console.log('[I18n] Only browser language detected, waiting for SAP initialization...');
+    
+    await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
+    
+    // Second attempt
+    language = await this.detectLanguage();
+    if (language !== browserLang) {
+      console.log('[I18n] SAP language detected on retry:', language);
+      return language;
+    }
+    
+    // Third attempt after longer delay
+    console.log('[I18n] Still no SAP language, waiting longer...');
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s more
+    
+    language = await this.detectLanguage();
+    if (language !== browserLang) {
+      console.log('[I18n] SAP language detected on second retry:', language);
+      return language;
+    }
+    
+    // Final fallback to browser language
+    console.log('[I18n] No SAP language found after retries, using browser language:', browserLang);
+    return browserLang;
+  }
+
+  /**
    * Detect user's language with priority:
-   * 1. Saved preference in Chrome storage
-   * 2. SAP UI5 URL parameter (sap-language)
-   * 3. SAP UI5 localStorage/sessionStorage
-   * 4. SAP UI5 framework objects
-   * 5. Browser language
+   * 1. SAP UI5 URL parameter (sap-language) - HIGHEST PRIORITY
+   * 2. SAP UI5 localStorage/sessionStorage
+   * 3. SAP UI5 framework objects
+   * 4. Browser language (NO caching - always detect from SAP)
    */
   async detectLanguage() {
-    // 1. Check saved preference
-    const saved = await this.getSavedLanguage();
-    if (saved) {
-      console.log('[I18n] Using saved language:', saved);
-      return saved;
-    }
-
-    // 2. Check SAP UI5 URL parameter
+    // 1. Check SAP UI5 URL parameter FIRST (highest priority)
     const urlLang = this.detectSAPLanguageFromURL();
     if (urlLang) {
       console.log('[I18n] Detected from URL:', urlLang);
-      await this.saveLanguage(urlLang);
       return urlLang;
     }
 
-    // 3. Check SAP UI5 localStorage/sessionStorage
+    // 2. Check SAP UI5 localStorage/sessionStorage
     const storageLang = this.detectSAPLanguageFromStorage();
     if (storageLang) {
-      console.log('[I18n] Detected from storage:', storageLang);
-      await this.saveLanguage(storageLang);
+      console.log('[I18n] Detected from SAP storage:', storageLang);
       return storageLang;
     }
 
-    // 4. Check SAP UI5 framework objects
+    // 3. Check SAP UI5 framework objects
     const frameworkLang = this.detectSAPLanguageFromFramework();
     if (frameworkLang) {
-      console.log('[I18n] Detected from framework:', frameworkLang);
-      await this.saveLanguage(frameworkLang);
+      console.log('[I18n] Detected from SAP framework:', frameworkLang);
       return frameworkLang;
     }
 
-    // 5. Fall back to browser language
+    // 4. Fall back to browser language (don't cache, always re-detect)
     const browserLang = this.detectBrowserLanguage();
     console.log('[I18n] Using browser language:', browserLang);
-    await this.saveLanguage(browserLang);
     return browserLang;
   }
 
@@ -147,26 +185,105 @@ class I18nManager {
 
   /**
    * Detect SAP language from UI5 framework objects
+   * Uses multiple strategies to find language in different SAP contexts
    */
   detectSAPLanguageFromFramework() {
     try {
-      // Check for SAP UI5 Core
-      if (window.sap && window.sap.ui && window.sap.ui.getCore) {
-        const core = window.sap.ui.getCore();
-        if (core && core.getConfiguration) {
-          const config = core.getConfiguration();
-          if (config && config.getLanguage) {
-            const lang = config.getLanguage();
-            if (lang) {
-              return this.normalizeSAPLanguageCode(lang);
+      // Strategy 1: Check document.documentElement.lang (SAP SuccessFactors sets this)
+      if (document.documentElement.lang) {
+        const lang = document.documentElement.lang;
+        console.log('[I18n] Found language from document.documentElement.lang:', lang);
+        return this.normalizeSAPLanguageCode(lang);
+      }
+      
+      // Strategy 2: SAP UI5 Core Configuration (most common)
+      if (window.sap && window.sap.ui) {
+        // Try getCore() method
+        if (typeof window.sap.ui.getCore === 'function') {
+          try {
+            const core = window.sap.ui.getCore();
+            if (core && core.getConfiguration) {
+              const config = core.getConfiguration();
+              if (config && typeof config.getLanguage === 'function') {
+                const lang = config.getLanguage();
+                if (lang) {
+                  console.log('[I18n] Found language from UI5 Core:', lang);
+                  return this.normalizeSAPLanguageCode(lang);
+                }
+              }
+              
+              // Try direct property access if method doesn't work
+              if (config && config.language) {
+                console.log('[I18n] Found language from config.language property:', config.language);
+                return this.normalizeSAPLanguageCode(config.language);
+              }
             }
+          } catch (e) {
+            // Silently continue to next strategy
+          }
+        }
+        
+        // Strategy 3: Direct access to Core configuration object
+        try {
+          if (window.sap.ui.getCore && window.sap.ui.getCore() && window.sap.ui.getCore().oConfiguration) {
+            const config = window.sap.ui.getCore().oConfiguration;
+            if (config.language) {
+              console.log('[I18n] Found language from Core oConfiguration:', config.language);
+              return this.normalizeSAPLanguageCode(config.language);
+            }
+          }
+        } catch (e) {
+          // Silently continue to next strategy
+        }
+      }
+      
+      // Strategy 4: SAP global configuration object
+      if (window['sap-ui-config']) {
+        const config = window['sap-ui-config'];
+        if (config.language) {
+          console.log('[I18n] Found language from sap-ui-config:', config.language);
+          return this.normalizeSAPLanguageCode(config.language);
+        }
+      }
+      
+      // Strategy 5: Check data-sap-ui-language attribute on script tags
+      const sapScripts = document.querySelectorAll('script[data-sap-ui-language]');
+      if (sapScripts.length > 0) {
+        const lang = sapScripts[0].getAttribute('data-sap-ui-language');
+        if (lang) {
+          console.log('[I18n] Found language from script data attribute:', lang);
+          return this.normalizeSAPLanguageCode(lang);
+        }
+      }
+      
+      // Strategy 6: Check sap-ui-bootstrap script src parameter
+      const bootstrapScripts = document.querySelectorAll('script[src*="sap-ui-core"]');
+      for (const script of bootstrapScripts) {
+        const src = script.getAttribute('src');
+        if (src && src.includes('sap-language=')) {
+          const match = src.match(/sap-language=([^&]+)/);
+          if (match && match[1]) {
+            console.log('[I18n] Found language from bootstrap script src:', match[1]);
+            return this.normalizeSAPLanguageCode(match[1]);
           }
         }
       }
+      
+      // Strategy 7: Check meta tags
+      const metaLang = document.querySelector('meta[name="sap-ui-language"]');
+      if (metaLang) {
+        const lang = metaLang.getAttribute('content');
+        if (lang) {
+          console.log('[I18n] Found language from meta tag:', lang);
+          return this.normalizeSAPLanguageCode(lang);
+        }
+      }
+      
+      return null;
     } catch (error) {
       console.warn('[I18n] Error detecting language from framework:', error);
+      return null;
     }
-    return null;
   }
 
   /**
@@ -178,10 +295,13 @@ class I18nManager {
   }
 
   /**
-   * Normalize SAP language code (e.g., 'DE' -> 'de-DE')
+   * Normalize SAP language code (e.g., 'DE' -> 'de-DE', 'de_DE' -> 'de-DE')
    */
   normalizeSAPLanguageCode(code) {
-    const upperCode = code.toUpperCase();
+    // Replace underscores with hyphens (SAP uses both formats)
+    const normalizedCode = code.replace('_', '-');
+    
+    const upperCode = normalizedCode.toUpperCase();
     const mapping = {
       'EN': 'en-US',
       'DE': 'de-DE',
@@ -197,8 +317,8 @@ class I18nManager {
     };
     
     // If already in correct format (e.g., 'de-DE'), normalize case
-    if (code.includes('-')) {
-      return this.normalizeLanguageCode(code);
+    if (normalizedCode.includes('-')) {
+      return this.normalizeLanguageCode(normalizedCode);
     }
     
     return mapping[upperCode] || 'en-US';
@@ -277,13 +397,15 @@ class I18nManager {
       }
 
       // Load translation file
-      const response = await fetch(chrome.runtime.getURL(`i18n/${this.currentLanguage}.json`));
+      const response = await fetch(chrome.runtime.getURL(`src/i18n/${this.currentLanguage}.json`));
       if (!response.ok) {
         throw new Error(`Failed to load translations for ${this.currentLanguage}`);
       }
       
       this.translations = await response.json();
       console.log('[I18n] Translations loaded for:', this.currentLanguage);
+      console.log('[I18n] Translation keys count:', Object.keys(this.translations).length);
+      console.log('[I18n] Sample translation test - ui.headers.questSelection:', this.t('ui.headers.questSelection'));
     } catch (error) {
       console.error('[I18n] Error loading translations:', error);
       
@@ -291,7 +413,7 @@ class I18nManager {
       if (this.currentLanguage !== this.fallbackLanguage) {
         console.log('[I18n] Loading fallback language:', this.fallbackLanguage);
         this.currentLanguage = this.fallbackLanguage;
-        const response = await fetch(chrome.runtime.getURL(`i18n/${this.fallbackLanguage}.json`));
+        const response = await fetch(chrome.runtime.getURL(`src/i18n/${this.fallbackLanguage}.json`));
         this.translations = await response.json();
       }
     }

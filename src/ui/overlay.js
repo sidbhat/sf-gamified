@@ -5,10 +5,19 @@
 class QuestOverlay {
   constructor() {
     this.logger = window.JouleQuestLogger;
-    this.i18n = window.JouleQuestI18n;
     this.container = null;
     this.isVisible = false;
     this.currentSolution = null;
+  }
+
+  /**
+   * Get i18n instance (lazy getter to ensure it's initialized)
+   */
+  get i18n() {
+    const i18n = window.JouleQuestI18n;
+    // CRITICAL FIX: Don't check if translations are loaded - just return i18n
+    // The t() method will handle missing translations by returning the key
+    return i18n;
   }
 
   /**
@@ -251,6 +260,34 @@ class QuestOverlay {
   }
 
   /**
+   * Get procurement icon SVG
+   * @returns {string} Procurement icon SVG HTML
+   */
+  getProcurementIconSVG() {
+    return `
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="15" height="13" />
+        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+        <line x1="16" y1="13" x2="23" y2="13"></line>
+      </svg>
+    `;
+  }
+
+  /**
+   * Get delivery icon SVG
+   * @returns {string} Delivery icon SVG HTML
+   */
+  getDeliveryIconSVG() {
+    return `
+      <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 3h15v10H1zM16 8a4 4 0 014 4h4M1 18h2.5a2 2 0 002 2 2 2 0 002-2H1zm13 0h2.5a2 2 0 002 2 2 2 0 002-2H14z"/>
+        <line x1="16" y1="8" x2="23" y2="8"></line>
+        <line x1="20" y1="8" x2="20" y2="13"></line>
+      </svg>
+    `;
+  }
+
+  /**
    * Apply solution theme to overlay
    * @param {Object} solution - Solution configuration with theme
    */
@@ -445,7 +482,7 @@ class QuestOverlay {
             id: 's4hana-sales', 
             label: this.i18n.t('ui.tabs.sales'), 
             icon: this.i18n.t('ui.icons.sales'),
-            journey: journeys['s4hana-sales'] || { 
+            journey: { 
               name: this.i18n.t('journeys.s4hana-sales.name'), 
               description: this.i18n.t('journeys.s4hana-sales.description') 
             }
@@ -453,8 +490,8 @@ class QuestOverlay {
           { 
             id: 's4hana-procurement', 
             label: this.i18n.t('ui.tabs.procurement'), 
-            icon: this.i18n.t('ui.icons.procurement'),
-            journey: journeys['s4hana-procurement'] || { 
+            icon: this.getProcurementIconSVG(),
+            journey: { 
               name: this.i18n.t('journeys.s4hana-procurement.name'), 
               description: this.i18n.t('journeys.s4hana-procurement.description') 
             }
@@ -462,8 +499,8 @@ class QuestOverlay {
           { 
             id: 's4hana-delivery', 
             label: this.i18n.t('ui.tabs.delivery'), 
-            icon: this.i18n.t('ui.icons.delivery'),
-            journey: journeys['s4hana-delivery'] || { 
+            icon: this.getDeliveryIconSVG(),
+            journey: { 
               name: this.i18n.t('journeys.s4hana-delivery.name'), 
               description: this.i18n.t('journeys.s4hana-delivery.description') 
             }
@@ -475,8 +512,8 @@ class QuestOverlay {
           { 
             id: 'employee', 
             label: this.i18n.t('ui.tabs.employee'), 
-            icon: this.i18n.t('ui.icons.employee'),
-            journey: journeys.employee || { 
+            icon: this.getEmployeeIconSVG(),
+            journey: { 
               name: this.i18n.t('journeys.employee.name'), 
               description: this.i18n.t('journeys.employee.description') 
             }
@@ -484,8 +521,8 @@ class QuestOverlay {
           { 
             id: 'manager', 
             label: this.i18n.t('ui.tabs.manager'), 
-            icon: this.i18n.t('ui.icons.manager'),
-            journey: journeys.manager || { 
+            icon: this.getManagerIconSVG(),
+            journey: { 
               name: this.i18n.t('journeys.manager.name'), 
               description: this.i18n.t('journeys.manager.description') 
             }
@@ -493,8 +530,8 @@ class QuestOverlay {
           { 
             id: 'agent', 
             label: this.i18n.t('ui.tabs.agent'), 
-            icon: this.i18n.t('ui.icons.agent'),
-            journey: journeys.agent || { 
+            icon: this.getAgentIconSVG(),
+            journey: { 
               name: this.i18n.t('journeys.agent.name'), 
               description: this.i18n.t('journeys.agent.description') 
             }
@@ -530,7 +567,7 @@ class QuestOverlay {
             <div class="quest-number">${isLocked ? '🔒' : index + 1}</div>
             <div class="quest-icon" style="opacity: ${isLocked ? '0.4' : '1'}">${quest.icon}</div>
             <div class="quest-info">
-              <div class="quest-name" style="opacity: ${isLocked ? '0.6' : '1'}">${quest.name}</div>
+              <div class="quest-name" style="opacity: ${isLocked ? '0.6' : '1'}">${this.i18n.t(`${quest.i18nKey}.name`)}</div>
               ${lockMessage}
               <div class="quest-meta">
                 <span class="quest-badge">${quest.difficulty}</span>
@@ -870,6 +907,7 @@ class QuestOverlay {
         <div class="progress-bar">
           <div class="progress-fill" style="width: ${progress}%"></div>
         </div>
+        <p class="waiting">${this.i18n.t('ui.labels.waitingForYou')}</p>
       </div>
     `;
 

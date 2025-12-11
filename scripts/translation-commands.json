@@ -1,0 +1,142 @@
+[
+  {
+    "language": "de-DE",
+    "languageName": "German",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for German (de-DE) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Schwarz-Rot-Gold (Black-Red-Gold)\n- Gaming style: Strategic, achievement-oriented, detailed\n- Tone: Professional yet engaging, precise language\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for German gamers!",
+    "command": 0
+  },
+  {
+    "language": "de-DE",
+    "languageName": "German",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for German (de-DE) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Schwarz-Rot-Gold (Black-Red-Gold)\n- Gaming style: Strategic, achievement-oriented, detailed\n- Tone: Professional yet engaging, precise language\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for German gamers!",
+    "command": 1
+  },
+  {
+    "language": "fr-FR",
+    "languageName": "French",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for French (fr-FR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Bleu-Blanc-Rouge (Blue-White-Red)\n- Gaming style: Narrative-driven with artistic flair\n- Tone: Elegant, sophisticated, story-focused\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for French gamers!",
+    "command": 2
+  },
+  {
+    "language": "fr-FR",
+    "languageName": "French",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for French (fr-FR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Bleu-Blanc-Rouge (Blue-White-Red)\n- Gaming style: Narrative-driven with artistic flair\n- Tone: Elegant, sophisticated, story-focused\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for French gamers!",
+    "command": 3
+  },
+  {
+    "language": "es-ES",
+    "languageName": "Spanish",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Spanish (es-ES) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Rojo y Gualda (Red and Yellow)\n- Gaming style: Social and celebratory\n- Tone: Warm, enthusiastic, team-oriented\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Spanish gamers!",
+    "command": 4
+  },
+  {
+    "language": "es-ES",
+    "languageName": "Spanish",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Spanish (es-ES) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Rojo y Gualda (Red and Yellow)\n- Gaming style: Social and celebratory\n- Tone: Warm, enthusiastic, team-oriented\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Spanish gamers!",
+    "command": 5
+  },
+  {
+    "language": "pt-BR",
+    "languageName": "Brazilian Portuguese",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Brazilian Portuguese (pt-BR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Verde e Amarelo (Green and Yellow)\n- Gaming style: Festive and energetic\n- Tone: Vibrant, positive, motivational\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Brazilian Portuguese gamers!",
+    "command": 6
+  },
+  {
+    "language": "pt-BR",
+    "languageName": "Brazilian Portuguese",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Brazilian Portuguese (pt-BR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Verde e Amarelo (Green and Yellow)\n- Gaming style: Festive and energetic\n- Tone: Vibrant, positive, motivational\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Brazilian Portuguese gamers!",
+    "command": 7
+  },
+  {
+    "language": "ja-JP",
+    "languageName": "Japanese",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Japanese (ja-JP) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 日の丸 (Hinomaru - Circle of the Sun)\n- Gaming style: Achievement and mastery focused\n- Tone: Respectful, goal-oriented, precise\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Japanese gamers!",
+    "command": 8
+  },
+  {
+    "language": "ja-JP",
+    "languageName": "Japanese",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Japanese (ja-JP) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 日の丸 (Hinomaru - Circle of the Sun)\n- Gaming style: Achievement and mastery focused\n- Tone: Respectful, goal-oriented, precise\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Japanese gamers!",
+    "command": 9
+  },
+  {
+    "language": "ko-KR",
+    "languageName": "Korean",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Korean (ko-KR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 태극기 (Taegeukgi - Supreme Ultimate Flag)\n- Gaming style: Competitive and goal-driven\n- Tone: Dynamic, achievement-focused, energetic\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Korean gamers!",
+    "command": 10
+  },
+  {
+    "language": "ko-KR",
+    "languageName": "Korean",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Korean (ko-KR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 태극기 (Taegeukgi - Supreme Ultimate Flag)\n- Gaming style: Competitive and goal-driven\n- Tone: Dynamic, achievement-focused, energetic\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Korean gamers!",
+    "command": 11
+  },
+  {
+    "language": "zh-CN",
+    "languageName": "Simplified Chinese",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Simplified Chinese (zh-CN) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 五星红旗 (Five-starred Red Flag)\n- Gaming style: Progressive and milestone-based\n- Tone: Professional, achievement-oriented, clear\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Simplified Chinese gamers!",
+    "command": 12
+  },
+  {
+    "language": "zh-CN",
+    "languageName": "Simplified Chinese",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Simplified Chinese (zh-CN) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: 五星红旗 (Five-starred Red Flag)\n- Gaming style: Progressive and milestone-based\n- Tone: Professional, achievement-oriented, clear\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Simplified Chinese gamers!",
+    "command": 13
+  },
+  {
+    "language": "vi-VN",
+    "languageName": "Vietnamese",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Vietnamese (vi-VN) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Cờ Đỏ Sao Vàng (Red Flag with Yellow Star)\n- Gaming style: Educational and supportive\n- Tone: Encouraging, learning-focused, friendly\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Vietnamese gamers!",
+    "command": 14
+  },
+  {
+    "language": "vi-VN",
+    "languageName": "Vietnamese",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Vietnamese (vi-VN) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Cờ Đỏ Sao Vàng (Red Flag with Yellow Star)\n- Gaming style: Educational and supportive\n- Tone: Encouraging, learning-focused, friendly\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Vietnamese gamers!",
+    "command": 15
+  },
+  {
+    "language": "el-GR",
+    "languageName": "Greek",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Greek (el-GR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Γαλάζιο και Λευκό (Blue and White)\n- Gaming style: Epic journey and mythological\n- Tone: Heroic, dramatic, quest-focused\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Greek gamers!",
+    "command": 16
+  },
+  {
+    "language": "el-GR",
+    "languageName": "Greek",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Greek (el-GR) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Γαλάζιο και Λευκό (Blue and White)\n- Gaming style: Epic journey and mythological\n- Tone: Heroic, dramatic, quest-focused\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Greek gamers!",
+    "command": 17
+  },
+  {
+    "language": "pl-PL",
+    "languageName": "Polish",
+    "questId": "journeys",
+    "prompt": "You are a professional game localization expert for Polish (pl-PL) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Biało-Czerwone (White and Red)\n- Gaming style: Challenge-focused and perseverance\n- Tone: Determined, resilient, achievement-driven\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: journeys\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Polish gamers!",
+    "command": 18
+  },
+  {
+    "language": "pl-PL",
+    "languageName": "Polish",
+    "questId": "quests",
+    "prompt": "You are a professional game localization expert for Polish (pl-PL) audiences. Translate this quest content with cultural adaptation:\n\nCultural Context:\n- National colors: Biało-Czerwone (White and Red)\n- Gaming style: Challenge-focused and perseverance\n- Tone: Determined, resilient, achievement-driven\n- Keep SAP terms in English (Joule, SuccessFactors, etc.)\n\nQuest ID: quests\nName: undefined\nDescription: undefined\nTagline: undefined\nVictory: undefined\nStory Arc: undefined\nChapter: undefined\nIntro: undefined\nOutro: undefined\nNext Hint: undefined\n\nProvide ONLY a JSON object with these exact keys: name, description, tagline, victoryText, storyArc, storyChapter, storyIntro, storyOutro, nextQuestHint. Make it exciting and culturally appropriate for Polish gamers!",
+    "command": 19
+  }
+]

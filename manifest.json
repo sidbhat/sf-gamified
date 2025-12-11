@@ -79,7 +79,7 @@
         "assets/*",
         "src/ui/confetti.js",
         "src/config/*.json",
-        "i18n/*.json"
+        "src/i18n/*.json"
       ],
       "matches": [
         "https://*.successfactors.com/*",

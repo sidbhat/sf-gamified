@@ -27,6 +27,8 @@
   const i18n = window.JouleQuestI18n;
   await i18n.init();
   logger.success('I18n initialized', { language: i18n.getCurrentLanguage() });
+  logger.info(`Detected language: ${i18n.getCurrentLanguage()}`); // Added for debugging
+  logger.info('Loaded translations:', i18n.translations); // Added for debugging
 
   // Load configuration files
   let selectors, quests, solutions, solutionDetector, currentSolution;
@@ -75,9 +77,15 @@
   // Check if there's an active quest state from navigation (page reload)
   // CRITICAL FIX: Use tab-specific storage key to prevent cross-tab contamination
   try {
-    // Get current tab ID
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tabId = tabs[0]?.id || 'unknown';
+    // Get current tab ID - wrap in runtime check since content scripts can't use chrome.tabs
+    let tabId = 'unknown';
+    try {
+      const tabs = await chrome.tabs?.query({ active: true, currentWindow: true });
+      tabId = tabs?.[0]?.id || 'unknown';
+    } catch (tabError) {
+      // Content scripts can't access chrome.tabs, use a fallback
+      tabId = `content_${Date.now()}`;
+    }
     const storageKey = `activeQuestState_tab${tabId}`;
     
     logger.info('Checking for tab-specific quest state', { tabId, storageKey });
@@ -161,16 +169,21 @@
     }
   } catch (error) {
     logger.error('Failed to restore quest state', error);
-    // Clear state on error to prevent stuck loops
-    try {
-      // Try to get tab ID for cleanup
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      const tabId = tabs[0]?.id;
-      if (tabId) {
-        const storageKey = `activeQuestState_tab${tabId}`;
-        await chrome.storage.local.remove(storageKey);
-        logger.info('Cleared quest state due to error');
-      }
+        // Clear state on error to prevent stuck loops
+        try {
+          // Try to get tab ID for cleanup
+          let tabId;
+          try {
+            const tabs = await chrome.tabs?.query({ active: true, currentWindow: true });
+            tabId = tabs?.[0]?.id;
+          } catch (tabError) {
+            tabId = `content_${Date.now()}`;
+          }
+          if (tabId) {
+            const storageKey = `activeQuestState_tab${tabId}`;
+            await chrome.storage.local.remove(storageKey);
+            logger.info('Cleared quest state due to error');
+          }
     } catch (clearError) {
       logger.error('Failed to clear quest state', clearError);
     }

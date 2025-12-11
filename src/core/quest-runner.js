@@ -49,7 +49,7 @@ class QuestRunner {
 
   /**
    * Start a quest
-   * @param {Object} quest - Quest configuration from JSON
+   * @param {Object} questData - Quest configuration from JSON
    * @param {string} mode - 'demo' or 'real'
    */
   async startQuest(questData, mode = 'demo') {
@@ -70,15 +70,36 @@ class QuestRunner {
       quest = questData;
     }
 
-    if (!quest || !quest.name || !quest.steps) {
-      this.logger.error('Failed to start quest: Invalid or incomplete quest data.', { received: questData, processed: quest });
+    if (!quest || !quest.i18nKey || !quest.steps) { // Check for i18nKey now
+      this.logger.error('Failed to start quest: Invalid or incomplete quest data (missing i18nKey).', { received: questData, processed: quest });
       if (this.overlay) {
         this.overlay.showError('Could not start quest. Quest data is missing or invalid.');
       }
       return;
     }
     
-    this.logger.quest(quest.name, 'Starting quest', { mode });
+    // Fetch translated quest details
+    const i18nQuest = {
+      id: quest.id,
+      name: this.overlay.i18n.t(`${quest.i18nKey}.name`),
+      description: this.overlay.i18n.t(`${quest.i18nKey}.description`),
+      tagline: this.overlay.i18n.t(`${quest.i18nKey}.tagline`),
+      victoryText: this.overlay.i18n.t(`${quest.i18nKey}.victoryText`),
+      storyArc: this.overlay.i18n.t(`${quest.i18nKey}.storyArc`),
+      storyChapter: this.overlay.i18n.t(`${quest.i18nKey}.storyChapter`),
+      storyIntro: this.overlay.i18n.t(`${quest.i18nKey}.storyIntro`),
+      storyOutro: this.overlay.i18n.t(`${quest.i18nKey}.storyOutro`),
+      nextQuestHint: this.overlay.i18n.t(`${quest.i18nKey}.nextQuestHint`),
+      icon: quest.icon,
+      points: quest.points,
+      estimatedTime: quest.estimatedTime,
+      difficulty: quest.difficulty,
+      solutions: quest.solutions,
+      requiresQuests: quest.requiresQuests,
+      steps: quest.steps // Steps are not translated here
+    };
+
+    this.logger.quest(i18nQuest.name, 'Starting quest', { mode });
 
     // CRITICAL FIX: Always force reset before starting a new quest
     // This prevents false "another quest is running" errors
@@ -94,7 +115,7 @@ class QuestRunner {
     }
 
 
-    this.currentQuest = quest;
+    this.currentQuest = i18nQuest; // Use the i18n-enriched quest object
     this.currentStepIndex = 0;
     this.isRunning = true;
     this.mode = mode;
@@ -102,12 +123,12 @@ class QuestRunner {
     // CRITICAL FIX: Show overlay IMMEDIATELY with Start Quest button
     // User must click "Start Quest" to begin - this gives them time to read the story
     if (this.overlay) {
-      this.overlay.showQuestStart(quest);
+      this.overlay.showQuestStart(this.currentQuest);
     }
 
     // CRITICAL: Wait for user to click "Start Quest" button
     // This replaces the old 5-second auto-start with user-controlled pacing
-    await this.waitForQuestStartConfirmation(quest.id);
+    await this.waitForQuestStartConfirmation(this.currentQuest.id);
 
     try {
       // Execute quest based on mode
@@ -117,7 +138,7 @@ class QuestRunner {
         await this.runRealMode();
       }
 
-      this.logger.quest(quest.name, 'Quest completed successfully');
+      this.logger.quest(this.currentQuest.name, 'Quest completed successfully');
       
       // Get all quests and completed quests for next quest logic
       const allQuests = await this.getAllQuests();
@@ -125,7 +146,7 @@ class QuestRunner {
       
       // Show completion overlay with step results
       if (this.overlay) {
-        this.overlay.showQuestComplete(quest, this.stepResults, this.failedSteps, allQuests, completedQuests);
+        this.overlay.showQuestComplete(this.currentQuest, this.stepResults, this.failedSteps, allQuests, completedQuests);
       }
     } catch (error) {
       this.logger.error('Quest failed', error);
@@ -461,9 +482,20 @@ class QuestRunner {
    * @param {Object} step - Step configuration
    */
   async executeTypeAndSendAction(step) {
+    // Get prompt text - either from promptKey (i18n) or fallback to hardcoded prompt
+    let promptText = step.prompt; // Fallback to hardcoded prompt (backwards compatibility)
+    
+    if (step.promptKey && this.overlay && this.overlay.i18n) {
+      // Look up translated prompt from i18n
+      promptText = this.overlay.i18n.t(step.promptKey);
+      this.logger.info(`Using translated prompt: "${promptText}" from key: ${step.promptKey}`);
+    } else if (step.promptKey) {
+      this.logger.warn(`promptKey specified but i18n not available, falling back to English`);
+    }
+    
     // Send prompt using JouleHandler (waits for response internally)
     const result = await this.jouleHandler.sendPrompt(
-      step.prompt,
+      promptText,
       step.waitForResponse,
       step.responseKeywords || []
     );
@@ -645,12 +677,26 @@ class QuestRunner {
    * @param {Object} step - Step configuration
    */
   async executeNavigateAction(step) {
-    this.logger.info(`Navigating to: ${step.url}`);
+    this.logger.info(`[Navigate] Target URL: ${step.url}`);
+    this.logger.info(`[Navigate] Current URL: ${window.location.href}`);
+    this.logger.info(`[Navigate] Current origin: ${window.location.origin}`);
+    this.logger.info(`[Navigate] Current pathname: ${window.location.pathname}`);
+    this.logger.info(`[Navigate] Current hash: ${window.location.hash}`);
+    this.logger.info(`[Navigate] Preserve params: ${step.preserveParams}`);
     
     // CRITICAL FIX: Get current tab ID to make quest state tab-specific
     // This prevents cross-tab contamination when SF and S/4HANA tabs are both open
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tabId = tabs[0]?.id || 'unknown';
+    // NOTE: Content scripts can't access chrome.tabs directly, must use message passing
+    let tabId = 'unknown';
+    try {
+      // Try to get tab ID via message to background script
+      const response = await chrome.runtime.sendMessage({ action: 'getTabId' });
+      tabId = response?.tabId || 'unknown';
+    } catch (error) {
+      // Fallback: Generate a unique ID based on URL
+      tabId = `url_${window.location.href.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50)}`;
+      this.logger.warn('Could not get tab ID from background, using URL-based ID', { tabId });
+    }
     
     // Save quest state to storage before navigation (page will reload)
     const questState = {
@@ -692,11 +738,22 @@ class QuestRunner {
         
         // Parse the target URL to see if it already has params
         const targetUrl = new URL(fullUrl);
-        const targetHash = targetUrl.hash;
-        const [targetPath, targetParamsString] = targetHash.split('?');
+        const targetHash = targetUrl.hash || ''; // Empty string if no hash
+        
+        // Split hash into path and params
+        let targetPath = '';
+        let targetParamsString = '';
+        
+        if (targetHash) {
+          // Remove leading # if present
+          const hashWithoutPound = targetHash.replace(/^#/, '');
+          const parts = hashWithoutPound.split('?');
+          targetPath = parts[0];
+          targetParamsString = parts[1] || '';
+        }
         
         // Merge params: target URL params take precedence
-        const targetParams = new URLSearchParams(targetParamsString || '');
+        const targetParams = new URLSearchParams(targetParamsString);
         
         // Add all current params that aren't already in target
         for (const [key, value] of currentParams) {
@@ -707,20 +764,44 @@ class QuestRunner {
         
         // Reconstruct URL with merged params
         const mergedParamsString = targetParams.toString();
-        fullUrl = `${targetUrl.origin}${targetUrl.pathname}${targetPath}${mergedParamsString ? '?' + mergedParamsString : ''}`;
         
+        // Build final URL based on whether target has hash or not
+        if (targetPath) {
+          // Hash-based URL like /sf/goals#/goal-form?params
+          fullUrl = `${targetUrl.origin}${targetUrl.pathname}#${targetPath}${mergedParamsString ? '?' + mergedParamsString : ''}`;
+        } else {
+          // Regular URL like /sf/goals?params (no hash)
+          fullUrl = `${targetUrl.origin}${targetUrl.pathname}${mergedParamsString ? '?' + mergedParamsString : ''}`;
+        }
+        
+        this.logger.info('URL reconstructed with preserved params:', fullUrl);
         this.logger.info('Merged URL parameters:', Object.fromEntries(targetParams));
       } else {
-        this.logger.warn('No parameters found in current URL to preserve');
+        this.logger.info('No parameters found in current URL to preserve, using target URL as-is');
       }
     }
     
-    this.logger.info(`Full URL: ${fullUrl}`);
+    this.logger.info(`Full URL constructed for navigation: ${fullUrl}`);
     
-    // Navigate to URL (this will reload the page)
-    window.location.href = fullUrl;
+    // Determine if it's a hash-based navigation or full URL navigation
+    const currentUrl = new URL(window.location.href);
+    const targetUrlParsed = new URL(fullUrl);
+
+    if (currentUrl.origin === targetUrlParsed.origin && 
+        currentUrl.pathname === targetUrlParsed.pathname && 
+        targetUrlParsed.hash) {
+      // It's a hash-based navigation (SPA), directly update hash
+      this.logger.info(`Performing hash-based navigation to: ${targetUrlParsed.hash}`);
+      window.location.hash = targetUrlParsed.hash;
+      // For hash navigation, the page does not reload, so manually call checkActiveQuest
+      window.postMessage({ type: 'CHECK_ACTIVE_QUEST' }, '*');
+    } else {
+      // Full URL navigation, will cause page reload
+      this.logger.info(`Performing full URL navigation to: ${fullUrl}`);
+      window.location.href = fullUrl;
+    }
     
-    // Note: Code after this line won't execute as page reloads
+    // Note: Code after this line won't execute if it's a full page reload
   }
 
   /**
@@ -793,16 +874,16 @@ class QuestRunner {
     const allUI5Buttons = document.querySelectorAll('ui5-button, ui5-button-xweb-goalmanagement, [class*="ui5-button"]');
     this.logger.info(`Found ${allUI5Buttons.length} UI5 button elements`);
     
-    // Determine search keywords based on selector key
+    // Determine search keywords based on selector key (English + German)
     let searchKeywords = [];
     if (selectorKey === 'goalForm.createButton') {
-      searchKeywords = ['create'];
+      searchKeywords = ['create', 'erstellen', 'anlegen'];
     } else if (selectorKey === 'goalForm.submitButton') {
-      searchKeywords = ['submit', 'save'];
+      searchKeywords = ['submit', 'save', 'senden', 'speichern'];
     } else if (selectorKey === 'goalForm.saveButton') {
-      searchKeywords = ['save'];
+      searchKeywords = ['save', 'speichern'];
     } else if (selectorKey === 'goalForm.generateButton') {
-      searchKeywords = ['generate'];
+      searchKeywords = ['generate', 'generieren', 'ki', 'ai'];
     }
     
     for (const btnElement of allUI5Buttons) {
