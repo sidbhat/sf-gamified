@@ -92,21 +92,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         : 'Content script loading... Please wait a few seconds and try again.';
       
       // Get full error object for display if available
-      const errorObj = i18n ? {
-        icon: '🔄',
-        title: i18n.t('errors.contentScriptNotLoaded.title'),
-        message: errorMsg,
-        causes: [
-          i18n.t('errors.contentScriptNotLoaded.causes.0'),
-          i18n.t('errors.contentScriptNotLoaded.causes.1'),
-          i18n.t('errors.contentScriptNotLoaded.causes.2')
-        ],
-        solutions: [
-          { icon: '⏱️', text: i18n.t('errors.contentScriptNotLoaded.solutions.0') },
-          { icon: '⌘', text: i18n.t('errors.contentScriptNotLoaded.solutions.1') },
-          { icon: '🔌', text: i18n.t('errors.contentScriptNotLoaded.solutions.2') }
-        ]
-      } : null;
+      let errorObj = null;
+      if (i18n) {
+        const errorData = i18n.t('errors.contentScriptNotLoaded');
+        errorObj = {
+          icon: '🔄',
+          title: errorData.title || 'Extension Setup Needed',
+          message: errorMsg,
+          causes: errorData.causes || [],
+          solutions: (errorData.solutions || []).map((text, index) => {
+            const icons = ['⏱️', '⌘', '🔌'];
+            return { icon: icons[index] || '💡', text };
+          })
+        };
+      }
       
       showError(errorMsg, errorObj);
     } else {

@@ -74,6 +74,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse({ success: true });
           break;
 
+        case 'getTabId':
+          // Return the sender's tab ID to content script
+          const tabId = sender.tab?.id;
+          console.log('[MarioQuest] Returning tab ID to content script', { tabId });
+          sendResponse({ success: true, tabId });
+          break;
+
         default:
           sendResponse({ success: false, error: 'Unknown action' });
       }

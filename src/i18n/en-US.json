@@ -65,6 +65,10 @@
       "sales": "📊",
       "procurement": "📦",
       "delivery": "🚚"
+    },
+    "hints": {
+      "canChangeInput": "You can change this input field",
+      "canClickButton": "You can click on save or submit"
     }
   },
   "journeys": {
@@ -210,19 +214,6 @@
     },
     "unknownError": {
       "icon": "❌",
-      "title": "Something Went Wrong",
-      "message": "An unexpected error occurred.",
-      "causes": [
-        "Network connection issue",
-        "Page conflict with extension",
-        "Browser compatibility issue"
-      ],
-      "solutions": [
-        "🔄 Try refreshing the page",
-        "💬 Report issue if it persists"
-      ]
-    },
-    "unknownerror": {
       "title": "Something Went Wrong",
       "message": "An unexpected error occurred.",
       "causes": [

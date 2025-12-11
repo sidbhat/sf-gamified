@@ -77,14 +77,16 @@
   // Check if there's an active quest state from navigation (page reload)
   // CRITICAL FIX: Use tab-specific storage key to prevent cross-tab contamination
   try {
-    // Get current tab ID - wrap in runtime check since content scripts can't use chrome.tabs
+    // CRITICAL: Get current tab ID via message passing (content scripts can't use chrome.tabs)
     let tabId = 'unknown';
     try {
-      const tabs = await chrome.tabs?.query({ active: true, currentWindow: true });
-      tabId = tabs?.[0]?.id || 'unknown';
+      const response = await chrome.runtime.sendMessage({ action: 'getTabId' });
+      tabId = response?.tabId || 'unknown';
+      logger.info('Got tab ID from background script', { tabId });
     } catch (tabError) {
-      // Content scripts can't access chrome.tabs, use a fallback
-      tabId = `content_${Date.now()}`;
+      logger.warn('Could not get tab ID from background, using fallback', tabError);
+      // Fallback: Use URL-based ID for consistency with executeNavigateAction
+      tabId = `url_${window.location.href.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50)}`;
     }
     const storageKey = `activeQuestState_tab${tabId}`;
     
@@ -137,8 +139,30 @@
           return;
         }
           
-          // Set runner state to resume from next step
-          runner.currentQuest = quest;
+          // CRITICAL FIX: Create i18nQuest object with translations (same as startQuest does)
+          const i18nQuest = {
+            id: quest.id,
+            category: quest.category,
+            name: i18n.t(`${quest.i18nKey}.name`),
+            description: i18n.t(`${quest.i18nKey}.description`),
+            tagline: i18n.t(`${quest.i18nKey}.tagline`),
+            victoryText: i18n.t(`${quest.i18nKey}.victoryText`),
+            storyArc: i18n.t(`${quest.i18nKey}.storyArc`),
+            storyChapter: i18n.t(`${quest.i18nKey}.storyChapter`),
+            storyIntro: i18n.t(`${quest.i18nKey}.storyIntro`),
+            storyOutro: i18n.t(`${quest.i18nKey}.storyOutro`),
+            nextQuestHint: i18n.t(`${quest.i18nKey}.nextQuestHint`),
+            icon: quest.icon,
+            points: quest.points,
+            estimatedTime: quest.estimatedTime,
+            difficulty: quest.difficulty,
+            solutions: quest.solutions,
+            requiresQuests: quest.requiresQuests,
+            steps: quest.steps
+          };
+          
+          // Set runner state to resume from next step with i18n translations
+          runner.currentQuest = i18nQuest;
           runner.currentStepIndex = nextStepIndex;
           runner.isRunning = true;
           runner.mode = questState.mode;
@@ -412,6 +436,15 @@
   });
 
   /**
+   * Get all quests filtered by current solution
+   */
+  async function getAllQuestsForSolution() {
+    return quests.quests.filter(quest => 
+      !quest.solutions || quest.solutions.includes(currentSolution.id)
+    );
+  }
+
+  /**
    * Continue quest execution from a specific step
    * Used when resuming after page navigation
    */
@@ -436,8 +469,8 @@
         logger.warn('Quest was stopped during execution');
         // CRITICAL: Clear state when stopping (tab-specific)
         try {
-          const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-          const tabId = tabs[0]?.id;
+          const response = await chrome.runtime.sendMessage({ action: 'getTabId' });
+          const tabId = response?.tabId;
           if (tabId) {
             const storageKey = `activeQuestState_tab${tabId}`;
             await chrome.storage.local.remove(storageKey);
@@ -487,8 +520,8 @@
         // Clear state if current step might have caused reload AND next won't
         if (currentMightReload && !nextWillReload) {
           try {
-            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-            const tabId = tabs[0]?.id;
+            const response = await chrome.runtime.sendMessage({ action: 'getTabId' });
+            const tabId = response?.tabId;
             if (tabId) {
               const storageKey = `activeQuestState_tab${tabId}`;
               await chrome.storage.local.remove(storageKey);
@@ -522,8 +555,20 @@
     // Quest completed
     logger.quest(quest.name, 'Quest completed after navigation');
     
+    // Get all quests and completed quests for next quest logic
+    const allQuests = await getAllQuestsForSolution();
+    const completedQuestsData = await storage.getCompletedQuests(currentSolution.id);
+    
     if (overlay) {
-      overlay.showQuestComplete(quest, runner.stepResults, runner.failedSteps);
+      // CRITICAL FIX: Pass runner.currentQuest which has i18n translations, not raw quest
+      // Also pass allQuests and completedQuests for next quest button logic
+      overlay.showQuestComplete(
+        runner.currentQuest || quest, 
+        runner.stepResults, 
+        runner.failedSteps,
+        allQuests,
+        completedQuestsData
+      );
     }
     
     // Save progress FOR THIS SOLUTION
@@ -540,13 +585,23 @@
     }
     
     // CRITICAL FIX: Final cleanup - ensure state is cleared when quest completes (tab-specific)
+    // Content scripts can't use chrome.tabs.query, so use message passing to background script
     try {
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      const tabId = tabs[0]?.id;
+      const response = await chrome.runtime.sendMessage({ action: 'getTabId' });
+      const tabId = response?.tabId;
       if (tabId) {
         const storageKey = `activeQuestState_tab${tabId}`;
         await chrome.storage.local.remove(storageKey);
-        logger.info('Final cleanup: Cleared quest state after completion');
+        logger.info('Final cleanup: Cleared quest state after completion', { tabId });
+      } else {
+        logger.warn('Could not get tab ID for cleanup, clearing all quest states');
+        // Fallback: Clear all quest state keys
+        const allStorage = await chrome.storage.local.get(null);
+        const questStateKeys = Object.keys(allStorage).filter(k => k.startsWith('activeQuestState_'));
+        if (questStateKeys.length > 0) {
+          await chrome.storage.local.remove(questStateKeys);
+          logger.info('Cleared all quest state keys', { keys: questStateKeys });
+        }
       }
     } catch (error) {
       logger.error('Failed final quest state cleanup', error);

@@ -65,6 +65,10 @@
       "sales": "📊",
       "procurement": "📦",
       "delivery": "🚚"
+    },
+    "hints": {
+      "canChangeInput": "Sie können dieses Eingabefeld ändern",
+      "canClickButton": "Sie können auf Speichern oder Senden klicken"
     }
   },
   "journeys": {

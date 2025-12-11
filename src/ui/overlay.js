@@ -8,6 +8,7 @@ class QuestOverlay {
     this.container = null;
     this.isVisible = false;
     this.currentSolution = null;
+    this.lastActiveCategory = null; // Track last active category for return navigation
   }
 
   /**
@@ -598,24 +599,27 @@ class QuestOverlay {
     };
 
     // Render tabs dynamically based on solution
+    // CRITICAL: Restore last active category if returning from quest completion
+    const defaultActiveCategory = this.lastActiveCategory || tabConfig[0].id;
     const renderTabs = () => {
-      return tabConfig.map((tab, index) => `
-        <button class="tab-btn ${index === 0 ? 'active' : ''}" data-category="${tab.id}">
+      return tabConfig.map((tab) => `
+        <button class="tab-btn ${tab.id === defaultActiveCategory ? 'active' : ''}" data-category="${tab.id}">
           ${tab.icon} ${tab.label}
         </button>
       `).join('');
     };
 
     // Render category content dynamically
+    // CRITICAL: Restore last active category if returning from quest completion
     const renderCategories = () => {
-      return tabConfig.map((tab, index) => {
+      return tabConfig.map((tab) => {
         const categoryQuests = questsByCategory[tab.id] || [];
         const completedCount = categoryQuests.filter(q => completedQuests[q.id]).length;
         const totalCount = categoryQuests.length;
         const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
         return `
-          <div class="quest-category ${index === 0 ? 'active' : ''}" data-category="${tab.id}">
+          <div class="quest-category ${tab.id === defaultActiveCategory ? 'active' : ''}" data-category="${tab.id}">
             <div class="journey-progress">
               <div class="progress-label">
                 <span>🗺️ ${tab.journey.name}</span>
@@ -823,6 +827,10 @@ class QuestOverlay {
     const questName = quest.name || 'Unknown Quest';
     const questPoints = quest.points || 0;
     const questDifficulty = quest.difficulty || 'Easy';
+    
+    // CRITICAL: Save quest category for returning to correct tab after completion
+    this.lastActiveCategory = quest.category || 'employee';
+    this.logger.info('Saved quest category for return navigation', { category: this.lastActiveCategory });
 
     // Add page-level border indicator immediately when quest starts
     document.body.classList.add('quest-running');
@@ -948,6 +956,34 @@ class QuestOverlay {
 
     const progress = (current / total) * 100;
 
+    // Determine action hint based on step action type
+    let actionHintHTML = '';
+    if (step.action === 'type' || step.action === 'fill') {
+      actionHintHTML = `
+        <div class="action-hint action-hint-input">
+          ✏️ ${this.i18n.t('ui.hints.canChangeInput') || 'You can change this input field'}
+        </div>
+      `;
+    } else if (step.action === 'click') {
+      // Check if clicking a button/submit element
+      const isSubmitAction = step.selector && (
+        step.selector.includes('button') || 
+        step.selector.includes('submit') || 
+        step.selector.includes('save') ||
+        step.name.toLowerCase().includes('submit') ||
+        step.name.toLowerCase().includes('save') ||
+        step.name.toLowerCase().includes('click')
+      );
+      
+      if (isSubmitAction) {
+        actionHintHTML = `
+          <div class="action-hint action-hint-button">
+            👆 ${this.i18n.t('ui.hints.canClickButton') || 'You can click on save or submit'}
+          </div>
+        `;
+      }
+    }
+
     const html = `
       <div class="joule-quest-card quest-step instructions">
         <!-- Mascot (hidden for agent quests) -->
@@ -965,6 +1001,7 @@ class QuestOverlay {
         <h4>${step.name}</h4>
         <p class="instruction">${step.description}</p>
         ${step.hint ? `<p class="hint">💡 ${this.i18n.t('ui.labels.hint')}: ${step.hint}</p>` : ''}
+        ${actionHintHTML}
         <div class="progress-bar">
           <div class="progress-fill" style="width: ${progress}%"></div>
         </div>
@@ -1022,8 +1059,9 @@ class QuestOverlay {
   showStepError(questName, step, errorType, friendlyError, isAgentQuest = false) {
     this.logger.error('Showing step error - QUEST STOPPED', { questName, step, errorType, friendlyError, isAgentQuest });
 
-    // Remove page-level border indicator when quest stops due to error
+    // CRITICAL: Add throbbing red error border and remove normal quest border
     document.body.classList.remove('quest-running');
+    document.body.classList.add('quest-error');
 
     // CRITICAL FIX: friendlyError object contains ALREADY TRANSLATED strings
     // Do NOT call this.i18n.t() on them - use them directly
@@ -1121,12 +1159,30 @@ class QuestOverlay {
    * @param {Array} completedQuests - List of completed quest IDs to check journey completion
    */
   showQuestComplete(quest, stepResults = [], failedSteps = [], allQuests = [], completedQuests = []) {
-    this.logger.info('Showing quest complete', { quest, stepResults, failedSteps, allQuests, completedQuests });
+    this.logger.info('🎯 [showQuestComplete] CALLED with quest object:', {
+      questId: quest?.id,
+      questName: quest?.name,
+      questCategory: quest?.category,
+      questDifficulty: quest?.difficulty,
+      questPoints: quest?.points,
+      questIcon: quest?.icon,
+      hasStoryOutro: !!quest?.storyOutro,
+      hasNextQuestHint: !!quest?.nextQuestHint,
+      allQuestProperties: quest ? Object.keys(quest) : []
+    });
 
     // Defensive: ensure quest object has required properties
     if (!quest) {
-      this.logger.error('Quest object is null or undefined in showQuestComplete');
+      this.logger.error('❌ Quest object is null or undefined in showQuestComplete');
       return;
+    }
+    
+    // CRITICAL DEBUG: Check if name is actually undefined
+    if (!quest.name) {
+      this.logger.error('❌ quest.name is UNDEFINED!', {
+        questObject: quest,
+        allProperties: Object.keys(quest)
+      });
     }
 
     const questName = quest.name || 'Unknown Quest';
@@ -1165,29 +1221,60 @@ class QuestOverlay {
       completionState
     });
 
+    // CRITICAL FIX: completedQuests might be object or array, normalize to array of IDs
+    const completedQuestIds = Array.isArray(completedQuests) 
+      ? completedQuests 
+      : Object.keys(completedQuests);
+    
+    this.logger.info('Completed quests normalized:', {
+      originalType: Array.isArray(completedQuests) ? 'array' : 'object',
+      completedQuestIds
+    });
+
     // Find next quest in same category
     const categoryQuests = allQuests.filter(q => q.category === questCategory);
     const currentIndex = categoryQuests.findIndex(q => q.id === questId);
     
-    this.logger.info('Next quest calculation:', {
+    this.logger.info('🔍 [NEXT QUEST DEBUG] Starting next quest calculation:', {
       questId,
       questCategory,
       totalCategoryQuests: categoryQuests.length,
       currentIndex,
-      categoryQuestIds: categoryQuests.map(q => q.id),
+      categoryQuestIds: categoryQuests.map(q => ({ id: q.id, category: q.category, hasI18nKey: !!q.i18nKey })),
+      completedQuestIds,
       hasNextQuest: currentIndex >= 0 && currentIndex < categoryQuests.length - 1
     });
     
-    const nextQuest = currentIndex >= 0 && currentIndex < categoryQuests.length - 1 
-      ? categoryQuests[currentIndex + 1] 
-      : null;
+    // CRITICAL BUG FIX: The next quest logic was working, but the button rendering might fail
+    // if nextQuest doesn't have required properties (like i18nKey)
+    let nextQuest = null;
+    if (currentIndex >= 0 && currentIndex < categoryQuests.length - 1) {
+      nextQuest = categoryQuests[currentIndex + 1];
+      
+      // CRITICAL: Validate nextQuest has required properties
+      if (!nextQuest.i18nKey) {
+        this.logger.error('🚨 Next quest missing i18nKey!', {
+          nextQuestId: nextQuest.id,
+          nextQuestCategory: nextQuest.category,
+          nextQuestData: nextQuest
+        });
+        // Don't null it out - let it fail visibly so we can debug
+      }
+    }
     
-    this.logger.info('Next quest result:', { nextQuest: nextQuest ? nextQuest.name : 'none' });
+    this.logger.info('🎯 [NEXT QUEST DEBUG] Next quest result:', { 
+      hasNextQuest: !!nextQuest,
+      nextQuestId: nextQuest ? nextQuest.id : 'none',
+      nextQuestCategory: nextQuest ? nextQuest.category : 'none',
+      nextQuestI18nKey: nextQuest ? nextQuest.i18nKey : 'none',
+      nextQuestName: nextQuest ? (nextQuest.i18nKey ? this.i18n.t(`${nextQuest.i18nKey}.name`) : 'NO_I18N_KEY') : 'none',
+      isNextQuestCompleted: nextQuest ? completedQuestIds.includes(nextQuest.id) : false,
+      willShowButton: !!nextQuest
+    });
 
     // Check if ALL quests across ALL categories are complete (entire story complete)
-    // After this quest completes, add it to the completed list for checking
     const allQuestIds = allQuests.map(q => q.id);
-    const completedAfterThisQuest = [...new Set([...completedQuests, questId])];
+    const completedAfterThisQuest = [...new Set([...completedQuestIds, questId])];
     const isEntireStoryComplete = completedAfterThisQuest.length === allQuestIds.length;
     
     this.logger.info('Story completion check:', {
@@ -1530,6 +1617,8 @@ Master SAP SuccessFactors Joule with zero-risk, gamified training.
     if (this.container) {
       this.container.classList.add('hidden');
       this.isVisible = false;
+      // Clean up error border when hiding overlay
+      document.body.classList.remove('quest-error');
       this.logger.info('Overlay hidden');
     }
   }

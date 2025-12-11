@@ -80,8 +80,10 @@ class QuestRunner {
     }
     
     // Fetch translated quest details
+    // CRITICAL FIX: Include category property so next quest logic works!
     const i18nQuest = {
       id: quest.id,
+      category: quest.category, // CRITICAL: Must preserve category for next quest logic
       name: this.overlay.i18n.t(`${quest.i18nKey}.name`),
       description: this.overlay.i18n.t(`${quest.i18nKey}.description`),
       tagline: this.overlay.i18n.t(`${quest.i18nKey}.tagline`),
@@ -206,6 +208,18 @@ class QuestRunner {
       const allQuests = await this.getAllQuests();
       const completedQuests = await this.getCompletedQuests();
       
+      // DEBUG: Log data being passed to showQuestComplete
+      this.logger.info('🐛 [DEBUG] Calling showQuestComplete with:', {
+        questId: this.currentQuest.id,
+        questName: this.currentQuest.name,
+        questCategory: this.currentQuest.category,
+        allQuestsCount: allQuests.length,
+        allQuestIds: allQuests.map(q => ({ id: q.id, name: q.name, category: q.category })),
+        completedQuestsType: Array.isArray(completedQuests) ? 'array' : 'object',
+        completedQuestsCount: Array.isArray(completedQuests) ? completedQuests.length : Object.keys(completedQuests).length,
+        completedQuestsData: completedQuests
+      });
+      
       // Show completion overlay with step results (includes failed/partial states)
       if (this.overlay) {
         this.overlay.showQuestComplete(this.currentQuest, this.stepResults, this.failedSteps, allQuests, completedQuests);
@@ -264,7 +278,8 @@ class QuestRunner {
       await this.sleep(1500);
 
       try {
-        await this.executeStep(step);
+        // Execute step and capture response if available
+        const stepResult = await this.executeStep(step);
         
         // Track successful step
         this.stepResults.push({
@@ -274,8 +289,15 @@ class QuestRunner {
           error: null
         });
         
-        // Show success message and WAIT so user can see it
+        // Show success message with Joule response if available
         if (this.overlay) {
+          // If step had a response, show it briefly before success message
+          if (stepResult && stepResult.jouleResponse) {
+            // Show step with Joule response
+            this.overlay.showStep(step, i + 1, stepsLength, stepResult.jouleResponse, isAgentQuest);
+            await this.sleep(2500); // Give user time to read response
+          }
+          
           this.overlay.showStepSuccess(step.successMessage, isAgentQuest);
         }
 
@@ -284,32 +306,47 @@ class QuestRunner {
       } catch (error) {
         this.logger.error(`Step ${i + 1} failed: ${error.message}`, error);
         
+        // CRITICAL FIX: Declare errorType outside try-catch so it's accessible later
+        let errorType = 'UNKNOWN_ERROR';
+        let friendlyError;
+        
         // Classify error using UserFriendlyErrors
-        const UserFriendlyErrors = window.UserFriendlyErrors;
-        let errorType = 'unknownError';
-        const errorMsg = error.message.toLowerCase();
-        
-        // Smart error classification
-        if (errorMsg.includes('input field not found') || errorMsg.includes('aiPromptField')) {
-          errorType = 'inputFieldNotFound';
-        } else if (errorMsg.includes('button not found') || errorMsg.includes('generateButton') || errorMsg.includes('saveButton')) {
-          errorType = 'buttonNotFound';
-        } else if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
-          errorType = 'jouleNotFound';
-        } else if (errorMsg.includes('timeout')) {
-          errorType = 'stepTimeout';
-        } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
-          errorType = 'elementNotFound';
+        try {
+          const errorHandler = new window.UserFriendlyErrors();
+          const errorMsg = error.message.toLowerCase();
+          
+          // Smart error classification
+          if (errorMsg.includes('input field not found') || errorMsg.includes('aiPromptField')) {
+            errorType = 'INPUT_FIELD_NOT_FOUND';
+          } else if (errorMsg.includes('button not found') || errorMsg.includes('generateButton') || errorMsg.includes('saveButton')) {
+            errorType = 'BUTTON_NOT_FOUND';
+          } else if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
+            errorType = 'JOULE_NOT_FOUND';
+          } else if (errorMsg.includes('timeout')) {
+            errorType = 'STEP_TIMEOUT';
+          } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
+            errorType = 'ELEMENT_NOT_FOUND';
+          }
+          
+          // Get user-friendly error with context
+          friendlyError = errorHandler.getError(errorType, {
+            step: step.name,
+            stepIndex: i + 1,
+            quest: this.currentQuest.name,
+            selector: step.selector,
+            action: step.action
+          });
+        } catch (errorHandlerError) {
+          // Fallback if UserFriendlyErrors fails
+          this.logger.error('UserFriendlyErrors instantiation failed, using fallback', errorHandlerError);
+          friendlyError = {
+            icon: '❌',
+            title: 'Error',
+            message: error.message,
+            userAction: 'Please try refreshing the page and starting the quest again.',
+            errorType: 'UNKNOWN_ERROR'
+          };
         }
-        
-        // Get user-friendly error with context
-        const friendlyError = UserFriendlyErrors.getError(errorType, {
-          step: step.name,
-          stepIndex: i + 1,
-          quest: this.currentQuest.name,
-          selector: step.selector,
-          action: step.action
-        });
         
         // STOP QUEST IMMEDIATELY ON ANY ERROR (no optional step bypass)
         this.failedSteps.push(i);
@@ -599,7 +636,7 @@ class QuestRunner {
             await this.sleep(3000);
           }
           
-          return; // Continue to next step
+          return { jouleResponse: null }; // Continue to next step
         }
         
         // Not optional, throw error
@@ -616,10 +653,13 @@ class QuestRunner {
           this.logger.warn('Could not select quick action, continuing anyway', e);
         }
       }
+      
+      // Return response data for display
+      return { jouleResponse: result.response };
     }
 
-    // Response is already shown in runDemoMode flow via showStepSuccess
-    // No need to show it again here to avoid duplicate display
+    // No response to display
+    return { jouleResponse: null };
   }
 
   /**
