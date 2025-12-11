@@ -331,7 +331,17 @@
       });
     } catch (error) {
       logger.error('[DEBUG] Failed to show quest selection', error);
-      overlay.showError('Failed to load quests. Please refresh the page and try again.');
+      logger.error('[DEBUG] Error stack:', error.stack);
+      logger.error('[DEBUG] Error details:', {
+        message: error.message,
+        name: error.name,
+        currentSolution: currentSolution?.name,
+        overlayExists: !!overlay,
+        overlayContainerExists: !!overlay?.container
+      });
+      
+      // Show more helpful error message
+      overlay.showError(`Unable to load quests: ${error.message}\n\nPlease try:\n• Refreshing the page\n• Closing and reopening the extension\n• Checking the browser console for details`);
       throw error;
     }
   }

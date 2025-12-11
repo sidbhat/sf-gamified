@@ -469,107 +469,128 @@ class JouleIframeHandler {
   }
 
   /**
-   * Wait for response with keywords
+   * Wait for response with keywords - Enhanced with response parser
    */
   async waitForResponse(keywords = [], timeout = 30000, requestId) {
     this.logger.info(`Waiting for response with keywords: ${keywords.join(', ')}`);
     
     const startTime = Date.now();
     
+    // Initialize response parser if available
+    const parser = window.JouleResponseParser ? new window.JouleResponseParser() : null;
+    if (!parser) {
+      this.logger.warn('JouleResponseParser not available, using basic text detection');
+    }
+    
     // Find the message container - try multiple selectors
-    // CRITICAL: Use body as ultimate fallback - messages WILL appear somewhere
     let messageContainer = document.querySelector('.mainAppLive__message-container') ||
                           document.querySelector('[class*="message-container"]') ||
                           document.querySelector('[role="log"]') ||
                           document.querySelector('[aria-live="polite"]') ||
-                          document.body; // FALLBACK: Just watch the whole body
+                          document.body;
     
     this.logger.info(`Using message container: ${messageContainer.className || messageContainer.tagName}`);
     
-    // Store initial body text to detect ANY changes
+    // Store initial state
     const initialBodyText = document.body.innerText;
-    this.logger.info(`Initial body text length: ${initialBodyText.length}`);
-    
-    // Also count message elements
     const initialMessages = messageContainer.querySelectorAll('[id^="UserBotGroup"], [role="article"], .message, [class*="message"]').length;
-    this.logger.info(`Initial message count: ${initialMessages}`);
+    this.logger.info(`Initial state - messages: ${initialMessages}, text length: ${initialBodyText.length}`);
     
-    const checkForKeywords = () => {
-      // Check for new message elements (indicates new response)
+    const checkForResponse = () => {
+      // Check for new content
       const currentMessages = messageContainer.querySelectorAll('[id^="UserBotGroup"], [role="article"], .message, [class*="message"]').length;
-      
-      // ALSO check if body text changed significantly (response appeared)
       const currentBodyText = document.body.innerText;
-      const textChanged = currentBodyText.length > initialBodyText.length + 50; // At least 50 chars added
+      const textChanged = currentBodyText.length > initialBodyText.length + 50;
       
-      // If new messages appeared OR body text changed significantly, check for keywords
+      // If new content detected, parse and analyze
       if (currentMessages > initialMessages || textChanged) {
         this.logger.info(`New content detected! Messages: ${currentMessages} vs ${initialMessages}, Text changed: ${textChanged}`);
         
-        // Get text from latest bot response - try multiple approaches
-        let responseText = '';
-        
-        // Try aria-live="polite" first (common for live regions)
-        const liveResponse = messageContainer.querySelector('[aria-live="polite"]');
-        if (liveResponse) {
-          responseText = liveResponse.innerText;
-          this.logger.info('Found response via aria-live="polite"');
-        }
-        
-        // Try getting all messages and taking the last one
-        if (!responseText) {
+        // Get latest response container
+        let responseContainer = messageContainer.querySelector('[aria-live="polite"]');
+        if (!responseContainer) {
           const allMessages = messageContainer.querySelectorAll('[id^="UserBotGroup"], [role="article"], .message, [class*="message"]');
-          if (allMessages.length > 0) {
-            responseText = allMessages[allMessages.length - 1].innerText;
-            this.logger.info('Found response via last message element');
-          }
+          responseContainer = allMessages.length > 0 ? allMessages[allMessages.length - 1] : messageContainer;
         }
         
-        // Fallback: get all text from container
-        if (!responseText) {
-          responseText = messageContainer.innerText;
-          this.logger.info('Using full container text as fallback');
+        // Extract raw text
+        const rawText = responseContainer.innerText || currentBodyText;
+        const lowerText = rawText.toLowerCase();
+        
+        this.logger.info(`Response text (first 200 chars): ${rawText.substring(0, 200)}`);
+        
+        // Parse response if parser available
+        let parsedResponse = null;
+        if (parser) {
+          parsedResponse = parser.parseResponse(responseContainer, rawText);
+          this.logger.info('Parsed response:', parsedResponse);
         }
         
-        responseText = responseText.toLowerCase();
-        this.logger.info(`Response text (first 200 chars): ${responseText.substring(0, 200)}`);
-        
-        // If no keywords specified, any response is success
-        if (keywords.length === 0) {
-          this.logger.success('Response received (no keywords specified)');
-          this.sendMessageToParent({
-            type: 'response_detected',
-            requestId: requestId,
-            data: { found: true, text: responseText }
-          });
-          return true;
-        }
-        
-        // Check for keywords
-        for (const keyword of keywords) {
-          if (responseText.includes(keyword.toLowerCase())) {
-            this.logger.success(`Found keyword: ${keyword}`);
+        // Check for keywords if specified
+        if (keywords.length > 0) {
+          const keywordFound = keywords.some(keyword => lowerText.includes(keyword.toLowerCase()));
+          
+          if (keywordFound) {
+            const matchedKeyword = keywords.find(k => lowerText.includes(k.toLowerCase()));
+            this.logger.success(`Found keyword: ${matchedKeyword}`);
+            
             this.sendMessageToParent({
               type: 'response_detected',
               requestId: requestId,
-              data: { found: true, keyword: keyword, text: responseText }
+              data: { 
+                found: true, 
+                keyword: matchedKeyword, 
+                text: rawText,
+                parsed: parsedResponse
+              }
             });
             return true;
           }
+          
+          // Response received but no keyword match
+          this.logger.warn('Response received but keywords not found');
+        } else {
+          // No keywords specified - any response is success
+          this.logger.success('Response received (no keywords specified)');
+          
+          this.sendMessageToParent({
+            type: 'response_detected',
+            requestId: requestId,
+            data: { 
+              found: true, 
+              text: rawText,
+              parsed: parsedResponse
+            }
+          });
+          return true;
         }
-        
-        // New response but no keyword match
-        this.logger.warn('Response received but keywords not found');
       }
 
       // Check timeout
       if (Date.now() - startTime > timeout) {
         this.logger.error('Timeout waiting for response');
+        
+        // Get current state for debugging
         const bodyText = document.body.innerText;
+        let timeoutParsedResponse = null;
+        
+        if (parser) {
+          timeoutParsedResponse = {
+            type: 'timeout',
+            success: false,
+            parsed: { message: 'Response timeout', details: 'No response received within expected timeframe' }
+          };
+        }
+        
         this.sendMessageToParent({
           type: 'response_detected',
           requestId: requestId,
-          data: { found: false, error: 'Timeout', text: bodyText.substring(0, 500) }
+          data: { 
+            found: false, 
+            error: 'RESPONSE_TIMEOUT', 
+            text: bodyText.substring(0, 500),
+            parsed: timeoutParsedResponse
+          }
         });
         return true;
       }
@@ -581,7 +602,7 @@ class JouleIframeHandler {
     return new Promise((resolve) => {
       // Set up MutationObserver on message container
       const observer = new MutationObserver(() => {
-        if (checkForKeywords()) {
+        if (checkForResponse()) {
           observer.disconnect();
           resolve();
         }
@@ -595,7 +616,7 @@ class JouleIframeHandler {
       });
 
       // Initial check
-      if (checkForKeywords()) {
+      if (checkForResponse()) {
         observer.disconnect();
         resolve();
       }

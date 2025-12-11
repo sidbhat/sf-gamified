@@ -584,6 +584,20 @@ body.quest-running::before {
   box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
 }
 
+.quest-map-selection .quest-node.quest-partial {
+  background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+  border-color: rgba(255, 255, 255, 0.9);
+  color: white;
+  box-shadow: 0 6px 20px rgba(255, 153, 102, 0.4);
+}
+
+.quest-map-selection .quest-node.quest-failed {
+  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+  border-color: rgba(255, 255, 255, 0.9);
+  color: white;
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
 .quest-map-selection .quest-node.locked {
   background: linear-gradient(
     135deg,
@@ -1144,9 +1158,74 @@ body.quest-running::before {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Quest Error */
+/* Quest Error - Same size as progress dialogs */
 .quest-error {
-  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+  background: linear-gradient(135deg, 
+    rgba(102, 126, 234, 0.85) 0%, 
+    rgba(118, 75, 162, 0.85) 100%);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  min-width: 320px;
+  max-width: 400px;
+}
+
+/* Quest Error Compact - NEW simplified error dialog */
+.quest-error-compact {
+  background: linear-gradient(135deg, 
+    rgba(239, 68, 68, 0.9) 0%, 
+    rgba(185, 28, 28, 0.9) 100%);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  min-width: 280px;
+  max-width: 320px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.quest-error-compact .error-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.quest-error-compact h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.quest-error-compact .error-message {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.quest-error-compact .error-box {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.quest-error-compact .error-action strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  opacity: 1;
+}
+
+.quest-error-compact .error-action p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.95;
+  text-align: left;
 }
 
 .quest-error .error-icon {

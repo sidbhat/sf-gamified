@@ -544,19 +544,36 @@ class QuestOverlay {
 
     const renderQuestNodes = (questList, category) => {
       return questList.map((quest, index) => {
-        const isCompleted = completedQuests.includes(quest.id);
+        // completedQuests is now an object mapping quest IDs to completion data
+        const completionData = completedQuests[quest.id];
+        const isCompleted = !!completionData;
         
         // Check if quest is locked (requires other quests to be completed first)
         const isLocked = quest.requiresQuests && 
-          !quest.requiresQuests.every(reqId => completedQuests.includes(reqId));
+          !quest.requiresQuests.every(reqId => completedQuests[reqId]);
         
-        const statusClass = isCompleted ? 'completed' : (isLocked ? 'locked' : '');
-        const nextIsCompleted = index < questList.length - 1 && completedQuests.includes(questList[index + 1].id);
+        // Determine status class based on completion state
+        let statusClass = '';
+        if (isCompleted) {
+          const state = completionData.completionState || 'success';
+          if (state === 'success') {
+            statusClass = 'completed';
+          } else if (state === 'partial') {
+            statusClass = 'completed quest-partial';
+          } else if (state === 'failed') {
+            statusClass = 'completed quest-failed';
+          }
+        } else if (isLocked) {
+          statusClass = 'locked';
+        }
+        
+        const nextCompletionData = index < questList.length - 1 ? completedQuests[questList[index + 1].id] : null;
+        const nextIsCompleted = !!nextCompletionData;
         
         // For locked quests, show which prerequisites are needed
         let lockMessage = '';
         if (isLocked && quest.requiresQuests) {
-          const remaining = quest.requiresQuests.filter(reqId => !completedQuests.includes(reqId));
+          const remaining = quest.requiresQuests.filter(reqId => !completedQuests[reqId]);
           const count = remaining.length;
           const plural = count > 1 ? 's' : '';
           lockMessage = `<div class="quest-lock-info">${this.i18n.t('ui.messages.questLockedInfo', { count, s: plural })}</div>`;
@@ -593,7 +610,7 @@ class QuestOverlay {
     const renderCategories = () => {
       return tabConfig.map((tab, index) => {
         const categoryQuests = questsByCategory[tab.id] || [];
-        const completedCount = categoryQuests.filter(q => completedQuests.includes(q.id)).length;
+        const completedCount = categoryQuests.filter(q => completedQuests[q.id]).length;
         const totalCount = categoryQuests.length;
         const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
@@ -907,7 +924,7 @@ class QuestOverlay {
         <div class="progress-bar">
           <div class="progress-fill" style="width: ${progress}%"></div>
         </div>
-        <p class="waiting">${this.i18n.t('ui.labels.waitingForYou')}</p>
+        <p class="waiting">⚡ Executing step...</p>
       </div>
     `;
 
@@ -994,66 +1011,68 @@ class QuestOverlay {
   }
 
   /**
-   * Show step error message (but quest continues)
+   * Show step error message - quest STOPS here (no longer continues)
+   * COMPACT UX: Simplified error display with key information only
+   * @param {string} questName - Name of the quest that failed
    * @param {Object} step - Step configuration
-   * @param {string} errorMessage - Error message or error type
-   * @param {string} technicalDetails - Optional technical details
+   * @param {string} errorType - Error type code from UserFriendlyErrors
+   * @param {Object} friendlyError - Error object from UserFriendlyErrors.getError()
    * @param {boolean} isAgentQuest - Whether this is an agent quest (hides arrow)
    */
-  showStepError(step, errorMessage, technicalDetails = null, isAgentQuest = false) {
-    this.logger.warn('Showing step error (quest continues)', { step, errorMessage, technicalDetails, isAgentQuest });
+  showStepError(questName, step, errorType, friendlyError, isAgentQuest = false) {
+    this.logger.error('Showing step error - QUEST STOPPED', { questName, step, errorType, friendlyError, isAgentQuest });
 
-    // Try to get formatted error from catalog
-    let errorContent = '';
-    let errorIcon = '⚠️';
-    
-    if (window.JouleQuestErrorMessages) {
-      // Check if errorMessage is an error type from catalog
-      const errorTypes = ['JOULE_NOT_FOUND', 'JOULE_IFRAME_NOT_FOUND', 'STEP_TIMEOUT', 
-                         'ELEMENT_NOT_FOUND', 'PROMPT_SEND_FAILED', 'BUTTON_NOT_FOUND', 
-                         'INPUT_FIELD_NOT_FOUND', 'UNKNOWN_ERROR'];
-      
-      if (errorTypes.includes(errorMessage)) {
-        const errorObj = window.JouleQuestErrorMessages.getErrorMessage(
-          errorMessage, 
-          step.name, 
-          technicalDetails
-        );
-        errorIcon = errorObj.icon;
-        errorContent = window.JouleQuestErrorMessages.formatErrorForDisplay(errorObj);
-      } else {
-        // Regular error message string
-        errorContent = `<p style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">Error: ${errorMessage}</p>`;
-      }
-    } else {
-      // Fallback if error catalog not loaded
-      errorContent = `<p style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">Error: ${errorMessage}</p>`;
-    }
+    // Remove page-level border indicator when quest stops due to error
+    document.body.classList.remove('quest-running');
+
+    // CRITICAL FIX: friendlyError object contains ALREADY TRANSLATED strings
+    // Do NOT call this.i18n.t() on them - use them directly
+    const errorIcon = friendlyError.icon || '❌';
+    const errorTitle = friendlyError.title || 'Error';
+    const errorMessage = friendlyError.message || 'An error occurred';
+    const userAction = friendlyError.userAction || 'Please try again';
+
+    // SIMPLIFIED: Only show 1-2 key action items, not full causes/solutions lists
+    const actionHTML = `
+      <div class="error-action">
+        <strong>💡 What to do:</strong>
+        <p style="margin: 8px 0 0 0; font-size: 13px; opacity: 0.9;">${userAction}</p>
+      </div>
+    `;
 
     const html = `
-      <div class="joule-quest-card quest-error">
-        <!-- Mascot (hidden for agent quests) -->
-        ${!isAgentQuest ? `
-        <div class="quest-mascot" data-state="error">
-          ${this.getMascotSVG('error', true)}
-        </div>
-        ` : ''}
-        
+      <div class="joule-quest-card quest-error-compact">
         <div class="error-icon">${errorIcon}</div>
-        <h3>${this.i18n.t('ui.headers.stepFailed')}</h3>
-        <h4>${step.name}</h4>
-        ${errorContent}
-        <p style="opacity: 0.8; font-size: 13px; margin-top: 12px;">
-          ${this.i18n.t('ui.messages.continueNextStep')}
-        </p>
+        <h3>${errorTitle}</h3>
+        <p class="error-message">${errorMessage}</p>
+        
+        <div class="error-box">
+          ${actionHTML}
+        </div>
+        
+        <button class="action-btn secondary-btn" id="back-to-quests-btn" style="margin-top: 16px;">
+          <span>🗺️ Back to Quests</span>
+        </button>
       </div>
     `;
 
     this.container.innerHTML = html;
     this.show();
 
-    // Auto-hide after 5 seconds (longer to read detailed error)
-    setTimeout(() => this.hide(), 5000);
+    // Setup back button
+    const backBtn = this.container.querySelector('#back-to-quests-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        this.hide();
+        window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
+      });
+    }
+
+    // Auto-redirect to quest selection after 5 seconds (increased from 3s to give time to read)
+    setTimeout(() => {
+      this.hide();
+      window.postMessage({ type: 'SHOW_QUEST_SELECTION' }, '*');
+    }, 5000);
   }
 
   /**
@@ -1119,6 +1138,33 @@ class QuestOverlay {
     const successfulSteps = stepResults.filter(r => r.status === 'success').length;
     const failedStepsCount = failedSteps.length;
 
+    // PARTIAL SUCCESS SYSTEM: Calculate points based on completion percentage
+    const successPercentage = totalSteps > 0 ? (successfulSteps / totalSteps) : 0;
+    let pointsAwarded = 0;
+    let completionState = 'failed'; // 'success', 'partial', 'failed'
+    
+    if (successPercentage === 1.0) {
+      // 100% success - full points
+      pointsAwarded = questPoints;
+      completionState = 'success';
+    } else if (successPercentage >= 0.5) {
+      // 50%+ success - 50% points (yellow state)
+      pointsAwarded = Math.floor(questPoints * 0.5);
+      completionState = 'partial';
+    } else {
+      // <50% success - 0 points (red state)
+      pointsAwarded = 0;
+      completionState = 'failed';
+    }
+    
+    this.logger.info('Partial success calculation:', {
+      totalSteps,
+      successfulSteps,
+      successPercentage,
+      pointsAwarded,
+      completionState
+    });
+
     // Find next quest in same category
     const categoryQuests = allQuests.filter(q => q.category === questCategory);
     const currentIndex = categoryQuests.findIndex(q => q.id === questId);
@@ -1154,11 +1200,22 @@ class QuestOverlay {
     // Remove page-level border indicator when quest completes
     document.body.classList.remove('quest-running');
 
-    // Determine completion status
-    const isFullSuccess = failedStepsCount === 0;
-    const completionIcon = isFullSuccess ? '🏆' : '⚠️';
-    const completionTitle = isFullSuccess ? this.i18n.t('ui.headers.questComplete') : this.i18n.t('ui.headers.questCompleteWithErrors');
-    const completionColor = isFullSuccess ? 'quest-complete' : 'quest-partial';
+    // Determine completion status based on completionState
+    let completionIcon, completionTitle, completionColor;
+    
+    if (completionState === 'success') {
+      completionIcon = '🏆';
+      completionTitle = this.i18n.t('ui.headers.questComplete');
+      completionColor = 'quest-complete';
+    } else if (completionState === 'partial') {
+      completionIcon = '⚠️';
+      completionTitle = this.i18n.t('ui.headers.questCompleteWithErrors');
+      completionColor = 'quest-partial';
+    } else {
+      completionIcon = '❌';
+      completionTitle = 'Quest Failed';
+      completionColor = 'quest-failed';
+    }
     
     // Hide arrow for agent quests
     const isAgentQuest = questCategory === 'agent';
@@ -1194,10 +1251,15 @@ class QuestOverlay {
         <div class="rewards">
           <div class="reward-item">
             <span class="reward-icon">⭐</span>
-            <span class="reward-value">+${isFullSuccess ? questPoints : Math.floor(questPoints * 0.5)} ${this.i18n.t('ui.labels.points').toLowerCase()}</span>
+            <span class="reward-value">+${pointsAwarded} ${this.i18n.t('ui.labels.points').toLowerCase()}</span>
           </div>
+          ${completionState !== 'success' ? `
+          <div class="completion-status" style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 13px;">
+            <strong>${this.i18n.t('ui.labels.progress')}:</strong> ${successfulSteps}/${totalSteps} steps completed (${Math.round(successPercentage * 100)}%)
+          </div>
+          ` : ''}
         </div>
-        <p class="congrats">${isFullSuccess ? this.i18n.t('ui.labels.congrats') : this.i18n.t('ui.labels.congratsPartial')}</p>
+        <p class="congrats">${completionState === 'success' ? this.i18n.t('ui.labels.congrats') : this.i18n.t('ui.labels.congratsPartial')}</p>
         
         <!-- Action buttons: Side-by-side layout matching intro screen -->
         <div class="quest-complete-actions">
@@ -1222,7 +1284,7 @@ class QuestOverlay {
     this.show();
 
     // Trigger confetti only for full success (wrapped in try-catch for safety)
-    if (isFullSuccess && window.JouleQuestConfetti) {
+    if (completionState === 'success' && window.JouleQuestConfetti) {
       try {
         window.JouleQuestConfetti.celebrate();
       } catch (error) {

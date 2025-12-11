@@ -36,6 +36,8 @@
         "src/utils/logger.js",
         "src/i18n/i18n-manager.js",
         "src/utils/error-messages.js",
+        "src/utils/joule-response-parser.js",
+        "src/utils/user-friendly-errors.js",
         "src/utils/shadow-dom-helper.js",
         "src/utils/solution-detector.js",
         "src/core/storage-manager.js",
@@ -58,6 +60,7 @@
         "https://*.sapdas.cloud.sap/*"
       ],
       "js": [
+        "src/utils/joule-response-parser.js",
         "src/joule-iframe-handler.js"
       ],
       "run_at": "document_end",

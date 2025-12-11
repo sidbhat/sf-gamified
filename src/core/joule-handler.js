@@ -522,6 +522,7 @@ class JouleHandler {
 
   /**
    * Analyze Joule response to detect patterns and determine next action
+   * CONTEXT-AWARE: Checks success indicators BEFORE error keywords to prevent false positives
    * @param {string} response - Joule's response text
    * @param {string[]} successKeywords - Expected success keywords
    * @param {string[]} errorKeywords - Error detection keywords
@@ -545,7 +546,51 @@ class JouleHandler {
     let suggestedAction = 'continue';
     let message = '';
 
-    // 1. Check for explicit errors first (highest priority)
+    // 1. Check for success keywords FIRST (prevents false positives)
+    if (successKeywords && successKeywords.length > 0) {
+      const successMatches = successKeywords.filter(keyword =>
+        lowerResponse.includes(keyword.toLowerCase())
+      );
+      
+      if (successMatches.length > 0) {
+        type = 'success';
+        confidence = Math.min(100, 50 + (successMatches.length * 15));
+        indicators.push(...successMatches.map(k => `Success keyword: "${k}"`));
+        suggestedAction = 'continue';
+        message = 'Response matches expected keywords';
+        
+        return { type, confidence, indicators, suggestedAction, message };
+      }
+    }
+
+    // 2. Check for SUCCESS CONTEXT PHRASES (override error keywords)
+    const successPhrases = [
+      "here's what i found",
+      "here is what i found",
+      "i found",
+      "found the following",
+      "successfully",
+      "completed",
+      "here are the",
+      "showing you",
+      "retrieved"
+    ];
+    
+    const hasSuccessContext = successPhrases.some(phrase =>
+      lowerResponse.includes(phrase)
+    );
+    
+    if (hasSuccessContext) {
+      type = 'success';
+      confidence = 70;
+      indicators.push('Success context detected');
+      suggestedAction = 'continue';
+      message = 'Response indicates successful operation';
+      
+      return { type, confidence, indicators, suggestedAction, message };
+    }
+
+    // 3. Check for explicit errors (only after checking success context)
     if (errorKeywords && errorKeywords.length > 0) {
       const errorMatches = errorKeywords.filter(keyword => 
         lowerResponse.includes(keyword.toLowerCase())
@@ -562,7 +607,7 @@ class JouleHandler {
       }
     }
 
-    // 2. Check for success keywords
+    // 4. Check for success keywords again (if not checked above)
     if (successKeywords && successKeywords.length > 0) {
       const successMatches = successKeywords.filter(keyword =>
         lowerResponse.includes(keyword.toLowerCase())

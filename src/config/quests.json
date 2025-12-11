@@ -538,15 +538,13 @@
             "name"
           ],
           "errorKeywords": [
-            "sorry",
-            "couldn't",
-            "unable",
-            "don't have",
-            "not available",
-            "not found",
-            "permission",
+            "don't have access",
             "not authorized",
-            "can't find"
+            "permission denied",
+            "cannot perform",
+            "not allowed",
+            "feature is not available",
+            "cannot process"
           ],
           "successMessage": "Joule is asking 'who do you...' ✅",
           "promptKey": "prompts.giveSpotAward"
@@ -572,7 +570,6 @@
             "invalid",
             "doesn't exist"
           ],
-          "optional": true,
           "successMessage": "Employee name entered ✅",
           "promptKey": "prompts.employeeName"
         },
@@ -595,7 +592,6 @@
             "not allowed",
             "out of range"
           ],
-          "optional": true,
           "successMessage": "Award amount entered ✅",
           "promptKey": "prompts.awardAmount"
         },
@@ -618,7 +614,6 @@
             "too short",
             "too long"
           ],
-          "optional": true,
           "successMessage": "Award message typed and sent ✅",
           "promptKey": "prompts.awardMessage"
         },
@@ -692,7 +687,6 @@
             "not found",
             "couldn't find"
           ],
-          "optional": true,
           "successMessage": "🎉 Quest complete! Specify topic (optional). 🏆",
           "promptKey": "prompts.employeeName"
         }
@@ -802,7 +796,6 @@
             "not found",
             "couldn't find"
           ],
-          "optional": true,
           "successMessage": "Compensation insights displayed! 🏆",
           "promptKey": "prompts.employeeName"
         }
@@ -916,7 +909,6 @@
             "not found",
             "couldn't find"
           ],
-          "optional": true,
           "successMessage": "🎉 Quest complete! Specify topic (optional). 🏆",
           "promptKey": "prompts.employeeName"
         }
@@ -984,7 +976,6 @@
             "not found",
             "couldn't find"
           ],
-          "optional": true,
           "successMessage": "Worker profile displayed! 🏆",
           "promptKey": "prompts.employeeName"
         }
@@ -1026,7 +1017,7 @@
           "description": "Typing AI prompt for goal generation...",
           "action": "type_in_field",
           "selector": "goalForm.aiPromptField",
-          "value": "Help me improve my presentation skills by the end of Q2",
+          "value": "Help me improve my presentation skills by Q2 next year",
           "successMessage": "AI prompt entered! ✍️"
         },
         {

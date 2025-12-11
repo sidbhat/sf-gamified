@@ -29,7 +29,6 @@
       "button[data-sap-ui*='send']",
       ".send-icon",
       "svg[aria-label='Send']",
-      "ui5-button:contains('Send')",
       "[data-ui5-stable*='send'] button",
       "//button[@aria-label='Send']",
       "//button[contains(@aria-label, 'send')]",
@@ -57,7 +56,6 @@
   "navigation": {
     "costCenter": [
       "a[href*='cost_center']",
-      "button:has-text('Cost Center')",
       "//a[contains(@href, 'cost_center')]",
       "//button[contains(text(), 'Cost Center')]",
       "//a[contains(text(), 'Cost Center')]"
@@ -66,7 +64,6 @@
   "goalForm": {
     "createButton": [
       "[data-ui5-stable*='Module-GOAL']",
-      "ui5-button:contains('Create')",
       "ui5-static-area-item-sf-header button",
       "[data-ui5-stable*='create'] button",
       "ui5-button-xweb-goalmanagement",
@@ -87,41 +84,27 @@
       "//button[contains(@aria-label, 'Create')]"
     ],
     "aiPromptField": [
-      "textarea[data-sap-ui*='goalDescription']",
-      "textarea[id*='goalDescription']",
+      "textarea",
       "textarea[id*='description']",
+      "textarea[id*='goal']",
       "textarea[name*='description']",
-      "textarea[placeholder*='write some words about']",
-      "textarea[placeholder*='Schreiben Sie einige Worte']",
-      "textarea[aria-label*='goal description']",
-      "textarea[aria-label*='Zielbeschreibung']",
-      "[role='textbox'][placeholder*='write some words']",
-      "[role='textbox'][placeholder*='Schreiben']",
+      "textarea[placeholder*='write']",
+      "textarea[aria-label*='description']",
+      "[role='textbox']",
+      "input[type='text'][id*='description']",
+      "//textarea",
       "//textarea[contains(@id, 'description')]",
-      "//textarea[contains(@placeholder, 'write some words')]",
-      "//textarea[contains(@placeholder, 'Schreiben')]"
+      "//textarea[contains(@id, 'goal')]"
     ],
     "generateButton": [
-      "button[data-sap-ui*='generateAI']",
-      "button[id*='generateAI']",
+      "button[aria-label*='Generate']",
       "button[id*='generate']",
-      "ui5-button[data-sap-ui*='generate']",
-      "button[aria-label*='Generate goals using AI']",
-      "button[aria-label*='Ziele mithilfe von KI generieren']",
-      "button[aria-label*='KI generieren']",
-      "button[aria-description*='Generate goals using AI']",
-      "button[aria-description*='KI generieren']",
-      "button[title*='Generate goals using AI']",
-      "button[title*='KI generieren']",
-      "ui5-button:contains('Generate Goal with AI')",
-      "ui5-button:contains('generieren')",
-      "button:has-text('Generate')",
-      "button:has-text('generieren')",
+      "button[aria-description*='Generate']",
       "[role='button'][aria-label*='Generate']",
-      "[role='button'][aria-label*='generieren']",
-      "//button[contains(@id, 'generate')]",
-      "//button[contains(@aria-label, 'Generate') or contains(@aria-label, 'generieren')]",
-      "//button[contains(@aria-description, 'Generate') or contains(@aria-description, 'generieren')]"
+      "ui5-button[data-sap-ui*='generate']",
+      "button[data-sap-ui*='generate']",
+      "//button[contains(@aria-label, 'Generate')]",
+      "//button[contains(@id, 'generate')]"
     ],
     "submitButton": [
       "button[type='submit']",

@@ -17,6 +17,7 @@ class QuestRunner {
     this.stepResults = []; // Track all step results (success/error/skipped)
     this.currentSolution = null; // Current SAP solution
     this.errorHandler = null; // Solution-aware error handler
+    this.questStoppedEarly = false; // Flag to track if quest was stopped due to error
   }
 
   /**
@@ -119,6 +120,7 @@ class QuestRunner {
     this.currentStepIndex = 0;
     this.isRunning = true;
     this.mode = mode;
+    this.questStoppedEarly = false; // Reset flag for new quest
 
     // CRITICAL FIX: Show overlay IMMEDIATELY with Start Quest button
     // User must click "Start Quest" to begin - this gives them time to read the story
@@ -132,19 +134,79 @@ class QuestRunner {
 
     try {
       // Execute quest based on mode
-      if (mode === 'demo') {
-        await this.runDemoMode();
-      } else {
-        await this.runRealMode();
-      }
+      await this.runDemoMode();
 
-      this.logger.quest(this.currentQuest.name, 'Quest completed successfully');
+      // ALWAYS calculate and save quest results, even if stopped early
+      this.logger.quest(this.currentQuest.name, 'Quest execution finished, calculating results');
+      
+      // Calculate completion state and points
+      // CRITICAL FIX: Use actual quest step count, not stepResults.length
+      // When quest stops early, stepResults.length will be less than total steps
+      const totalSteps = this.currentQuest.steps.length; // ACTUAL total steps in quest
+      const completedSteps = this.stepResults.length;     // Steps that were attempted (success or error)
+      const successfulSteps = this.stepResults.filter(r => r.status === 'success').length;
+      const successPercentage = totalSteps > 0 ? (successfulSteps / totalSteps) : 0;
+      
+      let pointsAwarded = 0;
+      let completionState = 'failed';
+      
+      // CRITICAL: If quest was stopped early due to error, ALWAYS mark as failed
+      if (this.questStoppedEarly) {
+        pointsAwarded = 0;
+        completionState = 'failed';
+        this.logger.error('Quest stopped early - forcing failed state with 0 points', {
+          totalSteps,
+          completedSteps,
+          successfulSteps,
+          successPercentage: Math.round(successPercentage * 100) + '%'
+        });
+      } else if (successPercentage === 1.0) {
+        // 100% completion = SUCCESS
+        pointsAwarded = this.currentQuest.points;
+        completionState = 'success';
+      } else if (successPercentage >= 0.5) {
+        // 50-99% completion = PARTIAL (some steps failed but quest continued)
+        pointsAwarded = Math.floor(this.currentQuest.points * 0.5);
+        completionState = 'partial';
+      } else {
+        // <50% completion = FAILED
+        pointsAwarded = 0;
+        completionState = 'failed';
+      }
+      
+      this.logger.info('Quest completion calculated', {
+        totalSteps,
+        successfulSteps,
+        successPercentage,
+        pointsAwarded,
+        completionState,
+        questStoppedEarly: this.questStoppedEarly
+      });
+      
+      // Save quest progress with completion state
+      const storage = window.JouleQuestStorage;
+      if (storage) {
+        await storage.saveQuestProgress(
+          this.currentQuest.id,
+          { completed: true },
+          {
+            completionState,
+            pointsAwarded,
+            successPercentage,
+            totalSteps,
+            successfulSteps
+          }
+        );
+        
+        // Increment user stats with actual points awarded (not fixed quest points)
+        await storage.incrementQuestCompletion(pointsAwarded, this.currentSolution?.id);
+      }
       
       // Get all quests and completed quests for next quest logic
       const allQuests = await this.getAllQuests();
       const completedQuests = await this.getCompletedQuests();
       
-      // Show completion overlay with step results
+      // Show completion overlay with step results (includes failed/partial states)
       if (this.overlay) {
         this.overlay.showQuestComplete(this.currentQuest, this.stepResults, this.failedSteps, allQuests, completedQuests);
       }
@@ -222,71 +284,65 @@ class QuestRunner {
       } catch (error) {
         this.logger.error(`Step ${i + 1} failed: ${error.message}`, error);
         
-        // Use error handler to classify and handle error
-        let errorType = 'UNKNOWN_ERROR';
+        // Classify error using UserFriendlyErrors
+        const UserFriendlyErrors = window.UserFriendlyErrors;
+        let errorType = 'unknownError';
         const errorMsg = error.message.toLowerCase();
         
-        if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
-          errorType = 'JOULE_NOT_FOUND';
-        } else if (errorMsg.includes('button')) {
-          errorType = 'BUTTON_NOT_FOUND';
-        } else if (errorMsg.includes('card')) {
-          errorType = 'CARD_NOT_FOUND';
+        // Smart error classification
+        if (errorMsg.includes('input field not found') || errorMsg.includes('aiPromptField')) {
+          errorType = 'inputFieldNotFound';
+        } else if (errorMsg.includes('button not found') || errorMsg.includes('generateButton') || errorMsg.includes('saveButton')) {
+          errorType = 'buttonNotFound';
+        } else if (errorMsg.includes('joule') && errorMsg.includes('not found')) {
+          errorType = 'jouleNotFound';
         } else if (errorMsg.includes('timeout')) {
-          errorType = 'RESPONSE_TIMEOUT';
+          errorType = 'stepTimeout';
         } else if (errorMsg.includes('element') && errorMsg.includes('not found')) {
-          errorType = 'SELECTOR_NOT_FOUND';
+          errorType = 'elementNotFound';
         }
         
-        // Handle error with solution context
-        const errorObj = this.errorHandler.handle(errorType, {
+        // Get user-friendly error with context
+        const friendlyError = UserFriendlyErrors.getError(errorType, {
           step: step.name,
           stepIndex: i + 1,
-          quest: this.currentQuest.name
+          quest: this.currentQuest.name,
+          selector: step.selector,
+          action: step.action
         });
         
-        // Check if quest can continue (considers optional steps)
-        const canContinue = this.errorHandler.canContinue(errorObj, step.optional);
+        // STOP QUEST IMMEDIATELY ON ANY ERROR (no optional step bypass)
+        this.failedSteps.push(i);
         
-        if (canContinue) {
-          // Track failed or skipped step
-          const status = step.optional ? 'skipped' : 'error';
-          this.stepResults.push({
-            stepIndex: i,
-            stepName: step.name,
-            status: status,
-            error: errorObj.message,
-            errorType: errorType
-          });
-          
-          if (!step.optional) {
-            this.failedSteps.push(i);
-          }
-          
-          // Show error state in overlay
-          if (this.overlay) {
-            if (step.optional) {
-              this.overlay.showStepSkipped(step, errorObj.recovery, isAgentQuest);
-            } else {
-              this.overlay.showStepError(step, errorType, error.message, isAgentQuest);
-            }
-          }
-          
-          // Wait before continuing (longer for non-optional errors)
-          await this.sleep(step.optional ? 3000 : 5000);
-          
-          this.logger.warn(`⚠️ Step ${i + 1} ${step.optional ? 'skipped' : 'failed'} but continuing quest...`);
-        } else {
-          // Critical error - cannot continue
-          this.logger.error('Critical error - quest cannot continue', errorObj);
-          throw error;
+        this.stepResults.push({
+          stepIndex: i,
+          stepName: step.name,
+          status: 'error',
+          error: friendlyError.message,
+          errorType: errorType
+        });
+        
+        this.logger.error(`❌ Step ${i + 1} failed - STOPPING QUEST`);
+        
+        // Set flag to indicate quest stopped early
+        this.questStoppedEarly = true;
+        
+        // Show brief error message
+        if (this.overlay) {
+          this.overlay.showStepError(this.currentQuest.name, step, errorType, friendlyError, isAgentQuest);
         }
+        
+        // Wait 3 seconds to show error
+        await this.sleep(3000);
+        
+        // CRITICAL: Break to exit loop and go to failed state calculation
+        break;
       }
     }
 
-    // Log summary of failed steps if any
+    // Log summary
     if (this.failedSteps.length > 0) {
-      this.logger.warn(`Quest completed with ${this.failedSteps.length} failed step(s): ${this.failedSteps.map(i => i + 1).join(', ')}`);
+      this.logger.warn(`Quest finished with ${this.failedSteps.length} failed step(s): ${this.failedSteps.map(i => i + 1).join(', ')}`);
     } else {
       this.logger.success('Quest completed successfully with all steps passing!');
     }
@@ -810,28 +866,49 @@ class QuestRunner {
    * @param {Object} step - Step configuration
    */
   async executeTypeInFieldAction(step) {
+    this.logger.info('🎯 [executeTypeInFieldAction] STARTING', {
+      selectorKey: step.selector,
+      valueToType: step.value
+    });
+    
     const selectorKey = step.selector;
     const selectors = this.getSelectorsFromKey(selectorKey);
     
-    this.logger.info(`Looking for input field: ${selectorKey}`, selectors);
+    this.logger.info(`🔍 [executeTypeInFieldAction] Looking for input field: ${selectorKey}`, selectors);
     
     // Find the field in main page (including Shadow DOM)
-    const element = await this.shadowDOM.waitForElement(selectors, 10000);
-    
-    if (!element) {
-      const errorMsg = `Input field not found: ${selectorKey}`;
-      this.logger.error(errorMsg);
-      throw new Error(errorMsg);
+    try {
+      this.logger.info('⏳ [executeTypeInFieldAction] Waiting for element (10s timeout)...');
+      const element = await this.shadowDOM.waitForElement(selectors, 10000);
+      
+      if (!element) {
+        const errorMsg = `Input field not found: ${selectorKey}`;
+        this.logger.error(`❌ [executeTypeInFieldAction] ${errorMsg}`);
+        throw new Error(errorMsg);
+      }
+      
+      this.logger.success('✅ [executeTypeInFieldAction] Input field found!', element);
+      this.logger.info('📝 [executeTypeInFieldAction] Element details:', {
+        tag: element.tagName,
+        type: element.type,
+        id: element.id,
+        class: element.className,
+        value: element.value
+      });
+      
+      // Use shadowDOM helper to properly set value with Shadow DOM events
+      // CRITICAL: setInputValue is now async, must await it
+      this.logger.info('🚀 [executeTypeInFieldAction] Calling setInputValue...');
+      await this.shadowDOM.setInputValue(element, step.value);
+      
+      this.logger.success(`✅ [executeTypeInFieldAction] Typed into field: "${step.value}"`);
+      
+      await this.sleep(500);
+      this.logger.info('✅ [executeTypeInFieldAction] COMPLETE');
+    } catch (error) {
+      this.logger.error('❌ [executeTypeInFieldAction] FAILED', error);
+      throw error;
     }
-    
-    this.logger.success('Input field found, typing...', element);
-    
-    // Use shadowDOM helper to properly set value with Shadow DOM events
-    this.shadowDOM.setInputValue(element, step.value);
-    
-    this.logger.success(`Typed into field: "${step.value}"`);
-    
-    await this.sleep(500);
   }
 
   /**

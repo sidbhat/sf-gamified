@@ -364,32 +364,89 @@ class ShadowDOMHelper {
 
   /**
    * Dispatch proper events for Shadow DOM inputs with visual highlighting
-   * SAP SF Shadow DOM requires full event dispatch
+   * SAP SF Shadow DOM requires full event dispatch with focus management
    * @param {Element} element - Input element
    * @param {string} value - Value to set
    */
-  setInputValue(element, value) {
-    this.logger.info('Setting input value', { element, value });
+  async setInputValue(element, value) {
+    this.logger.info('🔍 [setInputValue] STARTING', { 
+      elementTag: element.tagName,
+      elementType: element.type,
+      elementId: element.id,
+      elementClass: element.className,
+      valueToSet: value,
+      currentValue: element.value
+    });
 
     try {
       // Highlight the input field
       this.highlightElement(element);
+      this.logger.info('✅ [setInputValue] Element highlighted');
       
-      // Set the value
+      // Step 1: Scroll element into view first
+      this.logger.info('📜 [setInputValue] Scrolling element into view...');
+      element.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      await this.sleep(200);
+      this.logger.info('✅ [setInputValue] Scroll complete');
+      
+      // Step 2: Click the element to ensure it's ready for input
+      this.logger.info('🖱️ [setInputValue] Dispatching click events...');
+      element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+      element.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, composed: true }));
+      element.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+      await this.sleep(100);
+      this.logger.info('✅ [setInputValue] Click events dispatched');
+      
+      // Step 3: Focus the element (critical for UI5 validation)
+      this.logger.info('🎯 [setInputValue] Focusing element...');
+      element.focus();
+      const isFocused = document.activeElement === element;
+      this.logger.info(`✅ [setInputValue] Focus called. Is element focused? ${isFocused}`);
+      
+      element.dispatchEvent(new FocusEvent('focus', { bubbles: true, composed: true }));
+      await this.sleep(100);
+      this.logger.info('✅ [setInputValue] Focus event dispatched');
+      
+      // Step 4: Set the value WHILE focused
+      this.logger.info(`✍️ [setInputValue] Setting value to: "${value}"`);
+      this.logger.info(`📝 [setInputValue] BEFORE: element.value = "${element.value}"`);
       element.value = value;
+      this.logger.info(`📝 [setInputValue] AFTER: element.value = "${element.value}"`);
+      
+      // Verify value was actually set
+      if (element.value !== value) {
+        this.logger.error(`❌ [setInputValue] VALUE NOT SET! Expected "${value}", got "${element.value}"`);
+      } else {
+        this.logger.info(`✅ [setInputValue] Value confirmed set to: "${value}"`);
+      }
+      
+      await this.sleep(50);
 
-      // Dispatch all necessary events for Shadow DOM
+      // Step 5: Dispatch full event chain for Shadow DOM (in correct order)
+      this.logger.info('⚡ [setInputValue] Dispatching keyboard and input events...');
+      element.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
       element.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+      await this.sleep(50);
+      
       element.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
-      element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, composed: true }));
-      element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, composed: true }));
-
-      this.logger.success('Input value set with events dispatched');
+      element.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', bubbles: true, composed: true }));
+      await this.sleep(100);
+      this.logger.info('✅ [setInputValue] All events dispatched');
+      
+      // Step 6: Blur to trigger validation
+      this.logger.info('👋 [setInputValue] Blurring element...');
+      element.blur();
+      element.dispatchEvent(new FocusEvent('blur', { bubbles: true, composed: true }));
+      this.logger.info('✅ [setInputValue] Blur complete');
+      
+      // Final verification
+      this.logger.info(`🔍 [setInputValue] FINAL CHECK: element.value = "${element.value}"`);
+      this.logger.success('✅ [setInputValue] COMPLETE - Input value processing finished');
       
       // Remove highlight after a delay
       setTimeout(() => this.unhighlightElement(element), 2000);
     } catch (error) {
-      this.logger.error('Failed to set input value', error);
+      this.logger.error('❌ [setInputValue] FAILED', error);
       throw error;
     }
   }

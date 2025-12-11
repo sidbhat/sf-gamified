@@ -8,22 +8,31 @@ class StorageManager {
   }
 
   /**
-   * Save quest progress
+   * Save quest progress with completion state
    * @param {string} questId - Quest ID
    * @param {Object} progress - Progress data
+   * @param {Object} completionData - Optional completion state data
    */
-  async saveQuestProgress(questId, progress) {
-    this.logger.info('Saving quest progress', { questId, progress });
+  async saveQuestProgress(questId, progress, completionData = null) {
+    this.logger.info('Saving quest progress', { questId, progress, completionData });
 
     try {
       const key = `quest_progress_${questId}`;
       const data = {
         ...progress,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        // Add completion state data if provided
+        ...(completionData && {
+          completionState: completionData.completionState, // 'success', 'partial', 'failed'
+          pointsAwarded: completionData.pointsAwarded,
+          successPercentage: completionData.successPercentage,
+          totalSteps: completionData.totalSteps,
+          successfulSteps: completionData.successfulSteps
+        })
       };
 
       await chrome.storage.local.set({ [key]: data });
-      this.logger.success('Quest progress saved');
+      this.logger.success('Quest progress saved', { completionState: data.completionState });
     } catch (error) {
       this.logger.error('Failed to save quest progress', error);
       throw error;
@@ -252,16 +261,16 @@ class StorageManager {
   }
 
   /**
-   * Get all completed quests (optionally filtered by solution)
+   * Get all completed quests with completion state (optionally filtered by solution)
    * @param {string} solutionId - Optional solution ID to filter by
-   * @returns {Promise<string[]>} Array of completed quest IDs
+   * @returns {Promise<Object>} Object mapping quest IDs to completion data
    */
   async getCompletedQuests(solutionId = null) {
     this.logger.info('Getting completed quests', { solutionId });
 
     try {
       const result = await chrome.storage.local.get(null);
-      const completedQuests = [];
+      const completedQuests = {};
 
       for (const key in result) {
         if (key.startsWith('quest_progress_')) {
@@ -270,14 +279,25 @@ class StorageManager {
             const questId = key.replace('quest_progress_', '');
             
             // Filter by solution if specified
+            let shouldInclude = false;
             if (solutionId) {
               if (solutionId === 's4hana' && questId.startsWith('s4hana-')) {
-                completedQuests.push(questId);
+                shouldInclude = true;
               } else if (solutionId === 'successfactors' && !questId.startsWith('s4hana-')) {
-                completedQuests.push(questId);
+                shouldInclude = true;
               }
             } else {
-              completedQuests.push(questId);
+              shouldInclude = true;
+            }
+            
+            if (shouldInclude) {
+              // Include completion state data
+              completedQuests[questId] = {
+                completionState: progress.completionState || 'success', // default to success for old data
+                pointsAwarded: progress.pointsAwarded || 0,
+                successPercentage: progress.successPercentage || 1.0,
+                timestamp: progress.timestamp
+              };
             }
           }
         }
