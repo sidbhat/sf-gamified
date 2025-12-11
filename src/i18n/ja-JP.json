@@ -12,7 +12,8 @@
       "confirm": "確認",
       "ok": "OK",
       "retry": "再読み込み",
-      "send": "送信"
+      "send": "送信",
+      "backToQuests": "クエストに戻る"
     },
     "headers": {
       "questSelection": "Joule Quest",

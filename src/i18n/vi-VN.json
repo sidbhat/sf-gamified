@@ -12,7 +12,8 @@
       "confirm": "Xác nhận",
       "ok": "OK",
       "retry": "Tải lại",
-      "send": "Gửi"
+      "send": "Gửi",
+      "backToQuests": "Quay lại nhiệm vụ"
     },
     "headers": {
       "questSelection": "Joule Quest",

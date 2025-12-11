@@ -12,7 +12,8 @@
       "confirm": "Confirmar",
       "ok": "OK",
       "retry": "Recarregar",
-      "send": "Enviar"
+      "send": "Enviar",
+      "backToQuests": "Voltar às missões"
     },
     "headers": {
       "questSelection": "Joule Quest",

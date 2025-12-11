@@ -12,7 +12,8 @@
       "confirm": "确认",
       "ok": "确定",
       "retry": "重新加载",
-      "send": "发送"
+      "send": "发送",
+      "backToQuests": "返回任务"
     },
     "headers": {
       "questSelection": "Joule Quest",

@@ -1035,7 +1035,7 @@ class QuestOverlay {
     // SIMPLIFIED: Only show 1-2 key action items, not full causes/solutions lists
     const actionHTML = `
       <div class="error-action">
-        <strong>💡 What to do:</strong>
+        <strong>💡 ${this.i18n.t('errors.whatToDo')}</strong>
         <p style="margin: 8px 0 0 0; font-size: 13px; opacity: 0.9;">${userAction}</p>
       </div>
     `;
@@ -1051,7 +1051,7 @@ class QuestOverlay {
         </div>
         
         <button class="action-btn secondary-btn" id="back-to-quests-btn" style="margin-top: 16px;">
-          <span>🗺️ Back to Quests</span>
+          <span>🗺️ ${this.i18n.t('ui.buttons.backToQuests')}</span>
         </button>
       </div>
     `;
