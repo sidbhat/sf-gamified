@@ -314,8 +314,8 @@
       "victoryText": "Ziele geladen! Sie sind auf Kurs!",
       "storyArc": "Ihre Erste Woche",
       "storyChapter": "Tag 1: Kurs bestimmen",
-      "storyIntro": "10:30 Uhr. Ihre neue Vorgesetzte Sarah hat Ihnen gerade eine Slack-Nachricht geschickt: 'Herzlich willkommen! Schauen Sie sich Ihre Q1-Ziele in SuccessFactors an - wir sprechen morgen darüber.' Ziele? Quartal? Sie möchten für das Meeting gut vorbereitet sein. Sehen wir uns an, welche Vorgaben für Sie definiert wurden!",
-      "storyOutro": "Ah, da sind sie! Drei klare Ziele für das Quartal. Jetzt wissen Sie genau, wie Erfolg in dieser Position aussieht. Sarah wird morgen beeindruckt sein, wenn Sie diese souverän besprechen können. Apropos - Sie sollten noch Ihre Kostenstelle herausfinden, bevor um 14 Uhr der Team-Call beginnt...",
+      "storyIntro": "10:30 Uhr. Ihre neue Vorgesetzte hat Ihnen gerade eine Slack-Nachricht geschickt: 'Herzlich willkommen! Schauen Sie sich Ihre Q1-Ziele in SuccessFactors an - wir sprechen morgen darüber.' Ziele? Quartal? Sie möchten für das Meeting gut vorbereitet sein. Sehen wir uns an, welche Vorgaben für Sie definiert wurden!",
+      "storyOutro": "Ah, da sind sie! Ihre Ziele für das Quartal. Jetzt wissen Sie genau, wie Erfolg in dieser Position aussieht. Ihre Vorgesetzte wird morgen beeindruckt sein, wenn Sie diese souverän besprechen können. Apropos - Sie sollten noch Ihre Kostenstelle herausfinden, bevor um 14 Uhr der Team-Call beginnt...",
       "nextQuestHint": "Als Nächstes: Finden Sie Ihre Kostenstelle (alle sprechen ständig von ihrer)"
     },
     "employee-cost-center": {
@@ -336,7 +336,7 @@
       "victoryText": "Richtlinien gemeistert! Bereit zur Abfahrt!",
       "storyArc": "Ihre Erste Woche",
       "storyChapter": "Tag 2: Erste Geschäftsreise",
-      "storyIntro": "Dienstagmorgen. Sarah hat Sie gerade gebeten, morgen einen Kunden in der nächsten Stadt zu besuchen. 'Buchen Sie einen Mietwagen - bleiben Sie innerhalb der Richtlinien!' sagte sie. Richtlinien? WELCHE Richtlinien? Sie sollten die Bestimmungen prüfen, bevor Sie buchen!",
+      "storyIntro": "Dienstagmorgen. Ihre Vorgesetzte hat Sie gerade gebeten, morgen einen Kunden in der nächsten Stadt zu besuchen. 'Buchen Sie einen Mietwagen - bleiben Sie innerhalb der Richtlinien!' sagte sie. Richtlinien? WELCHE Richtlinien? Sie sollten die Bestimmungen prüfen, bevor Sie buchen!",
       "storyOutro": "Ausgezeichnet! Jetzt kennen Sie die zugelassenen Fahrzeugtypen und täglichen Kostenlimits. Sie haben sich gerade eine peinliche Spesenabrechnung erspart. Da Sie nun die Regeln beherrschen, testen wir das Urlaubsantrag-System, bevor Sie es wirklich brauchen!",
       "nextQuestHint": "Zeit für den Systemtest: Beantragen Sie einen freien Tag und sehen Sie, wie es funktioniert"
     },
@@ -348,7 +348,7 @@
       "storyArc": "Ihre Erste Woche",
       "storyChapter": "Tag 5: System-Check",
       "storyIntro": "Es ist Freitagnachmittag. Was für eine Woche! Ihr Studienkollege hat Ihnen gerade eine SMS wegen Konzerttickets für nächsten Freitag geschickt. Sie haben die Urlaubstage (haben Sie Montag geprüft, erinnern Sie sich?). Zeit zu sehen, ob das Beantragen von Freizeit so einfach ist, wie alle behaupten. Testen wir das System!",
-      "storyOutro": "Antrag eingereicht! Sarah erhält eine Benachrichtigung zur Genehmigung. Sie sehen bereits, wie Joule HR-Aufgaben mühelos macht. Woche eins abgeschlossen! 🎉 Sie haben die Grundlagen gemeistert: Saldo prüfen, Ziele verstehen, Organigramm kennen, Richtlinien befolgen und Freizeit beantragen. Bereit für das nächste Level?",
+      "storyOutro": "Antrag eingereicht! Ihre Vorgesetzte erhält eine Benachrichtigung zur Genehmigung. Sie sehen bereits, wie Joule HR-Aufgaben mühelos macht. Woche eins abgeschlossen! 🎉 Sie haben die Grundlagen gemeistert: Saldo prüfen, Ziele verstehen, Organigramm kennen, Richtlinien befolgen und Freizeit beantragen. Bereit für das nächste Level?",
       "nextQuestHint": "Woche 2 beginnt: Zeit, Lern- und Entwicklungsmöglichkeiten zu erkunden"
     },
     "employee-assigned-learning": {
@@ -358,7 +358,7 @@
       "victoryText": "Kurse freigeschaltet! Wissenszuwachs im Anmarsch!",
       "storyArc": "Ihre Erste Woche",
       "storyChapter": "Woche 2: Sich etablieren",
-      "storyIntro": "Montagmorgen, Woche 2. Sarah erwähnte in Ihrem Einzelgespräch, dass Sie einige zugewiesene Schulungen haben. 'Sie werden Ihnen helfen, sich schneller einzuarbeiten', sagte sie. Sie möchten sehen, was erwartet wird und Ihren Lernplan erstellen. Lassen Sie uns prüfen, welche Kurse auf Sie warten!",
+      "storyIntro": "Montagmorgen, Woche 2. Ihre Vorgesetzte erwähnte in Ihrem Einzelgespräch, dass Sie einige zugewiesene Schulungen haben. 'Sie werden Ihnen helfen, sich schneller einzuarbeiten', sagte sie. Sie möchten sehen, was erwartet wird und Ihren Lernplan erstellen. Lassen Sie uns prüfen, welche Kurse auf Sie warten!",
       "storyOutro": "Drei Kurse zugewiesen! Produktschulung, Compliance-Grundlagen und fortgeschrittenes Excel. Es sieht so aus, als ob das Unternehmen in Entwicklung investiert. Diese können Sie an ruhigen Nachmittagen bearbeiten. Stellen wir nun sicher, dass Ihre Kontaktdaten korrekt sind, bevor Kunden sich melden...",
       "nextQuestHint": "Überprüfen Sie, ob Ihre E-Mail im System korrekt ist"
     },
@@ -402,8 +402,8 @@
       "victoryText": "Alle Genehmigungen gelöscht! Das Team liebt Sie!",
       "storyArc": "Der Neue Manager",
       "storyChapter": "Tag 1: Die Inbox-Lawine",
-      "storyIntro": "Herzlichen Glückwunsch zur Beförderung! Es ist Ihr erster Tag als Manager. Sie haben sich heute Morgen eingeloggt und festgestellt... 17 ausstehende Genehmigungen?! Urlaubsanträge, Spesenabrechnungen, Ziel-Updates. Ihr Team hat gewartet. Lassen Sie uns diesen Rückstand beseitigen und ihnen zeigen, dass Sie die Sache im Griff haben!",
-      "storyOutro": "Buum! Genehmigungswarteschlange gelöscht. Ihr Team hat gerade 17 Benachrichtigungen erhalten, dass Sie ihre Anfragen genehmigt haben. Sie schicken Ihnen bereits Dankesnachrichten über Slack. So sieht reaktionsschnelle Führung aus! Nun sollten Sie wahrscheinlich herausfinden, wer eigentlich IN Ihrem Team ist...",
+      "storyIntro": "Herzlichen Glückwunsch zur Beförderung! Es ist Ihr erster Tag als Manager. Sie haben sich heute Morgen eingeloggt und festgestellt... ausstehende Genehmigungen warten! Urlaubsanträge, Spesenabrechnungen, Ziel-Updates. Ihr Team hat gewartet. Lassen Sie uns diesen Rückstand beseitigen und ihnen zeigen, dass Sie die Sache im Griff haben!",
+      "storyOutro": "Buum! Genehmigungswarteschlange gelöscht. Ihr Team hat gerade Benachrichtigungen erhalten, dass Sie ihre Anfragen genehmigt haben. Sie schicken Ihnen bereits Dankesnachrichten über Slack. So sieht reaktionsschnelle Führung aus! Nun sollten Sie wahrscheinlich herausfinden, wer eigentlich IN Ihrem Team ist...",
       "nextQuestHint": "Wichtig: Sehen Sie, wer Ihnen berichtet und lernen Sie Ihr Team kennen"
     },
     "manager-my-team": {
@@ -414,8 +414,8 @@
       "storyArc": "Der Neue Manager",
       "storyChapter": "Tag 1: Aufbau Ihres Teamwissens",
       "storyIntro": "10 Uhr. Ihr Chef hat gerade gefragt: 'Wie viele direkte Mitarbeiter haben Sie?' und Sie sind erstarrt. FÜNF? SIEBEN? Sie haben ihre Anfragen bereits früher genehmigt, aber die vollständige Liste nicht wirklich gesehen. Zeit, genau zu erfahren, wer in Ihrem Team ist, damit Sie selbstbewusst antworten können!",
-      "storyOutro": "Da sind sie! Sechs direkte Mitarbeiter, jeder mit seinen eigenen Fähigkeiten und Hintergründen. Sie klicken sich jetzt durch ihre Profile und lernen jeden kennen. Das ist IHR Team. Zeit, der Manager zu sein, den sie verdienen! Sarah hat gerade diese Präsentation gemeistert – Sie sollten sie öffentlich anerkennen...",
-      "nextQuestHint": "Exzellenz belohnen: Geben Sie Sarah eine Sofort-Auszeichnung für diese großartige Präsentation"
+      "storyOutro": "Da sind sie! Ihre direkten Mitarbeiter, jeder mit seinen eigenen Fähigkeiten und Hintergründen. Sie klicken sich jetzt durch ihre Profile und lernen jeden kennen. Das ist IHR Team. Zeit, der Manager zu sein, den sie verdienen! Jada Baker hat gerade diese Präsentation gemeistert – Sie sollten sie öffentlich anerkennen...",
+      "nextQuestHint": "Exzellenz belohnen: Geben Sie Jada Baker eine Sofort-Auszeichnung für diese großartige Präsentation"
     },
     "manager-spot-award": {
       "name": "Helden-Moment: Exzellenz anerkennen",
@@ -424,8 +424,8 @@
       "victoryText": "Auszeichnung gesendet! Sie haben jemandem den Tag versüßt!",
       "storyArc": "Der Neue Manager",
       "storyChapter": "Tag 3: Anerkennungskultur",
-      "storyIntro": "Mittwoch. Jada hat gerade eine unglaubliche Kundenpräsentation gehalten, die einen großen Deal abgeschlossen hat. Der Kunde hat eine E-Mail geschickt und sie gelobt! Das verdient Anerkennung. Sie haben Budget für Sofort-Auszeichnungen – Zeit, Jadas Tag zu verschönern und dem Team zu zeigen, dass Sie großartige Arbeit bemerken!",
-      "storyOutro": "Auszeichnung gesendet! Jada hat Ihnen gerade eine Nachricht geschickt: 'Vielen Dank! Das bedeutet mir wirklich viel.' DAS ist Führung – Exzellenz anerkennen, wenn Sie sie sehen. Der Rest des Teams hat es auch bemerkt. Sie bauen eine Kultur der Wertschätzung auf. Kultur ist wichtig, und Sie gestalten sie mit!",
+      "storyIntro": "Mittwoch. Jada Baker hat gerade eine unglaubliche Kundenpräsentation gehalten, die einen großen Deal abgeschlossen hat. Der Kunde hat eine E-Mail geschickt und sie gelobt! Das verdient Anerkennung. Sie haben Budget für Sofort-Auszeichnungen – Zeit, Jada Bakers Tag zu verschönern und dem Team zu zeigen, dass Sie großartige Arbeit bemerken!",
+      "storyOutro": "Auszeichnung gesendet! Jada Baker hat Ihnen gerade eine Nachricht geschickt: 'Vielen Dank! Das bedeutet mir wirklich viel.' DAS ist Führung – Exzellenz anerkennen, wenn Sie sie sehen. Der Rest des Teams hat es auch bemerkt. Sie bauen eine Kultur der Wertschätzung auf. Kultur ist wichtig, und Sie gestalten sie mit!",
       "nextQuestHint": "Bauen Sie auf Anerkennung auf: Geben Sie konstruktives Feedback, um Ihrem Team beim Wachstum zu helfen"
     },
     "manager-give-feedback": {
@@ -435,8 +435,8 @@
       "victoryText": "Feedback bereit! Sie haben ihren Tag verschönert!",
       "storyArc": "Der Neue Manager",
       "storyChapter": "Tag 4: Entwicklungsfeedback",
-      "storyIntro": "Donnerstag. Jada hat die Sofort-Auszeichnung geschätzt, aber Sie möchten ihr detaillierteres Feedback dazu geben, WARUM ihre Präsentation exzellent war. Spezifisches Feedback hilft Menschen zu wachsen. Lassen Sie uns dokumentieren, was ihre Arbeit herausragend gemacht hat, damit sie diesen Erfolg wiederholen kann!",
-      "storyOutro": "Feedback erstellt und versandbereit! Sie haben ihre Vorbereitung, Kundenorientierung und Daten-Storytelling hervorgehoben. Diese Art spezifischer Anerkennung hilft Menschen, ihre Stärken zu verstehen. Jada wird dieses Feedback für immer behalten. Sie sind nicht nur ein Manager – Sie sind ein Talententwickler!",
+      "storyIntro": "Donnerstag. Jada Baker hat die Sofort-Auszeichnung geschätzt, aber Sie möchten ihr detaillierteres Feedback dazu geben, WARUM ihre Präsentation exzellent war. Spezifisches Feedback hilft Menschen zu wachsen. Lassen Sie uns dokumentieren, was ihre Arbeit herausragend gemacht hat, damit sie diesen Erfolg wiederholen kann!",
+      "storyOutro": "Feedback erstellt und versandbereit! Sie haben ihre Vorbereitung, Kundenorientierung und Daten-Storytelling hervorgehoben. Diese Art spezifischer Anerkennung hilft Menschen, ihre Stärken zu verstehen. Jada Baker wird dieses Feedback für immer behalten. Sie sind nicht nur ein Manager – Sie sind ein Talententwickler!",
       "nextQuestHint": "Lernen Sie Ihr Team besser kennen: Überprüfen Sie die Einstellungsdaten und Betriebszugehörigkeit aller"
     },
     "manager-team-hire-dates": {
@@ -447,7 +447,7 @@
       "storyArc": "Der Neue Manager",
       "storyChapter": "Woche 2: Teamkontext",
       "storyIntro": "Freitagmorgen, Ihre zweite Woche. Sie planen Arbeitsaufträge und stellen fest, dass Sie nicht wissen, wer ein Veteran ist und wer neu. Marcus wirkt sehr selbstbewusst – ist er erfahren oder täuscht er nur gut vor? Betriebszugehörigkeit ist wichtig für die Aufgabenkomplexität. Lassen Sie uns die Einstellungsdaten aller überprüfen!",
-      "storyOutro": "Faszinierend! Marcus kam vor 3 Monaten (erklärt das Selbstvertrauen), aber Jada ist schon 4 Jahre hier (sie ist die wahre Veteranin). Das ändert, wie Sie Projekte zuweisen werden. Erfahrung zählt, und jetzt verstehen Sie die Geschichte Ihres Teams. Zeit, tiefer in die Teamdynamik einzutauchen...",
+      "storyOutro": "Faszinierend! Marcus kam vor 3 Monaten (erklärt das Selbstvertrauen), aber Jada Baker ist schon 4 Jahre hier (sie ist die wahre Veteranin). Das ändert, wie Sie Projekte zuweisen werden. Erfahrung zählt, und jetzt verstehen Sie die Geschichte Ihres Teams. Zeit, tiefer in die Teamdynamik einzutauchen...",
       "nextQuestHint": "Bereiten Sie sich auf Bewertungen vor: Überprüfen Sie Vergütungsdaten, um die Teamvergütung zu verstehen"
     },
     "manager-compensation-insight": {
@@ -479,8 +479,8 @@
       "victoryText": "Feedback angefordert! Wachstum freigeschaltet!",
       "storyArc": "Der Neue Manager",
       "storyChapter": "Monat 2: Selbstverbesserung",
-      "storyIntro": "Zwei Monate im Management. Sie geben viel Feedback, aber wie geht es IHNEN als Manager? Jada scheint sich bei Ihnen wohlzufühlen, also lassen Sie uns ihr ehrliches Feedback zu Ihrem Führungsstil einholen. Wachstum beginnt mit der Suche nach Input!",
-      "storyOutro": "Feedback angefordert! Das zeigt Verletzlichkeit und Engagement für Wachstum. Großartige Manager haben keine Angst zu hören, wie sie sich verbessern können. Wenn Jada antwortet, haben Sie umsetzbare Erkenntnisse, um besser zu werden. Führung ist eine Reise, kein Ziel!",
+      "storyIntro": "Zwei Monate im Management. Sie geben viel Feedback, aber wie geht es IHNEN als Manager? Jada Baker scheint sich bei Ihnen wohlzufühlen, also lassen Sie uns ihr ehrliches Feedback zu Ihrem Führungsstil einholen. Wachstum beginnt mit der Suche nach Input!",
+      "storyOutro": "Feedback angefordert! Das zeigt Verletzlichkeit und Engagement für Wachstum. Großartige Manager haben keine Angst zu hören, wie sie sich verbessern können. Wenn Jada Baker antwortet, haben Sie umsetzbare Erkenntnisse, um besser zu werden. Führung ist eine Reise, kein Ziel!",
       "nextQuestHint": "Vervollständigen Sie Ihr Teamwissen: Tauchen Sie tief in individuelle Profile ein"
     },
     "manager-worker-profile": {
@@ -491,7 +491,7 @@
       "storyArc": "Der Neue Manager",
       "storyChapter": "Monat 2: Meisterschaft",
       "storyIntro": "Monat 2 abgeschlossen. Sie haben Anfragen genehmigt, Exzellenz anerkannt, Feedback gegeben, Vergütung verstanden und Metriken verfolgt. Nun zum letzten Teil: das vollständige Profil jedes Teammitglieds wirklich kennen – Fähigkeiten, Erfahrung, Karriereziele. Zeit, ein Personenexperte zu werden!",
-      "storyOutro": "Vollständige Profilbeherrschung erreicht! Sie kennen jetzt Jadas gesamten Hintergrund: ihre früheren Rollen, Fähigkeiten, Zertifizierungen und Karriereziele. Diese Tiefe des Wissens macht Sie zu einem besseren Coach und Fürsprecher für Ihr Team. 🏆 MANAGER-REISE ABGESCHLOSSEN! Sie haben sich in nur 2 Monaten vom nervösen neuen Manager zur selbstbewussten Führungskraft entwickelt!",
+      "storyOutro": "Vollständige Profilbeherrschung erreicht! Sie kennen jetzt Jada Bakers gesamten Hintergrund: ihre früheren Rollen, Fähigkeiten, Zertifizierungen und Karriereziele. Diese Tiefe des Wissens macht Sie zu einem besseren Coach und Fürsprecher für Ihr Team. 🏆 MANAGER-REISE ABGESCHLOSSEN! Sie haben sich in nur 2 Monaten vom nervösen neuen Manager zur selbstbewussten Führungskraft entwickelt!",
       "nextQuestHint": "🎓 Manager-Reise abgeschlossen! Probieren Sie den KI-Agenten-Pfad aus, um weiter aufzusteigen"
     },
     "agent-goal-creation": {

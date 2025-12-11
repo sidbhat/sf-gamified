@@ -324,8 +324,8 @@
       "victoryText": "Goals loaded! You're on track!",
       "storyArc": "Your First Week",
       "storyChapter": "Day 1: Setting Direction",
-      "storyIntro": "10:30 AM. Your new manager Sarah just sent you a Slack message: 'Welcome aboard! Check your Q1 goals in SF - let's sync tomorrow.' Goals? Quarter? You want to look prepared for that meeting. Let's see what targets have been set for you!",
-      "storyOutro": "Ah, there they are! Three clear goals for the quarter. Now you know what success looks like in this role. Sarah will be impressed tomorrow when you discuss these confidently. Speaking of which, you should figure out your cost center before the team intro call at 2 PM...",
+      "storyIntro": "10:30 AM. Your new manager just sent you a Slack message: 'Welcome aboard! Check your Q1 goals in SF - let's sync tomorrow.' Goals? Quarter? You want to look prepared for that meeting. Let's see what targets have been set for you!",
+      "storyOutro": "Ah, there they are! Your goals for the quarter. Now you know what success looks like in this role. Your manager will be impressed tomorrow when you discuss these confidently. Speaking of which, you should figure out your cost center before the team intro call at 2 PM...",
       "nextQuestHint": "Coming up: Find your cost center (everyone keeps mentioning theirs)"
     },
     "employee-cost-center": {
@@ -346,7 +346,7 @@
       "victoryText": "Policy mastered! Ready to roll!",
       "storyArc": "Your First Week",
       "storyChapter": "Day 2: First Business Trip",
-      "storyIntro": "Tuesday morning. Sarah just asked you to visit a client in the next city tomorrow. 'Book a rental car - keep it within policy!' she said. Policy? WHAT policy? You should check the guidelines before booking!",
+      "storyIntro": "Tuesday morning. Your manager just asked you to visit a client in the next city tomorrow. 'Book a rental car - keep it within policy!' she said. Policy? WHAT policy? You should check the guidelines before booking!",
       "storyOutro": "Smart! Now you know the approved vehicle types and daily rate limits. You just saved yourself an awkward expense report rejection. Now that you know the rules, let's test the time-off request system before you need it for real!",
       "nextQuestHint": "Time to test the system: Request a day off and see how it works"
     },
@@ -358,7 +358,7 @@
       "storyArc": "Your First Week",
       "storyChapter": "Day 5: Testing the System",
       "storyIntro": "It's Friday afternoon. What a week! Your college friend just texted about concert tickets next Friday. You've got the vacation days (you checked Monday, remember?). Time to see if requesting time off is as easy as everyone claims. Let's test this system!",
-      "storyOutro": "Request submitted! Sarah will get a notification to approve. You're already seeing how Joule makes HR tasks effortless. Week one complete! 🎉 You've mastered the basics: checking balance, understanding goals, knowing your org structure, following policies, and requesting time off. Ready to level up?",
+      "storyOutro": "Request submitted! Your manager will get a notification to approve. You're already seeing how Joule makes HR tasks effortless. Week one complete! 🎉 You've mastered the basics: checking balance, understanding goals, knowing your org structure, following policies, and requesting time off. Ready to level up?",
       "nextQuestHint": "Week 2 begins: Time to explore learning and development opportunities"
     },
     "employee-assigned-learning": {
@@ -368,7 +368,7 @@
       "victoryText": "Courses unlocked! Brain gains incoming!",
       "storyArc": "Your First Week",
       "storyChapter": "Week 2: Getting Established",
-      "storyIntro": "Monday morning, Week 2. Sarah mentioned during your 1:1 that you have some assigned training courses. 'They'll help you ramp up faster,' she said. You want to see what's expected and plan your learning schedule. Let's check what courses are waiting!",
+      "storyIntro": "Monday morning, Week 2. Your manager mentioned during your 1:1 that you have some assigned training courses. 'They'll help you ramp up faster,' she said. You want to see what's expected and plan your learning schedule. Let's check what courses are waiting!",
       "storyOutro": "Three courses assigned! Product training, compliance basics, and advanced Excel. Looks like the company invests in development. You can tackle these during slow afternoons. Now let's make sure your contact info is correct before clients start reaching out...",
       "nextQuestHint": "Verify your email is correct in the system"
     },
@@ -412,8 +412,8 @@
       "victoryText": "All approvals cleared! Team loves you!",
       "storyArc": "The New Manager",
       "storyChapter": "Day 1: The Inbox Avalanche",
-      "storyIntro": "Congratulations on your promotion! It's your first day as a manager. You logged in this morning to find... 17 pending approvals?! Time off requests, expense reports, goal updates. Your team has been waiting. Let's clear this backlog and show them you're on top of it!",
-      "storyOutro": "Boom! Approval queue cleared. Your team just got 17 notifications that you approved their requests. They're already Slacking you thank-you messages. This is what responsive leadership looks like! Now you should probably figure out who's actually ON your team...",
+      "storyIntro": "Congratulations on your promotion! It's your first day as a manager. You logged in this morning to find... pending approvals waiting! Time off requests, expense reports, goal updates. Your team has been waiting. Let's clear this backlog and show them you're on top of it!",
+      "storyOutro": "Boom! Approval queue cleared. Your team just got notifications that you approved their requests. They're already Slacking you thank-you messages. This is what responsive leadership looks like! Now you should probably figure out who's actually ON your team...",
       "nextQuestHint": "Essential: See who reports to you and learn your team roster"
     },
     "manager-my-team": {
@@ -424,8 +424,8 @@
       "storyArc": "The New Manager",
       "storyChapter": "Day 1: Building Your Team Knowledge",
       "storyIntro": "10 AM. Your boss just asked 'How many direct reports do you have?' and you froze. FIVE? SEVEN? You approved their requests earlier but didn't actually see the full list. Time to learn exactly who's on your team so you can answer confidently!",
-      "storyOutro": "There they are! Six direct reports, each with their own skills and backgrounds. You're clicking through their profiles now, learning about each person. This is YOUR team. Time to be the manager they deserve! Sarah just crushed that presentation - you should recognize her publicly...",
-      "nextQuestHint": "Reward excellence: Give Sarah a spot award for that amazing presentation"
+      "storyOutro": "There they are! Your direct reports, each with their own skills and backgrounds. You're clicking through their profiles now, learning about each person. This is YOUR team. Time to be the manager they deserve! Jada Baker just crushed that presentation - you should recognize her publicly...",
+      "nextQuestHint": "Reward excellence: Give Jada Baker a spot award for that amazing presentation"
     },
     "manager-spot-award": {
       "name": "Hero Moment: Recognize Excellence",
@@ -434,8 +434,8 @@
       "victoryText": "Award sent! You made someone's day!",
       "storyArc": "The New Manager",
       "storyChapter": "Day 3: Recognition Culture",
-      "storyIntro": "Wednesday. Jada just delivered an incredible client presentation that closed a huge deal. The client sent an email praising her! This deserves recognition. You have budget for spot awards - time to make Jada's day and show the team you notice great work!",
-      "storyOutro": "Award sent! Jada just messaged you: 'Thank you so much! This really means a lot.' THIS is leadership - recognizing excellence when you see it. The rest of the team noticed too. You're building a culture of appreciation. Culture matters, and you're shaping it!",
+      "storyIntro": "Wednesday. Jada Baker just delivered an incredible client presentation that closed a huge deal. The client sent an email praising her! This deserves recognition. You have budget for spot awards - time to make Jada Baker's day and show the team you notice great work!",
+      "storyOutro": "Award sent! Jada Baker just messaged you: 'Thank you so much! This really means a lot.' THIS is leadership - recognizing excellence when you see it. The rest of the team noticed too. You're building a culture of appreciation. Culture matters, and you're shaping it!",
       "nextQuestHint": "Build on recognition: Give constructive feedback to help your team grow"
     },
     "manager-give-feedback": {
@@ -445,8 +445,8 @@
       "victoryText": "Feedback ready! You made their day!",
       "storyArc": "The New Manager",
       "storyChapter": "Day 4: Developmental Feedback",
-      "storyIntro": "Thursday. Jada appreciated the spot award, but you want to give her more detailed feedback on WHY her presentation was excellent. Specific feedback helps people grow. Let's document what made her work outstanding so she can replicate that success!",
-      "storyOutro": "Feedback drafted and ready to send! You highlighted her preparation, client focus, and data storytelling. This kind of specific recognition helps people understand their strengths. Jada will keep this feedback forever. You're not just a manager - you're a developer of talent!",
+      "storyIntro": "Thursday. Jada Baker appreciated the spot award, but you want to give her more detailed feedback on WHY her presentation was excellent. Specific feedback helps people grow. Let's document what made her work outstanding so she can replicate that success!",
+      "storyOutro": "Feedback drafted and ready to send! You highlighted her preparation, client focus, and data storytelling. This kind of specific recognition helps people understand their strengths. Jada Baker will keep this feedback forever. You're not just a manager - you're a developer of talent!",
       "nextQuestHint": "Get to know your team better: Check everyone's hire dates and tenure"
     },
     "manager-team-hire-dates": {
@@ -457,7 +457,7 @@
       "storyArc": "The New Manager",
       "storyChapter": "Week 2: Team Context",
       "storyIntro": "Friday morning, your second week. You're planning work assignments and realize you don't know who's a veteran vs who's new. Marcus acts super confident - is he experienced or just good at faking it? Tenure matters for task complexity. Let's check everyone's hire dates!",
-      "storyOutro": "Fascinating! Marcus joined 3 months ago (explains the confidence), but Jada has been here 4 years (she's the real veteran). This changes how you'll assign projects. Experience matters, and now you understand your team's history. Time to dive deeper into team dynamics...",
+      "storyOutro": "Fascinating! Marcus joined 3 months ago (explains the confidence), but Jada Baker has been here 4 years (she's the real veteran). This changes how you'll assign projects. Experience matters, and now you understand your team's history. Time to dive deeper into team dynamics...",
       "nextQuestHint": "Prepare for reviews: Check compensation data to understand team pay"
     },
     "manager-compensation-insight": {
@@ -489,8 +489,8 @@
       "victoryText": "Feedback requested! Growth unlocked!",
       "storyArc": "The New Manager",
       "storyChapter": "Month 2: Self-Improvement",
-      "storyIntro": "Two months into management. You give lots of feedback, but how are YOU doing as a manager? Jada seems comfortable with you, so let's request her honest feedback on your leadership style. Growth mindset starts with seeking input!",
-      "storyOutro": "Feedback requested! This shows vulnerability and commitment to growth. Great managers aren't afraid to hear how they can improve. When Jada responds, you'll have actionable insights to become better. Leadership is a journey, not a destination!",
+      "storyIntro": "Two months into management. You give lots of feedback, but how are YOU doing as a manager? Jada Baker seems comfortable with you, so let's request her honest feedback on your leadership style. Growth mindset starts with seeking input!",
+      "storyOutro": "Feedback requested! This shows vulnerability and commitment to growth. Great managers aren't afraid to hear how they can improve. When Jada Baker responds, you'll have actionable insights to become better. Leadership is a journey, not a destination!",
       "nextQuestHint": "Round out your team knowledge: Dive deep into individual profiles"
     },
     "manager-worker-profile": {
@@ -501,7 +501,7 @@
       "storyArc": "The New Manager",
       "storyChapter": "Month 2: Mastery",
       "storyIntro": "Month 2 complete. You've approved requests, recognized excellence, given feedback, understood compensation, and tracked metrics. Now for the final piece: truly knowing each team member's complete profile - skills, experience, career aspirations. Time to become a people expert!",
-      "storyOutro": "Complete profile mastery achieved! You now know Jada's full background: her previous roles, skills, certifications, and career goals. This depth of knowledge makes you a better coach and advocate for your team. 🏆 MANAGER JOURNEY COMPLETE! You've transformed from nervous new manager to confident leader in just 2 months!",
+      "storyOutro": "Complete profile mastery achieved! You now know Jada Baker's full background: her previous roles, skills, certifications, and career goals. This depth of knowledge makes you a better coach and advocate for your team. 🏆 MANAGER JOURNEY COMPLETE! You've transformed from nervous new manager to confident leader in just 2 months!",
       "nextQuestHint": "🎓 Manager Journey Complete! Try the AI Agent path to level up further"
     },
     "agent-goal-creation": {
