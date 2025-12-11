@@ -23,6 +23,11 @@
   const logger = window.JouleQuestLogger;
   logger.info('Content script loaded in top-level window');
 
+  // Initialize i18n system
+  const i18n = window.JouleQuestI18n;
+  await i18n.init();
+  logger.success('I18n initialized', { language: i18n.getCurrentLanguage() });
+
   // Load configuration files
   let selectors, quests, solutions, solutionDetector, currentSolution;
 

@@ -3,8 +3,20 @@
  * Opens quest selection as centered overlay on SAP page
  */
 
+// Initialize i18n for popup
+let i18n = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('[JouleQuest Popup] Opening quest selection overlay');
+  
+  // Initialize i18n
+  try {
+    i18n = new I18nManager();
+    await i18n.init();
+    console.log('[JouleQuest Popup] i18n initialized:', i18n.getCurrentLanguage());
+  } catch (error) {
+    console.warn('[JouleQuest Popup] i18n init failed, using fallback:', error);
+  }
 
   try {
     // Get active tab
@@ -26,7 +38,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       !tab.url.toLowerCase().includes('s/4hana') &&
       !tab.url.toLowerCase().includes('nqo')
     )) {
-      showError('Please navigate to SAP SuccessFactors or S/4HANA first');
+      const errorMsg = i18n ? i18n.t('errors.contentScriptNotLoaded.message') : 'Please navigate to SAP SuccessFactors or S/4HANA first';
+      showError(errorMsg);
       return;
     }
 
@@ -73,15 +86,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       error.message.includes('Could not establish connection') ||
       error.message.includes('Receiving end does not exist')
     )) {
-      // Use error catalog for better messaging
-      if (window.JouleQuestErrorMessages) {
-        const errorMsg = window.JouleQuestErrorMessages.getErrorMessage('CONTENT_SCRIPT_NOT_LOADED');
-        showError(errorMsg.message, errorMsg);
-      } else {
-        showError('Content script loading... Please wait a few seconds and try again.');
-      }
+      // Use i18n error message if available
+      const errorMsg = i18n 
+        ? i18n.t('errors.contentScriptNotLoaded.message')
+        : 'Content script loading... Please wait a few seconds and try again.';
+      
+      // Get full error object for display if available
+      const errorObj = i18n ? {
+        icon: '🔄',
+        title: i18n.t('errors.contentScriptNotLoaded.title'),
+        message: errorMsg,
+        causes: [
+          i18n.t('errors.contentScriptNotLoaded.causes.0'),
+          i18n.t('errors.contentScriptNotLoaded.causes.1'),
+          i18n.t('errors.contentScriptNotLoaded.causes.2')
+        ],
+        solutions: [
+          { icon: '⏱️', text: i18n.t('errors.contentScriptNotLoaded.solutions.0') },
+          { icon: '⌘', text: i18n.t('errors.contentScriptNotLoaded.solutions.1') },
+          { icon: '🔌', text: i18n.t('errors.contentScriptNotLoaded.solutions.2') }
+        ]
+      } : null;
+      
+      showError(errorMsg, errorObj);
     } else {
-      showError(error.message || 'Failed to open quest selection');
+      const fallbackMsg = i18n ? i18n.t('errors.unknownError.message') : 'Failed to open quest selection';
+      showError(error.message || fallbackMsg);
     }
   }
 });
@@ -101,19 +131,38 @@ function sleep(ms) {
 function showError(message, errorObj = null) {
   const container = document.querySelector('.popup-message');
   if (container) {
-    if (errorObj && window.JouleQuestErrorMessages) {
-      // Use formatted error display from catalog
-      const formatted = window.JouleQuestErrorMessages.formatErrorForDisplay(errorObj);
+    if (errorObj) {
+      // Format error display with translated content
+      const causesList = errorObj.causes
+        .map(cause => `• ${cause}`)
+        .join('<br>');
+      
+      const solutionsList = errorObj.solutions
+        .map(sol => `${sol.icon} ${sol.text}`)
+        .join('<br>');
+      
+      const whyLabel = i18n ? i18n.t('errors.whyThisHappened') : 'Why this happened:';
+      const whatLabel = i18n ? i18n.t('errors.whatToDo') : 'What to do:';
+      
       container.innerHTML = `
         <div class="message-icon">${errorObj.icon}</div>
         <h2>${errorObj.title}</h2>
-        ${formatted}
+        <p style="color: #ffe0e0; font-size: 13px; line-height: 1.4; margin-bottom: 16px;">${errorObj.message}</p>
+        
+        <div style="text-align: left; margin-top: 16px; font-size: 12px;">
+          <strong style="color: #fff;">${whyLabel}</strong>
+          <div style="color: #ffe0e0; margin: 8px 0; line-height: 1.5;">${causesList}</div>
+          
+          <strong style="color: #fff; margin-top: 12px; display: block;">${whatLabel}</strong>
+          <div style="color: #ffe0e0; margin: 8px 0; line-height: 1.5;">${solutionsList}</div>
+        </div>
       `;
     } else {
       // Fallback to simple error display
+      const oopsTitle = i18n ? i18n.t('ui.headers.oops') : 'Oops!';
       container.innerHTML = `
         <div class="message-icon">⚠️</div>
-        <h2>Oops!</h2>
+        <h2>${oopsTitle}</h2>
         <p style="color: #ffe0e0; font-size: 13px; line-height: 1.4;">${message}</p>
       `;
     }

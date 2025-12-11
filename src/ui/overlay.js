@@ -5,6 +5,7 @@
 class QuestOverlay {
   constructor() {
     this.logger = window.JouleQuestLogger;
+    this.i18n = window.JouleQuestI18n;
     this.container = null;
     this.isVisible = false;
     this.currentSolution = null;
@@ -273,7 +274,7 @@ class QuestOverlay {
    * @param {Object} options - Dialog options
    * @returns {Promise<boolean>} True if user confirms, false if cancels
    */
-  showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', icon = '❓' }) {
+  showConfirmDialog({ title, message, confirmText = null, cancelText = null, icon = '❓' }) {
     return new Promise((resolve) => {
       // CRITICAL: Save current overlay content before showing dialog
       const savedContent = this.container.innerHTML;
@@ -287,10 +288,10 @@ class QuestOverlay {
           
           <div style="display: flex; gap: 12px; justify-content: center;">
             <button class="confirm-btn" id="confirm-yes-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-              ${confirmText}
+              ${confirmText || this.i18n.t('ui.buttons.confirm')}
             </button>
             <button class="cancel-btn" id="confirm-no-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-              ${cancelText}
+              ${cancelText || this.i18n.t('ui.buttons.cancel')}
             </button>
           </div>
         </div>
@@ -344,7 +345,7 @@ class QuestOverlay {
    * @param {Object} options - Dialog options
    * @returns {Promise<void>} Resolves when user dismisses
    */
-  showAlertDialog({ title, message, buttonText = 'OK', icon = 'ℹ️' }) {
+  showAlertDialog({ title, message, buttonText = null, icon = 'ℹ️' }) {
     return new Promise((resolve) => {
       // CRITICAL: Save current overlay content before showing dialog
       const savedContent = this.container.innerHTML;
@@ -357,7 +358,7 @@ class QuestOverlay {
           <p style="white-space: pre-line; margin: 16px 0 24px 0;">${message}</p>
           
           <button class="ok-btn" id="alert-ok-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 48px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-            ${buttonText}
+            ${buttonText || this.i18n.t('ui.buttons.ok')}
           </button>
         </div>
       `;
@@ -442,21 +443,30 @@ class QuestOverlay {
         return [
           { 
             id: 's4hana-sales', 
-            label: 'Sales', 
-            icon: '📊',
-            journey: journeys['s4hana-sales'] || { name: 'Sales & Billing', description: 'Sales operations' }
+            label: this.i18n.t('ui.tabs.sales'), 
+            icon: this.i18n.t('ui.icons.sales'),
+            journey: journeys['s4hana-sales'] || { 
+              name: this.i18n.t('journeys.s4hana-sales.name'), 
+              description: this.i18n.t('journeys.s4hana-sales.description') 
+            }
           },
           { 
             id: 's4hana-procurement', 
-            label: 'Procurement', 
-            icon: '�',
-            journey: journeys['s4hana-procurement'] || { name: 'Procurement', description: 'Purchase orders' }
+            label: this.i18n.t('ui.tabs.procurement'), 
+            icon: this.i18n.t('ui.icons.procurement'),
+            journey: journeys['s4hana-procurement'] || { 
+              name: this.i18n.t('journeys.s4hana-procurement.name'), 
+              description: this.i18n.t('journeys.s4hana-procurement.description') 
+            }
           },
           { 
             id: 's4hana-delivery', 
-            label: 'Delivery', 
-            icon: '�',
-            journey: journeys['s4hana-delivery'] || { name: 'Delivery', description: 'Shipping operations' }
+            label: this.i18n.t('ui.tabs.delivery'), 
+            icon: this.i18n.t('ui.icons.delivery'),
+            journey: journeys['s4hana-delivery'] || { 
+              name: this.i18n.t('journeys.s4hana-delivery.name'), 
+              description: this.i18n.t('journeys.s4hana-delivery.description') 
+            }
           }
         ];
       } else {
@@ -464,21 +474,30 @@ class QuestOverlay {
         return [
           { 
             id: 'employee', 
-            label: 'Employee', 
-            icon: '👤',
-            journey: journeys.employee || { name: 'Employee Journey', description: 'Employee quests' }
+            label: this.i18n.t('ui.tabs.employee'), 
+            icon: this.i18n.t('ui.icons.employee'),
+            journey: journeys.employee || { 
+              name: this.i18n.t('journeys.employee.name'), 
+              description: this.i18n.t('journeys.employee.description') 
+            }
           },
           { 
             id: 'manager', 
-            label: 'Manager', 
-            icon: '👔',
-            journey: journeys.manager || { name: 'Manager Journey', description: 'Manager quests' }
+            label: this.i18n.t('ui.tabs.manager'), 
+            icon: this.i18n.t('ui.icons.manager'),
+            journey: journeys.manager || { 
+              name: this.i18n.t('journeys.manager.name'), 
+              description: this.i18n.t('journeys.manager.description') 
+            }
           },
           { 
             id: 'agent', 
-            label: 'Agent', 
-            icon: '⚡',
-            journey: journeys.agent || { name: 'AI Agent', description: 'AI workflows' }
+            label: this.i18n.t('ui.tabs.agent'), 
+            icon: this.i18n.t('ui.icons.agent'),
+            journey: journeys.agent || { 
+              name: this.i18n.t('journeys.agent.name'), 
+              description: this.i18n.t('journeys.agent.description') 
+            }
           }
         ];
       }
@@ -501,7 +520,9 @@ class QuestOverlay {
         let lockMessage = '';
         if (isLocked && quest.requiresQuests) {
           const remaining = quest.requiresQuests.filter(reqId => !completedQuests.includes(reqId));
-          lockMessage = `<div class="quest-lock-info">🔒 Complete ${remaining.length} more quest${remaining.length > 1 ? 's' : ''} to unlock</div>`;
+          const count = remaining.length;
+          const plural = count > 1 ? 's' : '';
+          lockMessage = `<div class="quest-lock-info">${this.i18n.t('ui.messages.questLockedInfo', { count, s: plural })}</div>`;
         }
         
         return `
@@ -591,7 +612,7 @@ class QuestOverlay {
               <circle cx="25" cy="30" r="4" fill="white"/>
             </svg>
             <div class="header-title">
-              <h2>Joule Quest</h2>
+              <h2>${this.i18n.t('ui.headers.questSelection')}</h2>
               ${solution ? `<div class="solution-badge" style="background: ${solution.theme.primary}">${solution.badge}</div>` : ''}
             </div>
           </div>
@@ -604,14 +625,14 @@ class QuestOverlay {
             <div class="stat-icon">⭐</div>
             <div class="stat-info">
               <div class="stat-value">${stats.totalPoints || 0}</div>
-              <div class="stat-label">POINTS</div>
+              <div class="stat-label">${this.i18n.t('ui.labels.points')}</div>
             </div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🏆</div>
             <div class="stat-info">
               <div class="stat-value">${stats.questsCompleted || 0}</div>
-              <div class="stat-label">QUESTS</div>
+              <div class="stat-label">${this.i18n.t('ui.labels.quests')}</div>
             </div>
           </div>
         </div>
@@ -650,10 +671,10 @@ class QuestOverlay {
     if (resetBtn) {
       resetBtn.addEventListener('click', async () => {
         const confirmed = await this.showConfirmDialog({
-          title: 'Reset All Progress?',
-          message: 'This will:\n• Delete all completed quests\n• Reset points to 0\n• Start fresh\n\nThis action cannot be undone.',
-          confirmText: 'Reset Progress',
-          cancelText: 'Cancel',
+          title: this.i18n.t('ui.headers.resetProgress'),
+          message: this.i18n.t('ui.messages.resetConfirm'),
+          confirmText: this.i18n.t('ui.buttons.reset'),
+          cancelText: this.i18n.t('ui.buttons.cancel'),
           icon: '⚠️'
         });
         
@@ -701,9 +722,9 @@ class QuestOverlay {
         // Prevent starting locked quests
         if (isLocked) {
           this.showAlertDialog({
-            title: 'Quest Locked',
-            message: 'Complete the previous quests first to unlock this one.',
-            buttonText: 'OK',
+            title: this.i18n.t('ui.headers.questLocked'),
+            message: this.i18n.t('ui.messages.questLockedInfo', { count: 1, s: '' }),
+            buttonText: this.i18n.t('ui.buttons.ok'),
             icon: '🔒'
           });
           return;
@@ -764,14 +785,14 @@ class QuestOverlay {
       <div class="joule-quest-card quest-start">
         <div class="complete-icon">🎯</div>
         
-        <h2>Ready to Start?</h2>
+        <h2>${this.i18n.t('ui.headers.readyToStart')}</h2>
         <h3>${questName}</h3>
         
         ${storyContextHTML}
         
         <div class="quest-info">
           <span class="difficulty">${questDifficulty}</span>
-          <span class="points">${questPoints} points</span>
+          <span class="points">${questPoints} ${this.i18n.t('ui.labels.points').toLowerCase()}</span>
         </div>
         
         <p class="congrats">Read the story above, then click Start Quest when you're ready!</p>
@@ -779,10 +800,10 @@ class QuestOverlay {
         <!-- Start Quest button -->
         <div class="quest-start-actions">
           <button class="action-btn primary-btn" id="start-quest-btn">
-            <span>▶️ Start Quest</span>
+            <span>▶️ ${this.i18n.t('ui.buttons.start')}</span>
           </button>
           <button class="action-btn secondary-btn" id="cancel-quest-btn">
-            <span>✕ Cancel</span>
+            <span>✕ ${this.i18n.t('ui.buttons.cancel')}</span>
           </button>
         </div>
       </div>
@@ -834,12 +855,12 @@ class QuestOverlay {
         ` : ''}
         
         <div class="step-header">
-          <span class="step-number">Step ${current}/${total}</span>
+          <span class="step-number">${this.i18n.t('ui.labels.step', { current, total })}</span>
           <span class="step-icon">🎮</span>
         </div>
         <h3>${step.name}</h3>
         <p>${step.description}</p>
-        ${step.hint ? `<p class="hint">💡 ${step.hint}</p>` : ''}
+        ${step.hint ? `<p class="hint">💡 ${this.i18n.t('ui.labels.hint')}: ${step.hint}</p>` : ''}
         ${jouleResponse ? `
           <div class="joule-response">
             <strong>🤖 Joule's Response:</strong>
@@ -882,17 +903,17 @@ class QuestOverlay {
         ` : ''}
         
         <div class="step-header">
-          <span class="step-number">Step ${current}/${total}</span>
+          <span class="step-number">${this.i18n.t('ui.labels.step', { current, total })}</span>
           <span class="step-icon">👆</span>
         </div>
-        <h3>Your Turn!</h3>
+        <h3>${this.i18n.t('ui.headers.yourTurn')}</h3>
         <h4>${step.name}</h4>
         <p class="instruction">${step.description}</p>
-        ${step.hint ? `<p class="hint">💡 Hint: ${step.hint}</p>` : ''}
+        ${step.hint ? `<p class="hint">💡 ${this.i18n.t('ui.labels.hint')}: ${step.hint}</p>` : ''}
         <div class="progress-bar">
           <div class="progress-fill" style="width: ${progress}%"></div>
         </div>
-        <p class="waiting">Waiting for you to complete this step...</p>
+        <p class="waiting">${this.i18n.t('ui.labels.waitingForYou')}</p>
       </div>
     `;
 
@@ -922,7 +943,7 @@ class QuestOverlay {
         ` : ''}
         
         <div class="success-icon">⭐</div>
-        <h3>Success!</h3>
+        <h3>${this.i18n.t('ui.headers.success')}</h3>
         <p>${message}</p>
       </div>
     `;
@@ -981,11 +1002,11 @@ class QuestOverlay {
         ` : ''}
         
         <div class="error-icon">${errorIcon}</div>
-        <h3>Step Failed</h3>
+        <h3>${this.i18n.t('ui.headers.stepFailed')}</h3>
         <h4>${step.name}</h4>
         ${errorContent}
         <p style="opacity: 0.8; font-size: 13px; margin-top: 12px;">
-          ⏭️ Continuing to next step...
+          ${this.i18n.t('ui.messages.continueNextStep')}
         </p>
       </div>
     `;
@@ -1016,13 +1037,13 @@ class QuestOverlay {
         ` : ''}
         
         <div class="warning-icon">⏭️</div>
-        <h3>Step Skipped</h3>
+        <h3>${this.i18n.t('ui.headers.stepSkipped')}</h3>
         <h4>${step.name}</h4>
         <p style="font-size: 14px; opacity: 0.9; margin: 12px 0;">
           ${reason}
         </p>
         <p style="opacity: 0.7; font-size: 13px; margin-top: 12px;">
-          💡 This step is optional - continuing quest...
+          ${this.i18n.t('ui.messages.questWillContinue')}
         </p>
       </div>
     `;
@@ -1098,7 +1119,7 @@ class QuestOverlay {
     // Determine completion status
     const isFullSuccess = failedStepsCount === 0;
     const completionIcon = isFullSuccess ? '🏆' : '⚠️';
-    const completionTitle = isFullSuccess ? 'Quest Complete!' : 'Quest Completed (With Errors)';
+    const completionTitle = isFullSuccess ? this.i18n.t('ui.headers.questComplete') : this.i18n.t('ui.headers.questCompleteWithErrors');
     const completionColor = isFullSuccess ? 'quest-complete' : 'quest-partial';
     
     // Hide arrow for agent quests
@@ -1129,30 +1150,30 @@ class QuestOverlay {
         
         <div class="quest-info">
           <span class="difficulty">${questDifficulty}</span>
-          <span class="points">${questPoints} points</span>
+          <span class="points">${questPoints} ${this.i18n.t('ui.labels.points').toLowerCase()}</span>
         </div>
         
         <div class="rewards">
           <div class="reward-item">
             <span class="reward-icon">⭐</span>
-            <span class="reward-value">+${isFullSuccess ? questPoints : Math.floor(questPoints * 0.5)} points</span>
+            <span class="reward-value">+${isFullSuccess ? questPoints : Math.floor(questPoints * 0.5)} ${this.i18n.t('ui.labels.points').toLowerCase()}</span>
           </div>
         </div>
-        <p class="congrats">${isFullSuccess ? 'You\'re a Joule master!' : 'Keep practicing to master Joule!'}</p>
+        <p class="congrats">${isFullSuccess ? this.i18n.t('ui.labels.congrats') : this.i18n.t('ui.labels.congratsPartial')}</p>
         
         <!-- Action buttons: Side-by-side layout matching intro screen -->
         <div class="quest-complete-actions">
           ${nextQuest ? `
             <button class="action-btn primary-btn" id="next-quest-btn" data-quest-id="${nextQuest.id}">
-              <span>▶️ Next Quest</span>
+              <span>▶️ ${this.i18n.t('ui.buttons.next')}</span>
             </button>
           ` : ''}
           <button class="action-btn secondary-btn" id="show-quests-btn">
-            <span>🗺️ All Quests</span>
+            <span>🗺️ ${this.i18n.t('ui.buttons.allQuests')}</span>
           </button>
           ${isEntireStoryComplete ? `
             <button class="action-btn success-btn" id="download-badge-btn">
-              <span>🏆 Badge</span>
+              <span>🏆 ${this.i18n.t('ui.buttons.downloadBadge')}</span>
             </button>
           ` : ''}
         </div>
@@ -1337,15 +1358,15 @@ Master SAP SuccessFactors Joule with zero-risk, gamified training.
         <button class="close-btn" id="error-close-btn" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.1); border: none; color: white; font-size: 24px; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
         
         <div class="error-icon">❌</div>
-        <h3>Oops!</h3>
+        <h3>${this.i18n.t('ui.headers.oops')}</h3>
         <p style="margin: 16px 0 24px 0;">${message}</p>
         
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
           <button class="retry-button" id="retry-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-            🔄 Reload Page
+            🔄 ${this.i18n.t('ui.buttons.retry')}
           </button>
           <button class="cancel-button" id="cancel-btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-            ✕ Close
+            ✕ ${this.i18n.t('ui.buttons.close')}
           </button>
         </div>
         

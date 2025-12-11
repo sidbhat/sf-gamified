@@ -1,0 +1,718 @@
+{
+  "ui": {
+    "buttons": {
+      "start": "Quest starten",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "next": "Nächste Quest",
+      "allQuests": "Alle Quests",
+      "downloadBadge": "Abzeichen",
+      "shareLinkedIn": "Auf LinkedIn teilen",
+      "reset": "Fortschritt zurücksetzen",
+      "confirm": "Bestätigen",
+      "ok": "OK",
+      "retry": "Seite neu laden",
+      "send": "Senden"
+    },
+    "headers": {
+      "questSelection": "Joule Quest",
+      "readyToStart": "Bereit zum Starten?",
+      "questComplete": "Quest abgeschlossen!",
+      "questCompleteWithErrors": "Quest abgeschlossen (mit Fehlern)",
+      "success": "Erfolg!",
+      "oops": "Hoppla!",
+      "stepFailed": "Schritt fehlgeschlagen",
+      "stepSkipped": "Schritt übersprungen",
+      "yourTurn": "Du bist dran!",
+      "resetProgress": "Gesamten Fortschritt zurücksetzen?",
+      "questLocked": "Quest gesperrt"
+    },
+    "labels": {
+      "points": "PUNKTE",
+      "quests": "QUESTS",
+      "step": "Schritt {current}/{total}",
+      "difficulty": "Schwierigkeit",
+      "estimatedTime": "Geschätzte Zeit",
+      "waitingForYou": "Warte darauf, dass du diesen Schritt abschließt...",
+      "openingQuestSelection": "Öffne Quest-Auswahl...",
+      "hint": "Hinweis",
+      "rewards": "Belohnungen",
+      "congrats": "Du bist ein Joule-Meister!",
+      "congratsPartial": "Übe weiter, um Joule zu meistern!",
+      "progress": "Fortschritt"
+    },
+    "messages": {
+      "resetConfirm": "Dies wird:\n• Alle abgeschlossenen Quests löschen\n• Punkte auf 0 zurücksetzen\n• Neu beginnen\n\nDiese Aktion kann nicht rückgängig gemacht werden.",
+      "questLockedInfo": "🔒 Schließe {count} weitere Quest{s} ab, um freizuschalten",
+      "continueNextStep": "⏭️ Fahre mit dem nächsten Schritt fort...",
+      "questWillContinue": "💡 Dieser Schritt ist optional - Quest wird fortgesetzt...",
+      "questComplete": "🎉 Quest abgeschlossen! Klicke auf 'Senden', um die Auszeichnung einzureichen (optional). 🏆",
+      "questCompleteGoal": "🎉 Quest abgeschlossen! Klicke auf 'Speichern', um das Ziel zu erstellen (optional). 🏆"
+    },
+    "tabs": {
+      "employee": "Mitarbeiter",
+      "manager": "Manager",
+      "agent": "Agent",
+      "sales": "Vertrieb",
+      "procurement": "Beschaffung",
+      "delivery": "Lieferung"
+    },
+    "icons": {
+      "employee": "👤",
+      "manager": "👔",
+      "agent": "⚡",
+      "sales": "📊",
+      "procurement": "📦",
+      "delivery": "🚚"
+    }
+  },
+  "journeys": {
+    "employee": {
+      "name": "Deine erste Woche",
+      "description": "Folge deiner Reise vom nervösen Neuankömmling zum selbstbewussten Teammitglied in deiner ersten Woche im Unternehmen"
+    },
+    "manager": {
+      "name": "Der neue Manager",
+      "description": "Du wurdest befördert! Navigiere durch deine ersten Wochen als Manager, von der Genehmigungsfreigabe bis zum Aufbau deines Führungsstils"
+    },
+    "agent": {
+      "name": "KI-Revolution",
+      "description": "Entfessle die Kraft der KI, um deine Arbeit zu transformieren - von der Zielerstellung bis zur Datenanalyse"
+    },
+    "s4hana-sales": {
+      "name": "Die Reise des Vertriebshelden",
+      "description": "Deine Mission: Meistere Vertriebsoperationen vom Auftragsverfolgen bis zur Abrechnungsexzellenz. Kunden verlassen sich auf dich!"
+    },
+    "s4hana-procurement": {
+      "name": "Beschaffungs-Champion",
+      "description": "Supply-Chain-Krieger! Navigiere durch die komplexe Welt der Bestellungen, Anforderungen und Lieferantenverwaltung"
+    },
+    "s4hana-delivery": {
+      "name": "Lager-Zauberer",
+      "description": "Der Lagerboden ist dein Reich. Meistere Lieferverfolgung, Kommissionierungsvorgänge und Versandlogistik"
+    }
+  },
+  "errors": {
+    "contentScriptNotLoaded": {
+      "icon": "🔄",
+      "title": "Erweiterungseinrichtung erforderlich",
+      "message": "Joule Quest verbindet sich mit dieser Seite. Dies dauert normalerweise einige Momente.",
+      "causes": [
+        "Erweiterung wurde gerade installiert oder aktualisiert",
+        "Seite war bereits geöffnet, bevor die Erweiterung installiert wurde",
+        "Seite lädt noch im Hintergrund"
+      ],
+      "solutions": [
+        "⏱️ Warte 5-10 Sekunden, bis die Seite vollständig geladen ist",
+        "⌘ Wenn es immer noch nicht funktioniert, aktualisiere diese Seite (⌘R oder Strg+R)",
+        "🔌 Stelle sicher, dass die Erweiterung in Chrome aktiviert ist"
+      ],
+      "actionText": "Seite neu laden"
+    },
+    "jouleNotFound": {
+      "icon": "🔍",
+      "title": "Joule nicht verfügbar",
+      "message": "Joule-Assistent auf dieser Seite nicht gefunden.",
+      "causes": [
+        "Joule ist für dein Konto nicht aktiviert",
+        "Falsche SF-Seite (Joule hier nicht verfügbar)",
+        "Seite lädt noch"
+      ],
+      "solutions": [
+        "🏠 Navigiere zuerst zur SF-Startseite",
+        "⏳ Warte, bis die Seite vollständig geladen ist",
+        "💬 Kontaktiere den Administrator, wenn das Problem weiterhin besteht"
+      ]
+    },
+    "jouleIframeNotFound": {
+      "icon": "⚠️",
+      "title": "Joule antwortet nicht",
+      "message": "Joule-Assistent antwortet nicht.",
+      "causes": [
+        "Joule-Panel wurde unerwartet geschlossen",
+        "Verbindung zu Joule unterbrochen"
+      ],
+      "solutions": [
+        "🔄 Quest wird automatisch erneut versucht",
+        "🏠 Versuche, die Seite zu aktualisieren, wenn das Problem weiterhin besteht"
+      ]
+    },
+    "stepTimeout": {
+      "icon": "⏱️",
+      "title": "Zeitüberschreitung des Schritts",
+      "message": "Dieser Schritt dauerte länger als erwartet.",
+      "causes": [
+        "Joule verarbeitet eine komplexe Anfrage",
+        "Netzwerkverbindung ist langsam",
+        "Seitenelement erscheint nicht"
+      ],
+      "solutions": [
+        "⏭️ Quest wird mit dem nächsten Schritt fortfahren",
+        "🔄 Quest wiederholen, um es später erneut zu versuchen"
+      ]
+    },
+    "elementNotFound": {
+      "icon": "🔍",
+      "title": "Element nicht gefunden",
+      "message": "Das erforderliche Element auf der Seite konnte nicht gefunden werden.",
+      "causes": [
+        "Seitenlayout hat sich möglicherweise geändert",
+        "Element lädt noch",
+        "Falsche Seite für diese Quest"
+      ],
+      "solutions": [
+        "⏭️ Quest wird mit dem nächsten Schritt fortfahren",
+        "🏠 Stelle sicher, dass du auf der richtigen Seite bist"
+      ]
+    },
+    "promptSendFailed": {
+      "icon": "📤",
+      "title": "Nachricht nicht gesendet",
+      "message": "Nachricht konnte nicht an Joule gesendet werden.",
+      "causes": [
+        "Joule-Eingabefeld nicht bereit",
+        "Verbindung unterbrochen",
+        "Joule verarbeitet gerade"
+      ],
+      "solutions": [
+        "⏭️ Quest wird mit dem nächsten Schritt fortfahren",
+        "🔄 Schritt wird automatisch erneut versucht"
+      ]
+    },
+    "buttonNotFound": {
+      "icon": "🔘",
+      "title": "Schaltfläche nicht gefunden",
+      "message": "Die erwartete Schaltfläche konnte nicht gefunden werden.",
+      "causes": [
+        "Schaltflächentext hat sich möglicherweise geändert",
+        "Seite lädt noch",
+        "Joule-Antwortformat geändert"
+      ],
+      "solutions": [
+        "⏭️ Quest wird mit dem nächsten Schritt fortfahren",
+        "👀 Überprüfe die Browser-Konsole für Details"
+      ]
+    },
+    "inputFieldNotFound": {
+      "icon": "📝",
+      "title": "Eingabefeld nicht gefunden",
+      "message": "Das Eingabefeld zum Eingeben von Daten konnte nicht gefunden werden.",
+      "causes": [
+        "Unerwartetes Joule-Antwortformat",
+        "Feld lädt noch",
+        "Schrittkonfiguration muss möglicherweise aktualisiert werden"
+      ],
+      "solutions": [
+        "⏭️ Quest wird mit dem nächsten Schritt fortfahren",
+        "🔄 Versuche, die Quest zu wiederholen"
+      ]
+    },
+    "unknownError": {
+      "icon": "❌",
+      "title": "Etwas ist schief gelaufen",
+      "message": "Ein unerwarteter Fehler ist aufgetreten.",
+      "causes": [
+        "Netzwerkverbindungsproblem",
+        "Seitenkonflikt mit Erweiterung",
+        "Browser-Kompatibilitätsproblem"
+      ],
+      "solutions": [
+        "🔄 Versuche, die Seite zu aktualisieren",
+        "💬 Melde das Problem, wenn es weiterhin besteht"
+      ]
+    },
+    "whyThisHappened": "Warum ist das passiert:",
+    "whatToDo": "Was zu tun ist:",
+    "technicalDetails": "Technische Details"
+  },
+  "popup": {
+    "title": "Joule Quest",
+    "loading": "Öffne Quest-Auswahl..."
+  },
+  "quests": {
+    "employee-leave-balance": {
+      "name": "Schnellcheck: Urlaubskonto",
+      "description": "Prüfen Sie sofort Ihre verfügbaren Urlaubstage",
+      "tagline": "Prüfen Sie sofort Ihre verfügbaren Urlaubstage",
+      "victoryText": "Kontosaldo abgerufen! Sie haben Urlaubstage zur Verfügung!",
+      "storyArc": "Ihre erste Woche",
+      "storyChapter": "Tag 1: Willkommen an Bord",
+      "storyIntro": "Willkommen in Ihrem neuen Unternehmen! Es ist Montagmorgen, 9:00 Uhr. Die HR-Einführung ist gerade beendet und Ihr Laptop ist endlich eingerichtet. Bevor Sie sich in die Arbeits-E-Mails stürzen, sind Sie neugierig: Wie viele Urlaubstage stehen Ihnen tatsächlich zu? Der Recruiter erwähnte im Vorstellungsgespräch 'großzügige Urlaubsregelung'. Zeit herauszufinden, was das konkret bedeutet!",
+      "storyOutro": "Perfekt! Sie haben Urlaubstage auf dem Konto. Gedanklich planen Sie bereits die Sommerreise. Aber zunächst sollten Sie wahrscheinlich herausfinden, woran Sie hier eigentlich arbeiten sollen...",
+      "nextQuestHint": "Als nächstes: Prüfen Sie Ihre Quartalsziele, um zu verstehen, wie Erfolg hier definiert wird"
+    },
+    "employee-my-goals": {
+      "name": "Kommandozentrale: Meine Ziele",
+      "description": "Verschaffen Sie sich Überblick über Ihre Quartalsziele",
+      "tagline": "Verschaffen Sie sich Überblick über Ihre Quartalsziele",
+      "victoryText": "Ziele geladen! Sie sind auf Kurs!",
+      "storyArc": "Ihre erste Woche",
+      "storyChapter": "Tag 1: Kurs bestimmen",
+      "storyIntro": "10:30 Uhr. Ihre neue Vorgesetzte Sarah hat Ihnen gerade eine Slack-Nachricht geschickt: 'Herzlich willkommen! Schauen Sie sich Ihre Q1-Ziele in SuccessFactors an - wir sprechen morgen darüber.' Ziele? Quartal? Sie möchten für das Meeting gut vorbereitet sein. Sehen wir uns an, welche Vorgaben für Sie definiert wurden!",
+      "storyOutro": "Perfekt! Drei klare Ziele für das Quartal. Jetzt wissen Sie genau, wie Erfolg in dieser Position aussieht. Sarah wird morgen beeindruckt sein, wenn Sie diese souverän besprechen können. Apropos - Sie sollten noch Ihre Kostenstelle herausfinden, bevor um 14 Uhr der Team-Call beginnt...",
+      "nextQuestHint": "Als Nächstes: Finden Sie Ihre Kostenstelle (alle sprechen ständig von ihrer)"
+    },
+    "employee-cost-center": {
+      "name": "Geldfluss-Mission: Kostenstelle ermitteln",
+      "description": "Entdecke, wo dein Budget verwaltet wird",
+      "tagline": "Entdecke, wo dein Budget verwaltet wird",
+      "victoryText": "Kostenstelle gefunden! Finanz-Experten-Status erreicht!",
+      "storyArc": "Deine erste Woche",
+      "storyChapter": "Tag 1: Strukturen verstehen",
+      "storyIntro": "14:00 Uhr - das Team-Intro-Call ist beendet. Alle erwähnten beiläufig ihre Kostenstellen-Codes, als wäre das Allgemeinwissen. Du hast gelächelt und genickt, aber innerlich Panik geschoben - wie lautet DEINE? Das solltest du vor dem nächsten Meeting herausfinden!",
+      "storyOutro": "Geschafft! Wenn dich jemand nach deiner Kostenstelle fragt, wirst du nicht mehr ins Stocken geraten. Das hilft dir auch zu verstehen, wie deine Arbeit ins große Ganze passt. Morgen steht dein erstes Kundengespräch an - prüf besser die Firmen-Reiserichtlinien!",
+      "nextQuestHint": "Morgige Mission: Mietwagen-Richtlinien studieren, bevor du Geschäftsreisen buchst"
+    },
+    "employee-rental-policy": {
+      "name": "Straßenregeln: Mietwagen-Richtlinien",
+      "description": "Meistern Sie die Firmenwagen-Bestimmungen",
+      "tagline": "Meistern Sie die Firmenwagen-Bestimmungen",
+      "victoryText": "Richtlinien gemeistert! Bereit zur Abfahrt!",
+      "storyArc": "Ihre erste Woche",
+      "storyChapter": "Tag 2: Erste Geschäftsreise",
+      "storyIntro": "Dienstagmorgen. Sarah hat Sie gerade gebeten, morgen einen Kunden in der nächsten Stadt zu besuchen. 'Buchen Sie einen Mietwagen - bleiben Sie innerhalb der Richtlinien!' sagte sie. Richtlinien? WELCHE Richtlinien? Sie sollten die Bestimmungen prüfen, bevor Sie buchen!",
+      "storyOutro": "Ausgezeichnet! Jetzt kennen Sie die zugelassenen Fahrzeugtypen und täglichen Kostenlimits. Sie haben sich gerade eine peinliche Spesenabrechnung erspart. Da Sie nun die Regeln beherrschen, testen wir das Urlaubsantrag-System, bevor Sie es wirklich brauchen!",
+      "nextQuestHint": "Zeit für den Systemtest: Beantragen Sie einen freien Tag und sehen Sie, wie es funktioniert"
+    },
+    "employee-request-time-off": {
+      "name": "Boss Level: Morgen frei",
+      "description": "Urlaubsantrag blitzschnell stellen",
+      "tagline": "Urlaubsantrag blitzschnell stellen",
+      "victoryText": "Antrag gesendet! Vorgesetzte benachrichtigt!",
+      "storyArc": "Ihre erste Woche",
+      "storyChapter": "Tag 5: System-Check",
+      "storyIntro": "Freitagnachmittag. Was für eine Woche! Ihr Studienkollege hat gerade wegen Konzerttickets für nächsten Freitag geschrieben. Sie haben die Urlaubstage (haben Sie Montag gecheckt, erinnern Sie sich?). Zeit zu testen, ob Urlaubsanträge wirklich so einfach sind, wie alle behaupten. System-Check!",
+      "storyOutro": "Antrag eingereicht! Sarah erhält eine Benachrichtigung zur Genehmigung. Sie sehen bereits, wie Joule HR-Aufgaben mühelos macht. Woche eins geschafft! 🎉 Sie beherrschen die Grundlagen: Saldo prüfen, Ziele verstehen, Organigramm kennen, Richtlinien befolgen und Urlaub beantragen. Bereit für das nächste Level?",
+      "nextQuestHint": "Woche 2 startet: Zeit, Lern- und Entwicklungsmöglichkeiten zu erkunden"
+    },
+    "employee-assigned-learning": {
+      "name": "Aufstieg: Lernpfad",
+      "description": "Entdecke deine zugewiesenen Schulungen",
+      "tagline": "Entdecke deine zugewiesenen Schulungen",
+      "victoryText": "Kurse freigeschaltet! Wissenszuwachs im Anmarsch!",
+      "storyArc": "Deine erste Woche",
+      "storyChapter": "Woche 2: Sich etablieren",
+      "storyIntro": "Montagmorgen, Woche 2. Sarah erwähnte in eurem Einzelgespräch, dass du einige Pflichtschulungen hast. 'Sie helfen dir, schneller reinzukommen,' sagte sie. Du möchtest sehen, was erwartet wird und deinen Lernplan erstellen. Lass uns schauen, welche Kurse auf dich warten!",
+      "storyOutro": "Drei Kurse zugewiesen! Produktschulung, Compliance-Grundlagen und fortgeschrittenes Excel. Scheint, als investiert das Unternehmen in Weiterbildung. Du kannst diese in ruhigen Nachmittagsstunden angehen. Jetzt lass uns sicherstellen, dass deine Kontaktdaten korrekt sind, bevor Kunden sich melden...",
+      "nextQuestHint": "Überprüfe, ob deine E-Mail im System korrekt ist"
+    },
+    "employee-view-email": {
+      "name": "Kontakt-Check: Meine E-Mail einsehen",
+      "description": "Finde deine E-Mail in Sekunden",
+      "tagline": "Deutsche Gründlichkeit bei der Kommunikation",
+      "victoryText": "E-Mail abgerufen! Bleib in Verbindung!",
+      "storyArc": "Berufliche Identität",
+      "storyChapter": "Kommunikation meistern",
+      "storyIntro": "Dienstag. Du erstellst deine E-Mail-Signatur, merkst aber, dass du dir bei deinem genauen E-Mail-Format nicht 100% sicher bist. Lass uns das vor peinlichen Kunden-E-Mails klären! Wie die Deutschen sagen: 'Ordnung ist das halbe Leben.'",
+      "storyOutro": "Da ist sie! Jetzt kennst du dein genaues E-Mail-Format. Signatur aktualisiert, Visitenkarten bestellt, LinkedIn-Profil überarbeitet. Du wirkst jetzt richtig professionell! Als nächstes prüfen wir, ob deine offizielle Berufsbezeichnung stimmt...",
+      "nextQuestHint": "Bestätige deinen offiziellen Jobtitel für dein berufliches Profil"
+    },
+    "employee-view-job": {
+      "name": "Karriereweg: Meine Jobinfos einsehen",
+      "description": "Sieh deinen Titel und Rollendetails",
+      "tagline": "Schwarze Zahlen durch klare Strukturen",
+      "victoryText": "Jobinfos geladen! Karriere kartiert!",
+      "storyArc": "Berufliche Identität",
+      "storyChapter": "Karriere definieren",
+      "storyIntro": "Mittwoch. Du aktualisierst dein LinkedIn und merkst, dass du den EXAKTEN offiziellen Titel verwenden möchtest, den das Unternehmen für dich hat. Details sind wichtig für deine Berufsmarke! Deutsche Präzision zahlt sich aus.",
+      "storyOutro": "Perfekt! Jetzt hast du deinen offiziellen Titel bestätigt. Der kommt direkt auf LinkedIn. Du baust deine berufliche Identität Stück für Stück auf. Fast vergessen - wann ist dein Firmenjubiläum für die Feier nächstes Jahr?",
+      "nextQuestHint": "Überprüfe dein Geburtsdatum für die Firmenfeier"
+    },
+    "employee-view-birthday": {
+      "name": "Geburtstags-Tracker: Meine Feier",
+      "description": "Vergiss nie deinen Kuchentag!",
+      "tagline": "Rote Rosen zum Geburtstag - deutsche Tradition",
+      "victoryText": "Geburtstag abgerufen! Lass uns feiern!",
+      "storyArc": "Berufliche Identität",
+      "storyChapter": "Teamkultur erleben",
+      "storyIntro": "Donnerstag. Dir ist aufgefallen, dass im Teamkalender alle Geburtstage markiert sind - die Firmenkultur beinhaltet Feiern! Du möchtest sicherstellen, dass deiner stimmt, damit du den Kuchentag nicht verpasst. Außerdem macht es Spaß, deinen Geburtstag im System zu sehen!",
+      "storyOutro": "Bestätigt! Dein Geburtstag ist im System und korrekt. Kann die Bürofeier kaum erwarten. 🎉 Du hast jetzt deine ersten zwei Wochen abgeschlossen! Du kennst deine Benefits, Ziele, Organisationsstruktur, Richtlinien und persönlichen Details. Du bist nicht mehr der verwirrte Neuling - du bist ein selbstbewusstes Teammitglied, bereit für jede Aufgabe!",
+      "nextQuestHint": "Du hast die Grundlagen gemeistert - Zeit für neue Herausforderungen!"
+    },
+    "manager-pending-approvals": {
+      "name": "Blitzrunde: Genehmigungsmarathon",
+      "description": "Räumen Sie Ihre Warteschlange in Lichtgeschwindigkeit auf",
+      "tagline": "Räumen Sie Ihre Warteschlange in Lichtgeschwindigkeit auf",
+      "victoryText": "Alle Genehmigungen erledigt! Das Team liebt Sie!",
+      "storyArc": "Die neue Führungskraft",
+      "storyChapter": "Tag 1: Die Posteingang-Lawine",
+      "storyIntro": "Herzlichen Glückwunsch zur Beförderung! Es ist Ihr erster Tag als Führungskraft. Sie haben sich heute Morgen eingeloggt und gefunden... 17 ausstehende Genehmigungen?! Urlaubsanträge, Spesenabrechnungen, Ziel-Updates. Ihr Team wartet bereits. Zeit, diesen Rückstau zu beseitigen und zu zeigen, dass Sie die Sache im Griff haben!",
+      "storyOutro": "Bam! Genehmigungsqueue geleert. Ihr Team hat gerade 17 Benachrichtigungen erhalten, dass Sie ihre Anträge genehmigt haben. Sie schicken Ihnen bereits Dankesnachrichten über Slack. So sieht responsive Führung aus! Jetzt sollten Sie wahrscheinlich herausfinden, wer eigentlich IN Ihrem Team ist...",
+      "nextQuestHint": "Wichtig: Sehen Sie, wer Ihnen berichtet und lernen Sie Ihr Team kennen"
+    },
+    "manager-my-team": {
+      "name": "Mannschafts-Check: Lernen Sie Ihr Team kennen",
+      "description": "Sehen Sie, wer zu Ihrem Kader gehört",
+      "tagline": "Sehen Sie, wer zu Ihrem Kader gehört",
+      "victoryText": "Team-Aufstellung geladen! Führung freigeschaltet!",
+      "storyArc": "Die neue Führungskraft",
+      "storyChapter": "Tag 1: Aufbau Ihres Teamwissens",
+      "storyIntro": "10 Uhr. Ihr Chef hat gerade gefragt 'Wie viele direkte Mitarbeiter haben Sie?' und Sie sind erstarrt. FÜNF? SIEBEN? Sie haben vorhin ihre Anträge genehmigt, aber die vollständige Liste nicht wirklich gesehen. Zeit zu lernen, wer genau in Ihrem Team ist, damit Sie selbstbewusst antworten können!",
+      "storyOutro": "Da sind sie! Sechs direkte Mitarbeiter, jeder mit eigenen Fähigkeiten und Hintergründen. Sie klicken sich jetzt durch ihre Profile und lernen jeden kennen. Das ist IHR Team. Zeit, die Führungskraft zu sein, die sie verdienen! Sarah hat gerade diese Präsentation gemeistert - Sie sollten sie öffentlich anerkennen...",
+      "nextQuestHint": "Belohnen Sie Exzellenz: Geben Sie Sarah eine Sofort-Auszeichnung für diese großartige Präsentation"
+    },
+    "manager-spot-award": {
+      "name": "Helden-Moment: Anerkennung von Spitzenleistung",
+      "description": "Belohnen Sie die harte Arbeit Ihres Teams",
+      "tagline": "Belohnen Sie die harte Arbeit Ihres Teams",
+      "victoryText": "Auszeichnung versendet! Sie haben jemandem den Tag versüßt!",
+      "storyArc": "Die neue Führungskraft",
+      "storyChapter": "Tag 3: Anerkennungskultur",
+      "storyIntro": "Mittwoch. Jada hat gerade eine unglaubliche Kundenpräsentation gehalten, die einen großen Deal abgeschlossen hat. Der Kunde hat eine E-Mail geschickt und sie gelobt! Das verdient Anerkennung. Sie haben Budget für Sofort-Auszeichnungen - Zeit, Jadas Tag zu verschönern und dem Team zu zeigen, dass Sie großartige Arbeit bemerken!",
+      "storyOutro": "Auszeichnung versendet! Jada hat Ihnen gerade geschrieben: 'Vielen Dank! Das bedeutet mir wirklich viel.' DAS ist Führung - Exzellenz anerkennen, wenn Sie sie sehen. Der Rest des Teams hat es auch bemerkt. Sie bauen eine Kultur der Wertschätzung auf. Kultur ist wichtig, und Sie formen sie!",
+      "nextQuestHint": "Bauen Sie auf Anerkennung auf: Geben Sie konstruktives Feedback, um Ihrem Team beim Wachstum zu helfen"
+    },
+    "manager-give-feedback": {
+      "name": "Feedback-Meister: Anerkennung geben",
+      "description": "Stärken Sie die Moral durch Wertschätzung",
+      "tagline": "Stärken Sie die Moral durch Wertschätzung",
+      "victoryText": "Feedback bereit! Sie haben ihren Tag verschönert!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Tag 4: Entwicklungsfeedback",
+      "storyIntro": "Donnerstag. Jada hat die Spot-Auszeichnung geschätzt, aber Sie möchten ihr detaillierteres Feedback dazu geben, WARUM ihre Präsentation exzellent war. Spezifisches Feedback hilft Menschen zu wachsen. Lassen Sie uns dokumentieren, was ihre Arbeit herausragend gemacht hat, damit sie diesen Erfolg wiederholen kann!",
+      "storyOutro": "Feedback erstellt und versandbereit! Sie haben ihre Vorbereitung, Kundenorientierung und Daten-Storytelling hervorgehoben. Diese Art spezifischer Anerkennung hilft Menschen, ihre Stärken zu verstehen. Jada wird dieses Feedback für immer behalten. Sie sind nicht nur ein Manager - Sie sind ein Talententwickler!",
+      "nextQuestHint": "Lernen Sie Ihr Team besser kennen: Prüfen Sie die Einstellungsdaten und Betriebszugehörigkeit aller"
+    },
+    "manager-team-hire-dates": {
+      "name": "Team-Aufklärung: Einstellungsdaten",
+      "description": "Kennen Sie die Betriebszugehörigkeit Ihres Teams",
+      "tagline": "Kennen Sie die Betriebszugehörigkeit Ihres Teams",
+      "victoryText": "Einstellungsdaten geladen! Teamgeschichte enthüllt!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Woche 2: Teamkontext",
+      "storyIntro": "Freitagmorgen, Ihre zweite Woche. Sie planen Arbeitsaufträge und merken, dass Sie nicht wissen, wer ein Veteran ist und wer neu. Marcus wirkt sehr selbstbewusst - ist er erfahren oder täuscht er nur gut vor? Betriebszugehörigkeit ist wichtig für die Aufgabenkomplexität. Lassen Sie uns die Einstellungsdaten aller prüfen!",
+      "storyOutro": "Faszinierend! Marcus kam vor 3 Monaten (erklärt das Selbstvertrauen), aber Jada ist schon 4 Jahre hier (sie ist die wahre Veteranin). Das ändert, wie Sie Projekte zuweisen werden. Erfahrung zählt, und jetzt verstehen Sie die Geschichte Ihres Teams. Zeit, tiefer in die Teamdynamik einzutauchen...",
+      "nextQuestHint": "Bereiten Sie sich auf Bewertungen vor: Prüfen Sie Vergütungsdaten, um die Teamvergütung zu verstehen"
+    },
+    "manager-compensation-insight": {
+      "name": "Vergütungs-Experte: Team-Einblicke",
+      "description": "Verstehen Sie die Vergütungslandschaft des Teams",
+      "tagline": "Verstehen Sie die Vergütungslandschaft des Teams",
+      "victoryText": "Einblicke freigeschaltet! Datengestützte Entscheidungen!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Monat 1: Vergütungsüberprüfung",
+      "storyIntro": "Einen Monat dabei. Die jährliche Bewertungssaison naht, und Ihr Chef möchte Ihre Vergütungsempfehlungen bis Freitag. Sie müssen aktuelle Gehälter, Marktpreise und Lohngerechtigkeit in Ihrem Team verstehen. Lassen Sie uns die Daten holen, um faire, fundierte Entscheidungen zu treffen!",
+      "storyOutro": "Beeindruckend. Die Vergütungsdaten enthüllen wichtige Einblicke über Marktpositionierung und Lohngerechtigkeit in Ihrem Team. Diese Daten werden Ihre Bewertungsempfehlungen prägen und Ihnen helfen, für Ihre Leistungsträger einzutreten. Datengestützte Führung gewinnt!",
+      "nextQuestHint": "Untermauern Sie Vergütungsentscheidungen mit Personalmetriken und Analysen"
+    },
+    "manager-view-metrics": {
+      "name": "Daten-Detektiv: Metriken anzeigen",
+      "description": "Personalanalysen freischalten",
+      "tagline": "Personalanalysen freischalten",
+      "victoryText": "Metriken freigeschaltet! Daten-Zauberer Status erreicht!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Monat 1: Strategisches Denken",
+      "storyIntro": "Woche 6 als Manager. Nächste Woche präsentierst du der Geschäftsleitung die Teamleistung. Du brauchst harte Daten: Personalentwicklung, Verbleibsraten, Diversitätskennzahlen. Dein Chef will 'Erkenntnisse, keine Anekdoten.' Zeit, die Analysen zu ziehen, die die Geschichte deines Teams erzählen!",
+      "storyOutro": "Die Metriken sind überzeugend! Dein Team zeigt starke Verbleibsraten, solide Leistungsbewertungen und ausgewogene Zusammensetzung. Diese Zahlen untermauern deine Beförderungsanträge und Einstellungsvorschläge. Du denkst jetzt strategisch, nicht nur taktisch. Management = Daten + Menschen!",
+      "nextQuestHint": "Praktiziere kontinuierliche Verbesserung: Bitte um Feedback zu deiner eigenen Führung"
+    },
+    "manager-request-feedback": {
+      "name": "Feedback-Meister: Rückmeldung anfordern",
+      "description": "Wachstum durch Erkenntnisse fördern",
+      "tagline": "Wachstum durch Erkenntnisse fördern",
+      "victoryText": "Feedback angefordert! Wachstum freigeschaltet!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Monat 2: Selbstverbesserung",
+      "storyIntro": "Zwei Monate im Management. Du gibst viel Feedback, aber wie machst DU dich als Manager? Jada scheint sich bei dir wohlzufühlen, also lass uns ihr ehrliches Feedback zu deinem Führungsstil einholen. Wachstumsdenken beginnt mit der Suche nach Input!",
+      "storyOutro": "Feedback angefordert! Das zeigt Verletzlichkeit und Engagement für Wachstum. Große Manager haben keine Angst zu hören, wie sie sich verbessern können. Wenn Jada antwortet, hast du umsetzbare Erkenntnisse, um besser zu werden. Führung ist eine Reise, kein Ziel!",
+      "nextQuestHint": "Vervollständige dein Teamwissen: Tauche tief in individuelle Profile ein"
+    },
+    "manager-worker-profile": {
+      "name": "Personensuche: Teamprofile",
+      "description": "Tiefgehende Teamdetails erkunden",
+      "tagline": "Tiefgehende Teamdetails erkunden",
+      "victoryText": "Profil geladen! Personenexperte Status erreicht!",
+      "storyArc": "Der neue Manager",
+      "storyChapter": "Monat 2: Meisterschaft",
+      "storyIntro": "Monat 2 abgeschlossen. Du hast Anfragen genehmigt, Exzellenz anerkannt, Feedback gegeben, Vergütung verstanden und Metriken verfolgt. Jetzt das letzte Puzzleteil: das vollständige Profil jedes Teammitglieds wirklich kennen - Fähigkeiten, Erfahrung, Karriereziele. Zeit, Personenexperte zu werden!",
+      "storyOutro": "Vollständige Profilbeherrschung erreicht! Du kennst jetzt Jadas vollständigen Hintergrund: ihre früheren Rollen, Fähigkeiten, Zertifizierungen und Karriereziele. Diese Tiefe des Wissens macht dich zu einem besseren Coach und Fürsprecher für dein Team. 🏆 MANAGER-REISE ABGESCHLOSSEN! Du hast dich in nur 2 Monaten vom nervösen neuen Manager zur selbstbewussten Führungskraft entwickelt!",
+      "nextQuestHint": "🎓 Manager-Reise abgeschlossen! Probiere den KI-Agenten-Pfad aus, um weiter aufzusteigen"
+    },
+    "agent-goal-creation": {
+      "name": "KI-Zauberer: Ziel-Generator",
+      "description": "Erschaffe perfekte Ziele mit KI-Magie",
+      "tagline": "Erschaffe perfekte Ziele mit KI-Magie",
+      "victoryText": "Ziel durch KI erstellt! Zauberer-Status erreicht!",
+      "storyArc": "KI-Revolution",
+      "storyChapter": "Die Zukunft der Arbeit",
+      "storyIntro": "Wir schreiben das Jahr 2025. Sie haben den Hype um 'KI-gestützte Arbeitsabläufe' und 'GenKI-Unterstützung' gehört. Zeit zu sehen, ob es den Versprechungen gerecht wird. Ihre Herausforderung: Nutzen Sie KI, um in Sekunden ein berufliches Entwicklungsziel zu erstellen, anstatt stundenlang darüber zu grübeln. Lassen Sie die Maschinen beim Denken helfen!",
+      "storyOutro": "🤯 Verblüffend! KI hat gerade ein vollständiges, durchdachtes Ziel mit messbaren Ergebnissen, spezifischen Aktionen und realistischem Zeitplan geschrieben. Was früher 30 Minuten Brainstorming dauerte, hat 30 Sekunden gedauert. Das ist die Zukunft der Arbeit - KI als Ihr kreativer Partner. Sie nutzen nicht nur Werkzeuge, Sie orchestrieren intelligente Systeme!",
+      "nextQuestHint": "🚀 Bereit für S/4HANA? Probieren Sie die Sales- oder Procurement-Journeys!"
+    },
+    "s4hana-sales-open-orders": {
+      "name": "Auftrags-Detektiv: Offene Verkäufe",
+      "description": "Finden Sie alle Ihre offenen Verkaufsaufträge",
+      "tagline": "Finden Sie alle Ihre offenen Verkaufsaufträge",
+      "victoryText": "Offene Aufträge gefunden! Verkaufs-Ninja!",
+      "storyArc": "Die Reise des Verkaufshelden",
+      "storyChapter": "Tag 1: Orientierung",
+      "storyIntro": "Montagmorgen. Sie sind der neue Spezialist für Verkaufsoperationen. Ihr Chef legt einen Stapel Kundenanrufe auf Ihren Schreibtisch: 'Finden Sie heraus, welche Aufträge noch offen sind.' Keine Excel-Exporte, kein endloses Klicken durch Bildschirme. Nur Joule. Schauen wir, was in der Pipeline ist!",
+      "storyOutro": "Sieben offene Aufträge in Sekunden gefunden! Sie beeindrucken Ihren Chef bereits mit Geschwindigkeit. Jeder Auftrag hat einen wartenden Kunden, eine tickende Uhr. Jetzt grenzen wir ein - welche davon stecken in der Lieferung fest?",
+      "nextQuestHint": "Kritisch: Finden Sie heraus, welche Aufträge noch nicht geliefert wurden"
+    },
+    "s4hana-sales-not-delivered": {
+      "name": "Lieferverfolger: Noch nicht versandt",
+      "description": "Verfolgen Sie Aufträge, die auf Lieferung warten",
+      "tagline": "Verfolgen Sie Aufträge, die auf Lieferung warten",
+      "victoryText": "Ungelieferte Aufträge gefunden! Logistik-Profi!",
+      "storyArc": "Die Reise des Verkaufshelden",
+      "storyChapter": "Tag 1: Lieferkrise",
+      "storyIntro": "10 Uhr. Drei Kunden haben gerade gemailt und fragen 'Wo ist meine Bestellung?!' Das sind die, die noch im Limbo hängen - bestellt aber nicht geliefert. Ihr Job: finden Sie sie schnell und finden Sie heraus, was sie aufhält. Zeit, der Held zu sein!",
+      "storyOutro": "Gefunden! Vier Aufträge stecken in der Lieferung fest. Jetzt können Sie die Logistik anrufen und sie durchdrücken. Kunden erhalten proaktive Updates. Sie lösen Probleme, bevor sie eskalieren. Das ist Verkaufsoperations-Meisterschaft! Ihr Chef kommt gerade rüber - Großkunde USCU-CUS23 braucht Aufmerksamkeit...",
+      "nextQuestHint": "VIP-Alarm: Finden Sie alle Aufträge für Hochprioritätskunde USCU-CUS23"
+    },
+    "s4hana-sales-ship-to-party": {
+      "name": "Kundenjäger: Lieferadresse-Suche",
+      "description": "Finden Sie Aufträge nach Lieferpartei",
+      "tagline": "Finden Sie Aufträge nach Lieferpartei",
+      "victoryText": "Kundenaufträge gefunden! Such-Meister!",
+      "storyArc": "Die Reise des Verkaufshelden",
+      "storyChapter": "Tag 1: VIP-Kundenfokus",
+      "storyIntro": "Mittag. USCU-CUS23 ist der zweitgrößte Account Ihres Unternehmens. Sie haben gerade angerufen und gesagt, dass sie mehrere Sendungen nicht erhalten haben. Ihr Chef braucht Sie, um JEDEN Auftrag an deren Lieferadresse herauszuziehen. Das ist hochriskanter Kundenservice - packen wir's an!",
+      "storyOutro": "Volltreffer! Alle ihre Lieferaufträge gefunden. Drei sind verspätet (Sie rufen gerade die Logistik an), zwei sind auf Kurs. Sie können den Kunden mit echten Daten zurückrufen statt 'Ich schaue nach und melde mich.' Account gerettet! Weiter zum nächsten Großkunden...",
+      "nextQuestHint": "Großkonto: Verfolgen Sie alles für Intelli Corp (Ihr größter Kunde)"
+    },
+    "s4hana-sales-intelli-corp": {
+      "name": "Unternehmensquest: Intelli-Aufträge",
+      "description": "Finde alle Intelli Corp Verkäufe",
+      "tagline": "Finde alle Intelli Corp Verkäufe",
+      "victoryText": "Intelli Corp Aufträge gefunden! Account-Meister!",
+      "storyArc": "Verkaufshelden-Reise",
+      "storyChapter": "Tag 2: Großkunden-Account",
+      "storyIntro": "Dienstagmorgen. Intelli Corp ist der GRÖßTE Account Ihres Unternehmens - 2 Millionen Euro Jahresumsatz. Ihr Vertriebsleiter bereitet eine Quartalspräsentation vor und braucht jeden Auftrag, jede Rechnung, jedes Detail. Dieser Kunde entscheidet über Quartalsziele. Finden Sie alles!",
+      "storyOutro": "Umfassende Liste erstellt! Zwölf aktive Aufträge über Produkte und Regionen hinweg. Ihr Vertriebsleiter sagte gerade 'Das ist genau was ich brauchte - großartige Arbeit!' vor allen Kollegen. Sie werden zur ersten Anlaufstelle für kritische Account-Daten. Kunde fragt nach Auftrag 470909 - schauen wir nach...",
+      "nextQuestHint": "Dringend: Kunde erkundigt sich nach Status von Auftrag 470909"
+    },
+    "s4hana-sales-order-status": {
+      "name": "Status-Check: Auftrag 470909",
+      "description": "Prüfe spezifischen Auftragsstatus",
+      "tagline": "Prüfe spezifischen Auftragsstatus",
+      "victoryText": "Auftragsstatus gefunden! Tracking-Experte!",
+      "storyArc": "Verkaufshelden-Reise",
+      "storyChapter": "Tag 2: Kunden-Eskalation",
+      "storyIntro": "14 Uhr. Kunde in Leitung 2, klingt frustriert: 'Ich habe vor zwei Wochen bestellt, Auftrag 470909 - WO IST ER?!' Sie brauchen den exakten Status SOFORT während er wartet. Keine Zeit für mehrere Bildschirme. Das ist der Moment der Wahrheit!",
+      "storyOutro": "Status in 10 Sekunden abgerufen! Auftrag ist 'In Kommissionierung' - Versand morgen. Sie informierten den Kunden souverän, er beruhigte sich, dankte für die schnelle Antwort. Krise abgewendet! Schnelligkeit + Genauigkeit = Kundenzufriedenheit. Jetzt zur Finanzseite - Rechnungswesen wartet...",
+      "nextQuestHint": "Finanzabteilung braucht Hilfe: Zeit für Rechnungsbeleg-Tracking"
+    },
+    "s4hana-billing-customer": {
+      "name": "Rechnungs-Scout: Kunde USCU-CUS23",
+      "description": "Finde Kundenrechnungsbelege",
+      "tagline": "Finde Kundenrechnungsbelege",
+      "victoryText": "Rechnungsbelege gefunden! Finanz-Ninja!",
+      "storyArc": "Verkaufshelden-Reise",
+      "storyChapter": "Woche 2: Rechnungsmeisterschaft beginnt",
+      "storyIntro": "Montag, Woche 2. Finanzabteilung schreibt: 'Kunde USCU-CUS23 benötigt Kopien aller Rechnungen für Wirtschaftsprüfung.' Bis Feierabend benötigt. Kein Druck! Zeit, jeden Rechnungsbeleg für diesen Kunden zu ziehen und der Finanzabteilung zu zeigen, dass Sie sie unterstützen!",
+      "storyOutro": "Alle Rechnungsbelege abgerufen! Finanzabteilung sendet sie mit 5 Stunden Puffer an den Kunden. Sie haben der Finanzabteilung das Leben erleichtert UND einen Kunden zufrieden gestellt. Diese Rechnungsdetektiv-Arbeit wird zu Ihrer Spezialität. Versuchen wir als nächstes die Filterung nach Verkaufsorganisation...",
+      "nextQuestHint": "Lernen Sie zu filtern: Ziehen Sie Rechnungen für Ihre gesamte Verkaufsorganisation (1010)"
+    },
+    "s4hana-billing-sales-org": {
+      "name": "Org-Filter: Vertriebsorg 1010",
+      "description": "Nach Vertriebsorganisation filtern",
+      "tagline": "Nach Vertriebsorganisation filtern",
+      "victoryText": "Org-Abrechnung gefunden! Organisations-Profi!",
+      "storyArc": "Vertriebs-Heldenreise",
+      "storyChapter": "Woche 2: Regionale Analyse",
+      "storyIntro": "Dienstag. Ihr Chef benötigt Monatsend-Abrechnungsberichte für Vertriebsorg 1010 (Ihre gesamte Region). Sie präsentiert morgen vor dem Vorstand und braucht die Gesamtrechnungsbeträge. Diese Daten bestimmen die regionalen Leistungsboni. Finden Sie jedes Abrechnungsdokument für Org 1010!",
+      "storyOutro": "Vollständige regionale Abrechnung erstellt! Ihr Chef hat jetzt Munition für das morgige Vorstandsmeeting. Sie könnte sogar Ihren Namen erwähnen, wenn sie die Daten erklärt. Regionale Einblicke = strategischer Wert. Weiter: Die Finanzabteilung möchte Zahlungsbedingungen analysieren...",
+      "nextQuestHint": "Finanzaufgabe: Alle Rechnungen mit spezifischen Zahlungsbedingungen (0001) finden"
+    },
+    "s4hana-billing-payment-terms": {
+      "name": "Zahlungs-Jäger: Bedingungen 0001",
+      "description": "Rechnungen nach Zahlungsbedingungen finden",
+      "tagline": "Rechnungen nach Zahlungsbedingungen finden",
+      "victoryText": "Zahlungsbedingungen gefiltert! Finanz-Zauberer!",
+      "storyArc": "Vertriebs-Heldenreise",
+      "storyChapter": "Woche 2: Cashflow-Analyse",
+      "storyIntro": "Mittwoch. Der CFO benötigt Cashflow-Prognosen. Alle Rechnungen mit Zahlungsbedingungen 0001 (NETTO 30) müssen für das Inkasso-Timing überprüft werden. Dies beeinflusst die Quartalsliquidität. Die Finanzabteilung wartet auf Ihre Daten für die Vorstandspräsentation!",
+      "storyOutro": "Rechnungen mit Zahlungsbedingungen 0001 gefunden! Der CFO hat jetzt ihre Cashflow-Zahlen für die Finanzplanung. Sie finden nicht nur Daten - Sie ermöglichen strategische Finanzplanung. Jetzt jagen wir die wirklich großen Fische...",
+      "nextQuestHint": "Executive-Sichtbarkeit: Alle Rechnungen über 10.000 USD finden"
+    },
+    "s4hana-billing-high-value": {
+      "name": "Großauftrag: Über 10K USD",
+      "description": "Hochwertige Abrechnungsdokumente finden",
+      "tagline": "Hochwertige Abrechnungsdokumente finden",
+      "victoryText": "Hochwertige Rechnungen gefunden! Umsatz-Tracker!",
+      "storyArc": "Vertriebs-Heldenreise",
+      "storyChapter": "Woche 2: Executive Dashboard",
+      "storyIntro": "Donnerstag. Vorstandsmeeting-Vorbereitung. Der CEO möchte alle 'wesentlichen Geschäfte' sehen - Rechnungen über 10K. Diese repräsentieren Ihre wichtigsten Umsatztreiber. Die Vertriebsleitung benötigt diese Liste für die Wachstumsstory. Finden Sie die großen Fische!",
+      "storyOutro": "Mehrere Großaufträge gefunden! Das sind die Bestellungen, die für den Umsatz am wichtigsten sind. Das CEO-Dashboard ist jetzt vollständig. Sie liefern Intelligence auf Führungsebene. Die Finanzabteilung hat Sie gerade angepingt - sie benötigen Abrechnungsanfrage-Tracking...",
+      "nextQuestHint": "Abrechnungsanfragen verfolgen: Alle ausstehenden Dokumente für Kunde USCU-P-005 finden"
+    },
+    "s4hana-billing-requests-customer": {
+      "name": "Anfrage-Tracker: Kunde P-005",
+      "description": "Rechnungsanfragen nach Kunde verfolgen",
+      "tagline": "Rechnungsanfragen nach Kunde verfolgen",
+      "victoryText": "Rechnungsanfragen gefunden! Anfrage-Meister!",
+      "storyArc": "Vertriebs-Helden-Reise",
+      "storyChapter": "Woche 3: Anfragenverwaltung",
+      "storyIntro": "Montag, Woche 3. Kunde USCU-P-005 hat letzte Woche drei Rechnungsdokument-Anfragen gestellt. Sie werden ungeduldig: 'Wo sind unsere Rechnungen?' Sie müssen diese Anfragen verfolgen, ihren Status prüfen und mit der Finanzabteilung nachfassen, um sie zu beschleunigen!",
+      "storyOutro": "Alle Anfragen gefunden! Zwei sind bereit, eine wird bearbeitet. Sie schreiben dem Kunden jetzt eine E-Mail mit spezifischen Status-Updates und ETAs. Proaktive Kommunikation verhindert verärgerte Anrufe. Sie reagieren nicht mehr nur - Sie verwalten die Rechnungspipeline wie ein Profi!",
+      "nextQuestHint": "Meistern Sie die Referenzverfolgung: Finden Sie Rechnungen nach Referenzdokument-Nummer"
+    },
+    "s4hana-billing-ref-document": {
+      "name": "Referenz-Jäger: Dok 1000000022",
+      "description": "Rechnungen nach Referenzdokument finden",
+      "tagline": "Rechnungen nach Referenzdokument finden",
+      "victoryText": "Referenzdokument gefunden! Verknüpfungs-Tracker!",
+      "storyArc": "Vertriebs-Helden-Reise",
+      "storyChapter": "Woche 3: Prüfungsunterstützung",
+      "storyIntro": "Dienstag. Externe Wirtschaftsprüfer sind gerade zur Jahresprüfung eingetroffen. Sie benötigen 'alle Rechnungsdokumente bezogen auf Referenzdokument 1000000022.' Das ist eine komplexe mehrteilige Bestellung mit verknüpften Rechnungen. Die Prüfer warten im Konferenzraum. Finden Sie diese Dokumente SCHNELL!",
+      "storyOutro": "Gefunden! Vier verknüpfte Rechnungsdokumente, alle ordnungsgemäß referenziert. Die Prüfer sind von Ihrer Geschwindigkeit beeindruckt - 'Normalerweise dauert das stundenlang!' Ihr organisiertes Vorgehen macht die Prüfung reibungslos. Als nächstes wollen sie produktspezifische Rechnungsdaten...",
+      "nextQuestHint": "Produktanalyse: Ziehen Sie Rechnungen für Produktcode PC_SUPP_1"
+    },
+    "s4hana-billing-product": {
+      "name": "Produktsuche: PC_SUPP_1",
+      "description": "Rechnungen nach Produktcode finden",
+      "tagline": "Rechnungen nach Produktcode finden",
+      "victoryText": "Produktrechnung gefunden! Katalog-Profi!",
+      "storyArc": "Vertriebs-Helden-Reise",
+      "storyChapter": "Woche 3: Produktleistung",
+      "storyIntro": "Mittwoch. Das Produktteam möchte die Verkaufsleistung von PC_SUPP_1 analysieren. Wie viele Einheiten verkauft? Welcher Umsatz? Welche Kunden haben es gekauft? Sie brauchen jede Rechnung für ihren Quartalsbericht. Ihre Mission: produktspezifische Rechnungsintelligenz!",
+      "storyOutro": "Produktrechnung vollständig! PC_SUPP_1-Leistungsdaten sind jetzt für die Quartalsanalyse des Produktteams verfügbar. Ihre Daten prägen die Produktstrategie! Lassen Sie uns die Rechnungsstellung einer anderen Verkaufsorganisation prüfen...",
+      "nextQuestHint": "Multi-Regional-Fähigkeiten: Ziehen Sie Rechnungen für Verkaufsorg 1710 (andere Region)"
+    },
+    "s4hana-billing-org-1710": {
+      "name": "Org-Quest: Vertriebsorg 1710",
+      "description": "Verfolgen Sie Rechnungen einer anderen Vertriebsorg",
+      "tagline": "Verfolgen Sie Rechnungen einer anderen Vertriebsorg",
+      "victoryText": "Org 1710 Rechnung gefunden! Multi-Org-Meister!",
+      "storyArc": "Vertriebs-Helden-Reise",
+      "storyChapter": "Woche 3: Multi-Region-Expertise",
+      "storyIntro": "Donnerstag. Ihre Verantwortung hat sich erweitert! Sie unterstützen jetzt Vertriebsorg 1710 (Westregion) zusätzlich zu Ihrer eigenen Org. Deren Operations-Mitarbeiter hat gekündigt, und Sie übernehmen, bis jemand eingestellt wird. Ziehen Sie deren Rechnungen, um deren Geschäft zu verstehen!",
+      "storyOutro": "Org 1710 Daten abgerufen! Unterschiedliche Produkte, unterschiedliche Kunden, gleicher Anspruch an Exzellenz. Sie sind jetzt ein Multi-Region-Rechnungsexperte. Ihr Manager sagte gerade, Sie seien 'unverzichtbar.' Aber die Finanzabteilung hat einige Problemrechnungen gefunden, die untersucht werden müssen...",
+      "nextQuestHint": "Fehlerbehebung: Finden Sie alle Rechnungsdokumente mit Problemen"
+    },
+    "s4hana-billing-issues": {
+      "name": "Problem-Alarm: Problem-Rechnungen",
+      "description": "Rechnungsdokumente mit Problemen finden",
+      "tagline": "Rechnungsdokumente mit Problemen finden",
+      "victoryText": "Probleme gefunden! Troubleshooter!",
+      "storyArc": "Vertriebs-Helden-Reise",
+      "storyChapter": "Woche 4: Krisenmanagement",
+      "storyIntro": "Montag, Woche 4. Die Finanzabteilung berief ein Notfallmeeting ein: 'Wir haben Fehler in einigen Rechnungsbelegen gefunden.' Preisfehler, fehlende Daten, Systemfehler. Diese müssen behoben werden, BEVOR Kunden sie bemerken. Finden Sie jede Problemrechnung, damit das Team sie heute korrigieren kann!",
+      "storyOutro": "Alle Problemrechnungen identifiziert! Mehrere Dokumente mit Fehlern, die von der Preisgestaltung bis zu Steuerberechnungen reichen. Die Finanzabteilung korrigiert sie jetzt, bevor sie an Kunden gehen. Sie haben diese Fehler frühzeitig erkannt und potenzielle Streitigkeiten verhindert! 🏆 VERTRIEBSOPERATIONEN-MEISTERSCHAFT FREIGESCHALTET! Sie sind jetzt der Abrechnungsheld, den Ihr Unternehmen braucht!",
+      "nextQuestHint": "🎓 Verkaufsreise abgeschlossen! Bereit für Beschaffungs- oder Lieferpfade?"
+    },
+    "s4hana-po-material": {
+      "name": "Material-Jagd: Bestellung für TG0011",
+      "description": "Finde Bestellpositionen nach Material",
+      "tagline": "Finde Bestellpositionen nach Material",
+      "victoryText": "Material-Bestellung gefunden! Beschaffungs-Ninja!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Tag 1: Lieferketten-Taufe",
+      "storyIntro": "Willkommen in der Beschaffung! Es ist dein erster Tag, und die Produktion ruft panisch an: 'Uns geht Material TG0011 aus - Produktionsstopp in 2 Stunden!' Dein Chef brüllt: 'Prüf ob wir eine Bestellung dafür haben!' DAS ist Beschaffung - hoher Druck, echte Konsequenzen. Finde diese Bestellung!",
+      "storyOutro": "Gefunden! Bestellung existiert, kommt morgen an. Du rufst die Produktion an: '24 Stunden durchhalten, Lieferung unterwegs.' Produktionsleiter beruhigt, Krise abgewendet. Willkommen in der Beschaffung - wo schnelle Informationsfindung Fabriken am Laufen hält! Prüfen wir die Bestellungen eines anderen Werks...",
+      "nextQuestHint": "Werk 1710 braucht Hilfe: Finde ihre Bestellungen"
+    },
+    "s4hana-po-plant": {
+      "name": "Werks-Filter: Bestellung für 1710",
+      "description": "Finde Bestellpositionen nach Werk",
+      "tagline": "Finde Bestellpositionen nach Werk",
+      "victoryText": "Werks-Bestellung gefunden! Standort-Experte!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Tag 1: Multi-Werks-Betrieb",
+      "storyIntro": "10 Uhr. Werk 1710 (euer Standort in Hamburg) sendet dringende E-Mail: 'Brauchen Liste aller aktiven Bestellungen für Inventurprüfung.' Die Prüfer wollen diese Daten bis zum Mittagessen. Du betreust mehrere Werke - Zeit, nach Werk 1710 zu filtern und deren komplette Bestellliste zu ziehen!",
+      "storyOutro": "Hamburgs komplette Bestellliste geliefert! Dreiundzwanzig aktive Bestellungen, organisiert und prüfungsbereit. Werksleiter: 'Du hast uns stundenlange Arbeit erspart!' Multi-Werks-Support gemeistert. Die Buchhaltung braucht Positionsart-Daten für eine spezifische Bestellung...",
+      "nextQuestHint": "Detailanalyse: Prüfe Positionsart für eine spezifische Bestellposition"
+    },
+    "s4hana-po-item-category": {
+      "name": "Kategorie-Check: Bestellpositionsart",
+      "description": "Prüfe Bestellpositionsart",
+      "tagline": "Prüfe Bestellpositionsart",
+      "victoryText": "Positionsart gefunden! Klassifizierungs-Profi!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Tag 2: Forensische Buchhaltung",
+      "storyIntro": "Dienstag. Controller muss Bestellposition 4500000012/00030 für Finanzberichterstattung klassifizieren. Ist es Anlagevermögen, Rohstoffe oder Dienstleistungen? Die Kategorie beeinflusst die Verbuchung. Dieses Detail ist wichtig für korrekte Bücher. Zeit für forensische Beschaffungsanalyse!",
+      "storyOutro": "Positionsart bestätigt! Sie ist als 'Rohstoffe' klassifiziert - das bedeutet sofortige Aufwandsbuchung, keine Aktivierung. Controller kann jetzt korrekt abschließen. Diese Details entscheiden über Finanzberichterstattung. Apropos Details, meistern wir die Lieferantenverfolgung...",
+      "nextQuestHint": "Lieferantenmanagement: Finde alle Bestellungen von Lieferant 17300001"
+    },
+    "s4hana-po-supplier": {
+      "name": "Lieferanten-Scout: Kreditor 17300001",
+      "description": "Bestellungen nach Lieferanten-ID finden",
+      "tagline": "Bestellungen nach Lieferanten-ID finden",
+      "victoryText": "Lieferanten-Bestellungen gefunden! Kreditorenstamm-Meister!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Woche 2: Lieferantenbeziehungen",
+      "storyIntro": "Montag, Woche 2. Lieferant 17300001 ruft an: 'Wir überprüfen unsere Geschäftsbeziehung mit Ihrem Unternehmen. Können Sie uns unser YTD-Bestellvolumen mitteilen?' Sie entscheiden über Mengenrabatte. Finden Sie jede Bestellung dieses Lieferanten - Verhandlungsmacht wartet auf Sie!",
+      "storyOutro": "Alle Bestellungen gefunden! Solides YTD-Volumen. Sie teilten dem Lieferanten die Zahlen mit, und er erwägt Mengenrabatte für zukünftige Aufträge. Ihre schnelle Datenabfrage stärkt die Lieferantenverhandlungen! Lieferantenbeziehungen = strategische Beschaffung. Organisieren wir nach Einkäufergruppe...",
+      "nextQuestHint": "Team-Organisation: Bestellungen für Einkäufergruppe 001 abrufen"
+    },
+    "s4hana-po-purch-group": {
+      "name": "Einkäufer-Quest: Einkäufergruppe 001",
+      "description": "Bestellungen nach Einkäufergruppe finden",
+      "tagline": "Bestellungen nach Einkäufergruppe finden",
+      "victoryText": "Einkäufergruppen-Bestellungen gefunden! Einkäufer-Champion!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Woche 2: Team-Verantwortlichkeit",
+      "storyIntro": "Dienstag. Wöchentliche Team-Besprechung. Jede Einkäufergruppe berichtet über ihre aktiven Bestellungen und Ausgaben. Ihre Gruppe (001) braucht ihre Zahlen. Wie viele offene Bestellungen? Gesamte zugesagte Ausgaben? Ihr Teamleiter wartet. Finden Sie die Bestellungen Ihrer Gruppe und seien Sie vorbereitet!",
+      "storyOutro": "Gruppe 001 Bestellungen zusammengestellt! Mehrere aktive Bestellungen mit zugesagten Ausgaben, alles auf Kurs. Sie präsentierten selbstbewusst in der Besprechung. Ihr Teamleiter nickte zustimmend. Nun tauchen wir in Bestellanforderungen ein - die Vorstufe zu Bestellungen...",
+      "nextQuestHint": "Anforderungen meistern: Bestellanforderungen über 100 EUR Schwellenwert finden"
+    },
+    "s4hana-pr-value-filter": {
+      "name": "Wert-Jäger: 100 EUR Banf",
+      "description": "Banfs nach Wertschwelle finden",
+      "tagline": "Banfs nach Wertschwelle finden",
+      "victoryText": "Wert-Banfs gefunden! Finanz-Tracker!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Woche 3: Genehmigungsbefugnis",
+      "storyIntro": "Mittwoch. Neue Unternehmensrichtlinie: Alle Anforderungen über 100 EUR benötigen VP-Genehmigung vor der Umwandlung in Bestellungen. Ihre Aufgabe: Jede Anforderung über diesem Schwellenwert finden, die auf Umwandlung wartet. Die Finanzabteilung braucht dies für Budgetprognosen. Hochwertige Anforderungen = große Verpflichtungen!",
+      "storyOutro": "Mehrere Anforderungen über 100 EUR mit erheblichen ausstehenden Verpflichtungen gefunden. Der VP prüft sie jetzt. Sie kontrollieren die Finanzschleusen - sorgen für ordnungsgemäße Genehmigung vor Unternehmensgeld-Verpflichtungen. Budgetdisziplin beginnt hier! Organisieren wir Anforderungen nach Einkäufergruppe...",
+      "nextQuestHint": "Anforderungen organisieren: Alle Anforderungspositionen für Einkäufergruppe 001 abrufen"
+    },
+    "s4hana-pr-purch-group": {
+      "name": "EK-Gruppe: Bestellanforderung 001",
+      "description": "Bestellanforderungen nach Einkaufsgruppe verfolgen",
+      "tagline": "Bestellanforderungen nach Einkaufsgruppe verfolgen",
+      "victoryText": "Gruppen-BAs gefunden! Beschaffungsprofi!",
+      "storyArc": "Beschaffungsmeister",
+      "storyChapter": "Woche 3: Team-Pipeline",
+      "storyIntro": "Donnerstag. Ihre Einkaufsgruppe (001) benötigt Einblick in ihre Bestellanforderungs-Pipeline. Welche BAs sind ausstehend? Welche wurden zu Bestellungen umgewandelt? Ihr Teamleiter möchte ein Status-Update für das Planungsmeeting am Freitag. Lassen Sie uns die BAs Ihrer Gruppe verfolgen!",
+      "storyOutro": "Pipeline der Gruppe 001 sichtbar! Neun ausstehende BAs, vier diese Woche zu Bestellungen umgewandelt. Ihr Team ist produktiv! Sie haben dies im Meeting präsentiert - der Teamleiter schätzt die Transparenz. Nun zur erweiterten Verfolgung: Folgebeleg-Status...",
+      "nextQuestHint": "Erweitert: Prüfen Sie, ob BA 10438000 zu einer Bestellung umgewandelt wurde (Folgestatus)"
+    },
+    "s4hana-pr-followon-status": {
+      "name": "Nachverfolgung: Bestellanforderung 10438000 Status",
+      "description": "Status des Folgedokuments zur Bestellanforderung prüfen",
+      "tagline": "Status des Folgedokuments zur Bestellanforderung prüfen",
+      "victoryText": "Folgestatus gefunden! Prozess-Experte!",
+      "storyArc": "Beschaffungs-Champion",
+      "storyChapter": "Woche 4: Meisterhafte Nachverfolgung",
+      "storyIntro": "Freitag, Woche 4. Der Direktor fragt: 'Wurde Bestellanforderung 10438000 schon in eine Bestellung umgewandelt? Ich habe sie letzte Woche genehmigt.' Das ist fortgeschrittene Beschaffungsverfolgung - Dokumente durch ihren Lebenszyklus von Anforderung über Bestellung bis zur Lieferung verfolgen. Prozessmeisterschaft wartet!",
+      "storyOutro": "Folgestatus bestätigt! BA 10438000 wurde zu Bestellung 5500000789, derzeit in Lieferantenbearbeitung. Sie haben die komplette Dokumentenkette in Sekunden verfolgt. Das ist Beschaffungsmeisterschaft - verstehen, wie Dokumente durch das System fließen. 🏆 BESCHAFFUNGS-CHAMPION STATUS ERREICHT! Sie beherrschen Materialien, Werke, Kategorien, Lieferanten, Gruppen, Anforderungen und Prozessabläufe!",
+      "nextQuestHint": "🎓 Beschaffung abgeschlossen! Versuchen Sie als nächstes Lieferung/Lager-Operationen!"
+    },
+    "s4hana-delivery-due-shipping": {
+      "name": "Versand-Alarm: Versandbereit",
+      "description": "Versandbereite Lieferungen prüfen",
+      "tagline": "Versandbereite Lieferungen prüfen",
+      "victoryText": "Versandliste geladen! Versand bereit!",
+      "storyArc": "Lager-Zauberer",
+      "storyChapter": "Tag 1: Die Morgenbesprechung",
+      "storyIntro": "6 Uhr morgens. Das Lager öffnet in 30 Minuten. Sie sind der neue Lager-Ops-Koordinator. Bevor das Team eintrifft, brauchen Sie die tägliche Versandliste - welche Lieferungen gehen HEUTE raus? Das bestimmt LKW-Planung und Kommissionierer-Zuweisungen. Morgenbesprechung beginnt um 6:30 Uhr. Holen wir die Liste!",
+      "storyOutro": "Versandliste geladen! Zwölf Lieferungen heute versandbereit. Sie drucken jetzt Kommissionierlisten für das Team. Wenn sie um 6:30 Uhr eintreffen, haben Sie deren Arbeitspensum organisiert. Das ist operative Exzellenz - vorbereitet sein, bevor der Tag beginnt! Eine Lieferung braucht Aufmerksamkeit...",
+      "nextQuestHint": "Kundenanfrage: Schauen Sie sich die Details für Lieferung 80000048 an"
+    },
+    "s4hana-delivery-lookup": {
+      "name": "Lieferungs-Finder: Beleg 80000048",
+      "description": "Spezifische Lieferung nachschlagen",
+      "tagline": "Spezifische Lieferung nachschlagen",
+      "victoryText": "Lieferung gefunden! Nachschlage-Meister!",
+      "storyArc": "Lager-Zauberer",
+      "storyChapter": "Tag 1: Kundenservice",
+      "storyIntro": "8 Uhr morgens. Der Kundenservice hat einen Anruf an Sie weitergeleitet: 'Kunde fragt nach Lieferung 80000048 - können Sie den Status prüfen?' Der Kunde wartet in der Leitung und wird ungeduldig. Sie brauchen Lieferdetails in Sekunden. Keine Zeit, durch Systeme zu graben. Joule, zeigen Sie Ihr Können!",
+      "storyOutro": "Lieferung 80000048 gefunden! Status: 'Im Lager, Kommissionierung läuft.' Sie haben es dem Kundenservice mitgeteilt, die haben es an den Kunden weitergegeben, alle sind zufrieden. Schnelle, präzise Antworten = Kundenzufriedenheit. Jetzt holen wir das vollständige Lieferdokument...",
+      "nextQuestHint": "Vollständige Details abrufen: Holen Sie das komplette Lieferdokument für 80000048"
+    },
+    "s4hana-delivery-document": {
+      "name": "Dokumenten-Späher: Lieferung 80000048",
+      "description": "Lieferdokument-Details finden",
+      "tagline": "Lieferdokument-Details finden",
+      "victoryText": "Dokument gefunden! Details gemeistert!",
+      "storyArc": "Lager-Zauberer",
+      "storyChapter": "Tag 2: Dokumentations-Meisterschaft",
+      "storyIntro": "Dienstagmorgen. Die Qualitätskontrolle hat Lieferung 80000048 markiert - sie benötigen das vollständige Lieferdokument für die Prüfungsunterlagen. Produktcodes, Mengen, Seriennummern, alles. Das kommt in die permanenten Akten. Finden Sie das vollständige Lieferdokument!",
+      "storyOutro": "Vollständiges Lieferdokument abgerufen! Die QK druckt es jetzt für ihre Unterlagen aus. Alle Produktcodes stimmen überein, Mengen korrekt, Dokumentation perfekt. Ihre Detailgenauigkeit verhindert Versandfehler. Apropos Details, lassen Sie uns den Kommissionierstatus prüfen...",
+      "nextQuestHint": "Lager-Operationen: Prüfen Sie den Gesamt-Kommissionierstatus für Lieferung 80000048"
+    }
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "ui": {
+    "buttons": {
+      "start": "Start Quest",
+      "cancel": "Cancel",
+      "close": "Close",
+      "next": "Next Quest",
+      "allQuests": "All Quests",
+      "downloadBadge": "Badge",
+      "shareLinkedIn": "Share on LinkedIn",
+      "reset": "Reset Progress",
+      "confirm": "Confirm",
+      "ok": "OK",
+      "retry": "Reload Page",
+      "send": "Send"
+    },
+    "headers": {
+      "questSelection": "Joule Quest",
+      "readyToStart": "Ready to Start?",
+      "questComplete": "Quest Complete!",
+      "questCompleteWithErrors": "Quest Completed (With Errors)",
+      "success": "Success!",
+      "oops": "Oops!",
+      "stepFailed": "Step Failed",
+      "stepSkipped": "Step Skipped",
+      "yourTurn": "Your Turn!",
+      "resetProgress": "Reset All Progress?",
+      "questLocked": "Quest Locked"
+    },
+    "labels": {
+      "points": "POINTS",
+      "quests": "QUESTS",
+      "step": "Step {current}/{total}",
+      "difficulty": "Difficulty",
+      "estimatedTime": "Estimated Time",
+      "waitingForYou": "Waiting for you to complete this step...",
+      "openingQuestSelection": "Opening quest selection...",
+      "hint": "Hint",
+      "rewards": "Rewards",
+      "congrats": "You're a Joule master!",
+      "congratsPartial": "Keep practicing to master Joule!",
+      "progress": "Progress"
+    },
+    "messages": {
+      "resetConfirm": "This will:\n• Delete all completed quests\n• Reset points to 0\n• Start fresh\n\nThis action cannot be undone.",
+      "questLockedInfo": "🔒 Complete {count} more quest{s} to unlock",
+      "continueNextStep": "⏭️ Continuing to next step...",
+      "questWillContinue": "💡 This step is optional - continuing quest...",
+      "questComplete": "🎉 Quest complete! Click 'Send' to submit the award (optional). 🏆",
+      "questCompleteGoal": "🎉 Quest complete! Click 'Save' to create the goal (optional). 🏆"
+    },
+    "tabs": {
+      "employee": "Employee",
+      "manager": "Manager",
+      "agent": "Agent",
+      "sales": "Sales",
+      "procurement": "Procurement",
+      "delivery": "Delivery"
+    },
+    "icons": {
+      "employee": "👤",
+      "manager": "👔",
+      "agent": "⚡",
+      "sales": "📊",
+      "procurement": "📦",
+      "delivery": "🚚"
+    }
+  },
+  "journeys": {
+    "employee": {
+      "name": "Your First Week",
+      "description": "Follow your journey from nervous new hire to confident team member in your first week at the company"
+    },
+    "manager": {
+      "name": "The New Manager",
+      "description": "You just got promoted! Navigate your first weeks as a manager, from clearing approvals to building your leadership style"
+    },
+    "agent": {
+      "name": "AI Revolution",
+      "description": "Unlock the power of AI to transform how you work - from goal creation to data analysis"
+    },
+    "s4hana-sales": {
+      "name": "Sales Hero's Journey",
+      "description": "Your mission: Master sales operations from order tracking to billing mastery. Customers are counting on you!"
+    },
+    "s4hana-procurement": {
+      "name": "Procurement Champion",
+      "description": "Supply chain warrior! Navigate the complex world of purchase orders, requisitions, and vendor management"
+    },
+    "s4hana-delivery": {
+      "name": "Warehouse Wizard",
+      "description": "The warehouse floor is your domain. Master delivery tracking, picking operations, and shipping logistics"
+    }
+  },
+  "errors": {
+    "contentScriptNotLoaded": {
+      "icon": "🔄",
+      "title": "Extension Setup Needed",
+      "message": "Joule Quest is connecting to this page. This usually takes a few moments.",
+      "causes": [
+        "Extension was just installed or updated",
+        "Page was already open before extension installed",
+        "Page is still loading in the background"
+      ],
+      "solutions": [
+        "⏱️ Wait 5-10 seconds for the page to fully load",
+        "⌘ If still not working, refresh this page (⌘R or Ctrl+R)",
+        "🔌 Make sure extension is enabled in Chrome"
+      ],
+      "actionText": "Refresh Page"
+    },
+    "jouleNotFound": {
+      "icon": "🔍",
+      "title": "Joule Not Available",
+      "message": "Cannot find Joule assistant on this page.",
+      "causes": [
+        "Joule not enabled for your account",
+        "Wrong SF page (Joule not available here)",
+        "Page still loading"
+      ],
+      "solutions": [
+        "🏠 Navigate to SF homepage first",
+        "⏳ Wait for page to fully load",
+        "💬 Contact admin if issue persists"
+      ]
+    },
+    "jouleIframeNotFound": {
+      "icon": "⚠️",
+      "title": "Joule Not Responding",
+      "message": "Joule assistant is not responding.",
+      "causes": [
+        "Joule panel may have closed unexpectedly",
+        "Connection to Joule interrupted"
+      ],
+      "solutions": [
+        "🔄 Quest will retry automatically",
+        "🏠 Try refreshing page if issue persists"
+      ]
+    },
+    "stepTimeout": {
+      "icon": "⏱️",
+      "title": "Step Timed Out",
+      "message": "This step took longer than expected.",
+      "causes": [
+        "Joule is processing a complex request",
+        "Network connection is slow",
+        "Page element not appearing"
+      ],
+      "solutions": [
+        "⏭️ Quest will continue to next step",
+        "🔄 Replay quest to retry later"
+      ]
+    },
+    "elementNotFound": {
+      "icon": "🔍",
+      "title": "Element Not Found",
+      "message": "Could not find the required element on the page.",
+      "causes": [
+        "Page layout may have changed",
+        "Element still loading",
+        "Wrong page for this quest"
+      ],
+      "solutions": [
+        "⏭️ Quest will continue to next step",
+        "🏠 Make sure you're on the right page"
+      ]
+    },
+    "promptSendFailed": {
+      "icon": "📤",
+      "title": "Message Not Sent",
+      "message": "Could not send message to Joule.",
+      "causes": [
+        "Joule input field not ready",
+        "Connection interrupted",
+        "Joule is busy processing"
+      ],
+      "solutions": [
+        "⏭️ Quest will continue to next step",
+        "🔄 Step will retry automatically"
+      ]
+    },
+    "buttonNotFound": {
+      "icon": "🔘",
+      "title": "Button Not Found",
+      "message": "Could not find the expected button.",
+      "causes": [
+        "Button text may have changed",
+        "Page still loading",
+        "Joule response format changed"
+      ],
+      "solutions": [
+        "⏭️ Quest will continue to next step",
+        "👀 Check browser console for details"
+      ]
+    },
+    "inputFieldNotFound": {
+      "icon": "📝",
+      "title": "Input Field Not Found",
+      "message": "Could not find the input field to enter data.",
+      "causes": [
+        "Joule response format unexpected",
+        "Field still loading",
+        "Step configuration may need update"
+      ],
+      "solutions": [
+        "⏭️ Quest will continue to next step",
+        "🔄 Try replaying quest"
+      ]
+    },
+    "unknownError": {
+      "icon": "❌",
+      "title": "Something Went Wrong",
+      "message": "An unexpected error occurred.",
+      "causes": [
+        "Network connection issue",
+        "Page conflict with extension",
+        "Browser compatibility issue"
+      ],
+      "solutions": [
+        "🔄 Try refreshing the page",
+        "💬 Report issue if it persists"
+      ]
+    },
+    "whyThisHappened": "Why this happened:",
+    "whatToDo": "What to do:",
+    "technicalDetails": "Technical Details"
+  },
+  "popup": {
+    "title": "Joule Quest",
+    "loading": "Opening quest selection..."
+  }
+}

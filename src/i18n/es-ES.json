@@ -1,0 +1,751 @@
+{
+  "ui": {
+    "buttons": {
+      "start": "Iniciar misión",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "next": "Siguiente misión",
+      "allQuests": "Todas las misiones",
+      "downloadBadge": "Insignia",
+      "shareLinkedIn": "Compartir en LinkedIn",
+      "reset": "Reiniciar",
+      "confirm": "Confirmar",
+      "ok": "OK",
+      "retry": "Recargar",
+      "send": "Enviar"
+    },
+    "headers": {
+      "questSelection": "Joule Quest",
+      "readyToStart": "¿Listo?",
+      "questComplete": "¡Misión completada!",
+      "questCompleteWithErrors": "Misión completada (con errores)",
+      "success": "¡Éxito!",
+      "oops": "¡Ups!",
+      "stepFailed": "Paso fallido",
+      "stepSkipped": "Paso omitido",
+      "yourTurn": "¡Tu turno!",
+      "resetProgress": "¿Reiniciar?",
+      "questLocked": "Misión bloqueada"
+    },
+    "labels": {
+      "points": "PUNTOS",
+      "quests": "MISIONES",
+      "step": "Paso {current}/{total}",
+      "difficulty": "Dificultad",
+      "estimatedTime": "Tiempo estimado",
+      "waitingForYou": "Esperando...",
+      "openingQuestSelection": "Abriendo...",
+      "hint": "Consejo",
+      "rewards": "Recompensas",
+      "congrats": "¡Maestro Joule!",
+      "congratsPartial": "¡Continúa!",
+      "progress": "Progreso"
+    },
+    "messages": {
+      "resetConfirm": "Esto eliminará todo. ¿Continuar?",
+      "questLockedInfo": "🔒 Completar {count} misión{s}",
+      "continueNextStep": "⏭️ Siguiente paso...",
+      "questWillContinue": "💡 Opcional...",
+      "questComplete": "🎉 ¡Completado! 🏆",
+      "questCompleteGoal": "🎉 ¡Completado! 🏆"
+    },
+    "tabs": {
+      "employee": "Empleado",
+      "manager": "Gerente",
+      "agent": "Agente",
+      "sales": "Ventas",
+      "procurement": "Compras",
+      "delivery": "Entrega"
+    },
+    "icons": {
+      "employee": "👤",
+      "manager": "👔",
+      "agent": "⚡",
+      "sales": "📊",
+      "procurement": "📦",
+      "delivery": "🚚"
+    }
+  },
+  "journeys": {
+    "employee": {
+      "name": "Primera semana",
+      "description": "Primera semana en la empresa"
+    },
+    "manager": {
+      "name": "Nuevo gerente",
+      "description": "Primeras semanas como gerente"
+    },
+    "agent": {
+      "name": "Revolución IA",
+      "description": "Transformar el trabajo con IA"
+    },
+    "s4hana-sales": {
+      "name": "Héroe de ventas",
+      "description": "Dominar operaciones de ventas"
+    },
+    "s4hana-procurement": {
+      "name": "Campeón de compras",
+      "description": "Gestión de compras"
+    },
+    "s4hana-delivery": {
+      "name": "Mago de almacén",
+      "description": "Dominar logística"
+    }
+  },
+  "errors": {
+    "contentScriptNotLoaded": {
+      "icon": "🔄",
+      "title": "Configuración necesaria",
+      "message": "Conectando...",
+      "causes": [
+        "Extensión instalada",
+        "Página abierta",
+        "Cargando"
+      ],
+      "solutions": [
+        "⏱️ Esperar",
+        "⌘ Actualizar",
+        "🔌 Verificar"
+      ],
+      "actionText": "Actualizar"
+    },
+    "jouleNotFound": {
+      "icon": "🔍",
+      "title": "Joule no disponible",
+      "message": "Joule no encontrado",
+      "causes": [
+        "No activado",
+        "Página incorrecta",
+        "Cargando"
+      ],
+      "solutions": [
+        "🏠 Página de inicio",
+        "⏳ Esperar",
+        "💬 Contactar admin"
+      ]
+    },
+    "jouleIframeNotFound": {
+      "icon": "⚠️",
+      "title": "Joule no responde",
+      "message": "Sin respuesta",
+      "causes": [
+        "Cerrado",
+        "Interrumpido"
+      ],
+      "solutions": [
+        "🔄 Reintentar",
+        "🏠 Actualizar"
+      ]
+    },
+    "stepTimeout": {
+      "icon": "⏱️",
+      "title": "Tiempo agotado",
+      "message": "Demasiado tiempo",
+      "causes": [
+        "Complejo",
+        "Lento",
+        "Elemento faltante"
+      ],
+      "solutions": [
+        "⏭️ Continuar",
+        "🔄 Reintentar"
+      ]
+    },
+    "elementNotFound": {
+      "icon": "🔍",
+      "title": "Elemento no encontrado",
+      "message": "Elemento faltante",
+      "causes": [
+        "Cambiado",
+        "Cargando",
+        "Página incorrecta"
+      ],
+      "solutions": [
+        "⏭️ Continuar",
+        "🏠 Verificar"
+      ]
+    },
+    "promptSendFailed": {
+      "icon": "📤",
+      "title": "Envío fallido",
+      "message": "Mensaje no enviado",
+      "causes": [
+        "No listo",
+        "Interrumpido",
+        "Ocupado"
+      ],
+      "solutions": [
+        "⏭️ Continuar",
+        "🔄 Reintentar"
+      ]
+    },
+    "buttonNotFound": {
+      "icon": "🔘",
+      "title": "Botón no encontrado",
+      "message": "Botón faltante",
+      "causes": [
+        "Cambiado",
+        "Cargando",
+        "Formato"
+      ],
+      "solutions": [
+        "⏭️ Continuar",
+        "👀 Consola"
+      ]
+    },
+    "inputFieldNotFound": {
+      "icon": "📝",
+      "title": "Campo no encontrado",
+      "message": "Campo faltante",
+      "causes": [
+        "Formato",
+        "Cargando",
+        "Config"
+      ],
+      "solutions": [
+        "⏭️ Continuar",
+        "🔄 Reintentar"
+      ]
+    },
+    "unknownError": {
+      "icon": "❌",
+      "title": "Error",
+      "message": "Error inesperado",
+      "causes": [
+        "Red",
+        "Conflicto",
+        "Compatibilidad"
+      ],
+      "solutions": [
+        "🔄 Actualizar",
+        "💬 Reportar"
+      ]
+    },
+    "whyThisHappened": "Por qué:",
+    "whatToDo": "Qué hacer:",
+    "technicalDetails": "Detalles"
+  },
+  "popup": {
+    "title": "Joule Quest",
+    "loading": "Cargando..."
+  },
+  "quests": {
+    "employee-leave-balance": {
+      "name": "Quick Check: Time Off Stash",
+      "description": "Check your vacation days instantly",
+      "tagline": "Check your vacation days instantly",
+      "victoryText": "Balance retrieved! You've got vacation days waiting!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Day 1: Welcome Aboard",
+      "storyIntro": "Welcome to your new company! It's Monday morning, 9 AM. HR orientation just ended, and your laptop is finally set up. Before diving into work emails, you're curious: how much vacation time do you actually have? The recruiter mentioned 'generous PTO' during interviews. Time to find out what that means!",
+      "storyOutro": "Perfect! You've got vacation days in the bank. Already planning that summer trip in your mind. But first, you should probably figure out what you're supposed to be working on around here...",
+      "nextQuestHint": "Next up: Check your quarterly goals to see what success looks like"
+    },
+    "employee-my-goals": {
+      "name": "Mission Control: My Goals",
+      "description": "See what you're crushing this quarter",
+      "tagline": "See what you're crushing this quarter",
+      "victoryText": "Goals loaded! You're on track!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Day 1: Setting Direction",
+      "storyIntro": "10:30 AM. Your new manager Sarah just sent you a Slack message: 'Welcome aboard! Check your Q1 goals in SF - let's sync tomorrow.' Goals? Quarter? You want to look prepared for that meeting. Let's see what targets have been set for you!",
+      "storyOutro": "Ah, there they are! Three clear goals for the quarter. Now you know what success looks like in this role. Sarah will be impressed tomorrow when you discuss these confidently. Speaking of which, you should figure out your cost center before the team intro call at 2 PM...",
+      "nextQuestHint": "Coming up: Find your cost center (everyone keeps mentioning theirs)"
+    },
+    "employee-cost-center": {
+      "name": "Money Trail: Find My Cost Center",
+      "description": "Discover where your budget lives",
+      "tagline": "Discover where your budget lives",
+      "victoryText": "Cost center found! Financial ninja status!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Day 1: Understanding Structure",
+      "storyIntro": "2 PM team intro call just ended. Everyone casually mentioned their cost center codes like it's common knowledge. You smiled and nodded, but internally panicked - what's YOURS? Better figure this out before the next meeting!",
+      "storyOutro": "Got it! Now when people ask about your cost center, you won't freeze up. This also helps you understand where your work fits in the bigger picture. Tomorrow you have your first client meeting - better check the company travel policy!",
+      "nextQuestHint": "Tomorrow's mission: Learn the rental car policy before booking travel"
+    },
+    "employee-rental-policy": {
+      "name": "Road Rules: Rental Policy",
+      "description": "Master company car guidelines",
+      "tagline": "Master company car guidelines",
+      "victoryText": "Policy mastered! Ready to roll!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Day 2: First Business Trip",
+      "storyIntro": "Tuesday morning. Sarah just asked you to visit a client in the next city tomorrow. 'Book a rental car - keep it within policy!' she said. Policy? WHAT policy? You should check the guidelines before booking!",
+      "storyOutro": "Smart! Now you know the approved vehicle types and daily rate limits. You just saved yourself an awkward expense report rejection. Now that you know the rules, let's test the time-off request system before you need it for real!",
+      "nextQuestHint": "Time to test the system: Request a day off and see how it works"
+    },
+    "employee-request-time-off": {
+      "name": "Boss Level: Tomorrow Off",
+      "description": "Request vacation lightning-fast",
+      "tagline": "Request vacation lightning-fast",
+      "victoryText": "Request sent! Boss notified!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Day 5: Testing the System",
+      "storyIntro": "It's Friday afternoon. What a week! Your college friend just texted about concert tickets next Friday. You've got the vacation days (you checked Monday, remember?). Time to see if requesting time off is as easy as everyone claims. Let's test this system!",
+      "storyOutro": "Request submitted! Sarah will get a notification to approve. You're already seeing how Joule makes HR tasks effortless. Week one complete! 🎉 You've mastered the basics: checking balance, understanding goals, knowing your org structure, following policies, and requesting time off. Ready to level up?",
+      "nextQuestHint": "Week 2 begins: Time to explore learning and development opportunities"
+    },
+    "employee-assigned-learning": {
+      "name": "Power-Up: Learning Path",
+      "description": "Discover your assigned training",
+      "tagline": "Discover your assigned training",
+      "victoryText": "Courses unlocked! Brain gains incoming!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Week 2: Getting Established",
+      "storyIntro": "Monday morning, Week 2. Sarah mentioned during your 1:1 that you have some assigned training courses. 'They'll help you ramp up faster,' she said. You want to see what's expected and plan your learning schedule. Let's check what courses are waiting!",
+      "storyOutro": "Three courses assigned! Product training, compliance basics, and advanced Excel. Looks like the company invests in development. You can tackle these during slow afternoons. Now let's make sure your contact info is correct before clients start reaching out...",
+      "nextQuestHint": "Verify your email is correct in the system"
+    },
+    "employee-view-email": {
+      "name": "Contact Check: View My Email",
+      "description": "Find your email in seconds",
+      "tagline": "Find your email in seconds",
+      "victoryText": "Email retrieved! Stay connected!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Week 2: Professional Identity",
+      "storyIntro": "Tuesday. You're creating your email signature but realize you're not 100% sure of your exact email format. Let's confirm before you embarrass yourself on client emails!",
+      "storyOutro": "There it is! Now you know your exact email format. Updated your signature, business cards ordered, LinkedIn profile updated. You're looking professional now! Next, let's verify your official job title is correct...",
+      "nextQuestHint": "Confirm your job title and role details are accurate"
+    },
+    "employee-view-job": {
+      "name": "Career Path: View My Job Info",
+      "description": "See your title and role details",
+      "tagline": "See your title and role details",
+      "victoryText": "Job info loaded! Career mapped!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Week 2: Career Foundation",
+      "storyIntro": "Wednesday. You're updating your LinkedIn and realize you want to use the EXACT official title the company has for you. Details matter for your professional brand!",
+      "storyOutro": "Perfect! Now you have your official title confirmed. That's going straight on LinkedIn. You're building your professional identity, piece by piece. Almost forgot - when's your company birthday for next year's celebration?",
+      "nextQuestHint": "Find your birthday in the system (for company celebrations)"
+    },
+    "employee-view-birthday": {
+      "name": "Birthday Tracker: My Celebration",
+      "description": "Never forget your cake day!",
+      "tagline": "Never forget your cake day!",
+      "victoryText": "Birthday retrieved! Celebrate!",
+      "storyArc": "Your First Week",
+      "storyChapter": "Week 2: The Complete Picture",
+      "storyIntro": "Thursday. You noticed the team calendar has everyone's birthdays marked - company culture includes celebrations! You want to make sure yours is correct so you don't miss out on cake day. Plus, it's fun to see your birthday in the system!",
+      "storyOutro": "Confirmed! Your birthday is in the system and correct. Can't wait for that office celebration. 🎉 You've now completed your first two weeks! You know your benefits, goals, org structure, policies, and personal details. You're no longer the confused newbie - you're a confident team member ready to tackle any task!",
+      "nextQuestHint": "🏆 First Week Journey Complete! Ready for the Manager path?"
+    },
+    "manager-pending-approvals": {
+      "name": "Lightning Round: Approval Spree",
+      "description": "Clear your queue at lightspeed",
+      "tagline": "Clear your queue at lightspeed",
+      "victoryText": "All approvals cleared! Team loves you!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Day 1: The Inbox Avalanche",
+      "storyIntro": "Congratulations on your promotion! It's your first day as a manager. You logged in this morning to find... 17 pending approvals?! Time off requests, expense reports, goal updates. Your team has been waiting. Let's clear this backlog and show them you're on top of it!",
+      "storyOutro": "Boom! Approval queue cleared. Your team just got 17 notifications that you approved their requests. They're already Slacking you thank-you messages. This is what responsive leadership looks like! Now you should probably figure out who's actually ON your team...",
+      "nextQuestHint": "Essential: See who reports to you and learn your team roster"
+    },
+    "manager-my-team": {
+      "name": "Squad Check: Meet Your Team",
+      "description": "See who's on your roster",
+      "tagline": "See who's on your roster",
+      "victoryText": "Team roster loaded! Leadership unlocked!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Day 1: Building Your Team Knowledge",
+      "storyIntro": "10 AM. Your boss just asked 'How many direct reports do you have?' and you froze. FIVE? SEVEN? You approved their requests earlier but didn't actually see the full list. Time to learn exactly who's on your team so you can answer confidently!",
+      "storyOutro": "There they are! Six direct reports, each with their own skills and backgrounds. You're clicking through their profiles now, learning about each person. This is YOUR team. Time to be the manager they deserve! Sarah just crushed that presentation - you should recognize her publicly...",
+      "nextQuestHint": "Reward excellence: Give Sarah a spot award for that amazing presentation"
+    },
+    "manager-spot-award": {
+      "name": "Hero Moment: Recognize Excellence",
+      "description": "Reward your team's hard work",
+      "tagline": "Reward your team's hard work",
+      "victoryText": "Award sent! You made someone's day!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Day 3: Recognition Culture",
+      "storyIntro": "Wednesday. Jada just delivered an incredible client presentation that closed a huge deal. The client sent an email praising her! This deserves recognition. You have budget for spot awards - time to make Jada's day and show the team you notice great work!",
+      "storyOutro": "Award sent! Jada just messaged you: 'Thank you so much! This really means a lot.' THIS is leadership - recognizing excellence when you see it. The rest of the team noticed too. You're building a culture of appreciation. Culture matters, and you're shaping it!",
+      "nextQuestHint": "Build on recognition: Give constructive feedback to help your team grow"
+    },
+    "manager-give-feedback": {
+      "name": "Feedback Master: Give Kudos",
+      "description": "Boost morale with recognition",
+      "tagline": "Boost morale with recognition",
+      "victoryText": "Feedback ready! You made their day!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Day 4: Developmental Feedback",
+      "storyIntro": "Thursday. Jada appreciated the spot award, but you want to give her more detailed feedback on WHY her presentation was excellent. Specific feedback helps people grow. Let's document what made her work outstanding so she can replicate that success!",
+      "storyOutro": "Feedback drafted and ready to send! You highlighted her preparation, client focus, and data storytelling. This kind of specific recognition helps people understand their strengths. Jada will keep this feedback forever. You're not just a manager - you're a developer of talent!",
+      "nextQuestHint": "Get to know your team better: Check everyone's hire dates and tenure"
+    },
+    "manager-team-hire-dates": {
+      "name": "Team Intel: Hire Dates",
+      "description": "Know your team's tenure",
+      "tagline": "Know your team's tenure",
+      "victoryText": "Hire dates loaded! Team history revealed!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Week 2: Team Context",
+      "storyIntro": "Friday morning, your second week. You're planning work assignments and realize you don't know who's a veteran vs who's new. Marcus acts super confident - is he experienced or just good at faking it? Tenure matters for task complexity. Let's check everyone's hire dates!",
+      "storyOutro": "Fascinating! Marcus joined 3 months ago (explains the confidence), but Jada has been here 4 years (she's the real veteran). This changes how you'll assign projects. Experience matters, and now you understand your team's history. Time to dive deeper into team dynamics...",
+      "nextQuestHint": "Prepare for reviews: Check compensation data to understand team pay"
+    },
+    "manager-compensation-insight": {
+      "name": "Compensation Wizard: Team Insights",
+      "description": "Understand team pay landscape",
+      "tagline": "Understand team pay landscape",
+      "victoryText": "Insights unlocked! Data-driven decisions!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Month 1: Compensation Review",
+      "storyIntro": "One month in. Annual review season is approaching, and your boss wants your compensation recommendations by Friday. You need to understand current salaries, market rates, and pay equity across your team. Let's get the data to make fair, informed decisions!",
+      "storyOutro": "Wow. The compensation data reveals important insights about market positioning and pay equity across your team. This data will shape your review recommendations and help you advocate for your high performers. Data-driven leadership wins!",
+      "nextQuestHint": "Back up compensation decisions with workforce metrics and analytics"
+    },
+    "manager-view-metrics": {
+      "name": "Data Detective: View Metrics",
+      "description": "Unlock workforce analytics",
+      "tagline": "Unlock workforce analytics",
+      "victoryText": "Metrics unlocked! Data wizard status!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Month 1: Strategic Thinking",
+      "storyIntro": "Week 6 as manager. You're presenting to leadership next week about team performance. You need hard data: headcount trends, retention rates, diversity metrics. Your boss wants 'insights, not anecdotes.' Time to pull the analytics that tell your team's story!",
+      "storyOutro": "The metrics are compelling! Your team shows strong retention rates, solid performance ratings, and balanced composition. These numbers back up your promotion requests and hiring proposals. You're thinking strategically now, not just tactically. Management = data + people!",
+      "nextQuestHint": "Practice continuous improvement: Request feedback on your own leadership"
+    },
+    "manager-request-feedback": {
+      "name": "Goal Guru: Request Feedback",
+      "description": "Drive growth with insights",
+      "tagline": "Drive growth with insights",
+      "victoryText": "Feedback requested! Growth unlocked!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Month 2: Self-Improvement",
+      "storyIntro": "Two months into management. You give lots of feedback, but how are YOU doing as a manager? Jada seems comfortable with you, so let's request her honest feedback on your leadership style. Growth mindset starts with seeking input!",
+      "storyOutro": "Feedback requested! This shows vulnerability and commitment to growth. Great managers aren't afraid to hear how they can improve. When Jada responds, you'll have actionable insights to become better. Leadership is a journey, not a destination!",
+      "nextQuestHint": "Round out your team knowledge: Dive deep into individual profiles"
+    },
+    "manager-worker-profile": {
+      "name": "People Search: Team Profiles",
+      "description": "Deep dive into team details",
+      "tagline": "Deep dive into team details",
+      "victoryText": "Profile loaded! People expert status!",
+      "storyArc": "The New Manager",
+      "storyChapter": "Month 2: Mastery",
+      "storyIntro": "Month 2 complete. You've approved requests, recognized excellence, given feedback, understood compensation, and tracked metrics. Now for the final piece: truly knowing each team member's complete profile - skills, experience, career aspirations. Time to become a people expert!",
+      "storyOutro": "Complete profile mastery achieved! You now know Jada's full background: her previous roles, skills, certifications, and career goals. This depth of knowledge makes you a better coach and advocate for your team. 🏆 MANAGER JOURNEY COMPLETE! You've transformed from nervous new manager to confident leader in just 2 months!",
+      "nextQuestHint": "🎓 Manager Journey Complete! Try the AI Agent path to level up further"
+    },
+    "agent-goal-creation": {
+      "name": "AI Wizard: Goal Generator",
+      "description": "Create perfect goals with AI magic",
+      "tagline": "Create perfect goals with AI magic",
+      "victoryText": "Goal crafted by AI! Wizard status achieved!",
+      "storyArc": "AI Revolution",
+      "storyChapter": "The Future of Work",
+      "storyIntro": "The year is 2025. You've heard the hype about 'AI-powered workflows' and 'GenAI assistance.' Time to see if it lives up to the promise. Your challenge: use AI to create a professional development goal in seconds instead of agonizing over it for hours. Let the machines help you think!",
+      "storyOutro": "🤯 Mind blown! AI just wrote a complete, thoughtful goal with measurable outcomes, specific actions, and realistic timeline. What used to take 30 minutes of brainstorming took 30 seconds. This is the future of work - AI as your creative partner. You're not just using tools anymore, you're orchestrating intelligent systems!",
+      "nextQuestHint": "🚀 Ready for S/4HANA? Try the Sales or Procurement journeys!"
+    },
+    "s4hana-sales-open-orders": {
+      "name": "Order Detective: Open Sales",
+      "description": "Find all your open sales orders",
+      "tagline": "Find all your open sales orders",
+      "victoryText": "Open orders found! Sales ninja!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Day 1: Getting Oriented",
+      "storyIntro": "Monday morning. You're the new Sales Operations Specialist. Your boss drops a pile of customer calls on your desk: 'Find out what orders are still open.' No Excel exports, no endless clicking through screens. Just Joule. Let's see what's in flight!",
+      "storyOutro": "Seven open orders found in seconds! You're already impressing your boss with speed. Each order has a customer waiting, a timeline ticking. Now let's narrow down - which of these are stuck in delivery?",
+      "nextQuestHint": "Critical: Find which orders haven't been delivered yet"
+    },
+    "s4hana-sales-not-delivered": {
+      "name": "Delivery Tracker: Not Yet Shipped",
+      "description": "Track orders awaiting delivery",
+      "tagline": "Track orders awaiting delivery",
+      "victoryText": "Undelivered orders found! Logistics pro!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Day 1: Delivery Crisis",
+      "storyIntro": "10 AM. Three customers just emailed asking 'Where's my order?!' These are the ones still in limbo - ordered but not delivered. Your job: find them fast and figure out what's holding them up. Time to be the hero!",
+      "storyOutro": "Found them! Four orders stuck in delivery. Now you can call logistics and push them through. Customers will get proactive updates. You're solving problems before they escalate. That's sales ops mastery! Your boss just walked over - big client USCU-CUS23 needs attention...",
+      "nextQuestHint": "VIP Alert: Find all orders for high-priority customer USCU-CUS23"
+    },
+    "s4hana-sales-ship-to-party": {
+      "name": "Customer Hunter: Ship-To Search",
+      "description": "Find orders by ship-to party",
+      "tagline": "Find orders by ship-to party",
+      "victoryText": "Customer orders found! Search master!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Day 1: VIP Customer Focus",
+      "storyIntro": "Noon. USCU-CUS23 is your company's second-largest account. They just called saying they haven't received multiple shipments. Your boss needs you to pull up EVERY order going to their shipping address. This is high-stakes customer service - let's nail it!",
+      "storyOutro": "Jackpot! Found all their ship-to orders. Three are delayed (you're calling logistics right now), two are on track. You can call the customer back with actual data instead of 'let me check and get back to you.' Account saved! Now onto your next big client...",
+      "nextQuestHint": "Major Account: Track everything for Intelli Corp (your biggest client)"
+    },
+    "s4hana-sales-intelli-corp": {
+      "name": "Corporate Quest: Intelli Orders",
+      "description": "Find all Intelli Corp sales",
+      "tagline": "Find all Intelli Corp sales",
+      "victoryText": "Intelli Corp orders found! Account master!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Day 2: Enterprise Account",
+      "storyIntro": "Tuesday morning. Intelli Corp is your company's BIGGEST account - worth $2M annually. Your VP of Sales is preparing a quarterly business review and needs every order, every invoice, every detail. This client makes or breaks quarterly targets. Find everything!",
+      "storyOutro": "Comprehensive list pulled! Twelve active orders spanning products and regions. Your VP just said 'This is exactly what I needed - great work!' in the all-hands. You're becoming the go-to person for critical account data. Customer called about order 470909 - let's check it...",
+      "nextQuestHint": "Urgent: Customer asking about specific order 470909 status"
+    },
+    "s4hana-sales-order-status": {
+      "name": "Status Check: Order 470909",
+      "description": "Check specific order status",
+      "tagline": "Check specific order status",
+      "victoryText": "Order status found! Tracking expert!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Day 2: Customer Escalation",
+      "storyIntro": "2 PM. Customer on line 2, sounds frustrated: 'I ordered two weeks ago, order 470909 - WHERE IS IT?!' You need the exact status RIGHT NOW while they're on hold. No time to navigate multiple screens. This is a moment of truth!",
+      "storyOutro": "Status retrieved in 10 seconds! Order is 'In Picking' - shipping tomorrow. You told the customer confidently, they calmed down, thanked you for the quick response. Crisis averted! Speed + accuracy = customer satisfaction. Now let's tackle the finance side - billing awaits...",
+      "nextQuestHint": "Finance needs help: Time to master billing document tracking"
+    },
+    "s4hana-billing-customer": {
+      "name": "Billing Scout: Customer USCU-CUS23",
+      "description": "Find customer billing documents",
+      "tagline": "Find customer billing documents",
+      "victoryText": "Billing docs found! Finance ninja!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 2: Billing Mastery Begins",
+      "storyIntro": "Monday, Week 2. Finance just emailed: 'Customer USCU-CUS23 requesting copies of all their invoices for their audit.' They need this by EOD. No pressure! Time to pull every billing document for this customer and show finance you've got their back!",
+      "storyOutro": "All billing docs retrieved! Finance is sending them to the customer now with 5 hours to spare. You just made finance's life easier AND kept a customer happy. This billing detective work is becoming your specialty. Let's try filtering by sales organization next...",
+      "nextQuestHint": "Learn to filter: Pull billing for your entire sales organization (1010)"
+    },
+    "s4hana-billing-sales-org": {
+      "name": "Org Filter: Sales Org 1010",
+      "description": "Filter by sales organization",
+      "tagline": "Filter by sales organization",
+      "victoryText": "Org billing found! Organization pro!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 2: Regional Analysis",
+      "storyIntro": "Tuesday. Your boss needs month-end billing reports for Sales Org 1010 (your entire region). She's presenting to the board tomorrow and needs total invoiced amounts. This data determines regional performance bonuses. Find every billing document for org 1010!",
+      "storyOutro": "Complete regional billing pulled! Your boss now has ammunition for tomorrow's board meeting. She might even mention your name when explaining the data. Regional insight = strategic value. Next: Finance wants to analyze payment terms...",
+      "nextQuestHint": "Finance task: Find all invoices with specific payment terms (0001)"
+    },
+    "s4hana-billing-payment-terms": {
+      "name": "Payment Hunter: Terms 0001",
+      "description": "Find bills by payment terms",
+      "tagline": "Find bills by payment terms",
+      "victoryText": "Payment terms filtered! Finance wizard!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 2: Cash Flow Analysis",
+      "storyIntro": "Wednesday. CFO needs cash flow projections. All invoices with payment terms 0001 (NET 30) need review for collection timing. This affects quarterly cash position. Finance is waiting on your data to update the board deck!",
+      "storyOutro": "Payment terms 0001 invoices found! CFO now has her cash flow numbers for financial planning. You're not just finding data - you're enabling strategic financial planning. Now let's hunt for the really big tickets...",
+      "nextQuestHint": "Executive visibility: Find all invoices over $10,000 USD"
+    },
+    "s4hana-billing-high-value": {
+      "name": "Big Ticket: Over $10K USD",
+      "description": "Find high-value billing docs",
+      "tagline": "Find high-value billing docs",
+      "victoryText": "High-value bills found! Revenue tracker!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 2: Executive Dashboard",
+      "storyIntro": "Thursday. Board meeting prep. CEO wants to see all 'material deals' - invoices over $10K. These represent your major revenue drivers. Sales leadership needs this list to tell the growth story. Find the big fish!",
+      "storyOutro": "Multiple major deals found! These are the orders that matter most to revenue. CEO's dashboard is now complete. You're providing executive-level intelligence. Finance just pinged you - they need billing request tracking...",
+      "nextQuestHint": "Track billing requests: Find all pending docs for customer USCU-P-005"
+    },
+    "s4hana-billing-requests-customer": {
+      "name": "Request Tracker: Customer P-005",
+      "description": "Track billing requests by customer",
+      "tagline": "Track billing requests by customer",
+      "victoryText": "Billing requests found! Request master!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 3: Request Management",
+      "storyIntro": "Monday, Week 3. Customer USCU-P-005 submitted three billing document requests last week. They're getting impatient: 'Where are our invoices?' You need to track these requests, see their status, and follow up with finance to expedite!",
+      "storyOutro": "All requests found! Two are ready, one is processing. You're emailing the customer now with specific status updates and ETAs. Proactive communication prevents angry calls. You're not just reactive anymore - you're managing the billing pipeline like a pro!",
+      "nextQuestHint": "Master reference tracking: Find billing by reference document number"
+    },
+    "s4hana-billing-ref-document": {
+      "name": "Reference Hunter: Doc 1000000022",
+      "description": "Find bills by reference doc",
+      "tagline": "Find bills by reference doc",
+      "victoryText": "Reference doc found! Link tracker!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 3: Audit Support",
+      "storyIntro": "Tuesday. External auditors just arrived for annual audit. They need 'all billing documents related to reference document 1000000022.' This is a complex multi-part order with linked invoices. Auditors are waiting in the conference room. Find these docs FAST!",
+      "storyOutro": "Found them! Four linked billing documents, all properly referenced. Auditors are impressed by your speed - 'Usually this takes hours!' Your organized approach is making the audit smooth. Next, they want product-level billing data...",
+      "nextQuestHint": "Product analysis: Pull billing for product code PC_SUPP_1"
+    },
+    "s4hana-billing-product": {
+      "name": "Product Search: PC_SUPP_1",
+      "description": "Find billing by product code",
+      "tagline": "Find billing by product code",
+      "victoryText": "Product billing found! Catalog pro!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 3: Product Performance",
+      "storyIntro": "Wednesday. Product team wants to analyze PC_SUPP_1 sales performance. How many units sold? What revenue? Which customers bought it? They need every invoice to build their quarterly report. Your mission: product-level billing intelligence!",
+      "storyOutro": "Product billing complete! PC_SUPP_1 performance data is now available for the product team's quarterly analysis. Your data shapes product strategy! Let's check another sales org's billing...",
+      "nextQuestHint": "Multi-region skills: Pull billing for Sales Org 1710 (different region)"
+    },
+    "s4hana-billing-org-1710": {
+      "name": "Org Quest: Sales Org 1710",
+      "description": "Track another sales org billing",
+      "tagline": "Track another sales org billing",
+      "victoryText": "Org 1710 billing found! Multi-org master!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 3: Multi-Region Expertise",
+      "storyIntro": "Thursday. Your responsibility just expanded! You're now supporting Sales Org 1710 (Western region) in addition to your own org. Their ops person quit, and you're covering until they hire someone. Let's pull their billing to understand their business!",
+      "storyOutro": "Org 1710 data pulled! Different products, different customers, same need for excellence. You're now a multi-region billing expert. Your manager just said you're 'indispensable.' But finance found some problem invoices that need investigation...",
+      "nextQuestHint": "Troubleshoot: Find all billing documents flagged with issues"
+    },
+    "s4hana-billing-issues": {
+      "name": "Issue Alert: Problem Billing",
+      "description": "Find billing documents with issues",
+      "tagline": "Find billing documents with issues",
+      "victoryText": "Issues found! Troubleshooter!",
+      "storyArc": "Sales Hero's Journey",
+      "storyChapter": "Week 4: Crisis Management",
+      "storyIntro": "Monday, Week 4. Finance called an emergency meeting: 'We found errors in some billing docs.' Pricing mistakes, missing data, system glitches. These need fixing BEFORE customers notice. Find every problem invoice so the team can correct them today!",
+      "storyOutro": "All problem invoices identified! Multiple documents with errors ranging from pricing to tax calculations. Finance is fixing them now before they go to customers. You caught these errors early and prevented potential disputes! 🏆 SALES OPERATIONS MASTERY UNLOCKED! You're now the billing hero your company needs!",
+      "nextQuestHint": "🎓 Sales Journey Complete! Ready for Procurement or Delivery paths?"
+    },
+    "s4hana-po-material": {
+      "name": "Material Hunt: PO for TG0011",
+      "description": "Find PO items by material",
+      "tagline": "Find PO items by material",
+      "victoryText": "Material PO found! Procurement ninja!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Day 1: Supply Chain Baptism",
+      "storyIntro": "Welcome to Procurement! It's your first day, and the factory floor just called in a panic: 'We're out of material TG0011 - production stops in 2 hours!' Your boss shouts 'Check if we have a PO for that!' THIS is procurement - high pressure, real consequences. Find that PO!",
+      "storyOutro": "Found it! PO exists, arriving tomorrow. You called the factory: 'Hold on 24 hours, shipment incoming.' Production manager calmed down, crisis averted. Welcome to procurement - where finding information fast literally keeps factories running! Let's check another plant's orders...",
+      "nextQuestHint": "Plant 1710 needs help: Find their purchase orders"
+    },
+    "s4hana-po-plant": {
+      "name": "Plant Filter: PO for 1710",
+      "description": "Find PO items by plant",
+      "tagline": "Find PO items by plant",
+      "victoryText": "Plant PO found! Facility expert!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Day 1: Multi-Plant Operations",
+      "storyIntro": "10 AM. Plant 1710 (your Houston facility) just sent an urgent email: 'Need list of all our active POs for inventory audit.' The auditors want this data by lunch. You support multiple plants - time to filter by plant 1710 and pull their complete PO list!",
+      "storyOutro": "Houston's complete PO list delivered! Twenty-three active purchase orders, organized and ready for audit. Plant manager: 'You just saved us hours of work!' Multi-plant support mastered. Accounting needs item category data for one specific PO...",
+      "nextQuestHint": "Detailed analysis: Check item category for a specific PO line item"
+    },
+    "s4hana-po-item-category": {
+      "name": "Category Check: PO Item Type",
+      "description": "Check PO item category",
+      "tagline": "Check PO item category",
+      "victoryText": "Item category found! Classification pro!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Day 2: Forensic Accounting",
+      "storyIntro": "Tuesday. Controller needs to classify PO item 4500000012/00030 for financial reporting. Is it capital equipment, raw materials, or services? The category affects how it's expensed. This detail matters for accurate books. Time for forensic procurement analysis!",
+      "storyOutro": "Item category confirmed! It's classified as 'raw materials' - which means it's expensed immediately, not capitalized. Controller can close the books accurately now. These details make or break financial reporting. Speaking of details, let's master supplier tracking...",
+      "nextQuestHint": "Vendor management: Find all POs from supplier 17300001"
+    },
+    "s4hana-po-supplier": {
+      "name": "Supplier Scout: Vendor 17300001",
+      "description": "Find POs by supplier ID",
+      "tagline": "Find POs by supplier ID",
+      "victoryText": "Supplier POs found! Vendor master!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Week 2: Vendor Relations",
+      "storyIntro": "Monday, Week 2. Supplier 17300001 is on the phone: 'We're reviewing our relationship with your company. Can you tell us our YTD order volume?' They're deciding whether to offer you volume discounts. Find every PO from this supplier - negotiating power awaits!",
+      "storyOutro": "Found all their POs! Solid YTD volume. You told the supplier the numbers, and they're considering bulk discounts on future orders. Your quick data retrieval strengthens vendor negotiations! Vendor relationships = strategic procurement. Let's organize by purchasing group...",
+      "nextQuestHint": "Team organization: Pull POs for purchasing group 001"
+    },
+    "s4hana-po-purch-group": {
+      "name": "Buyer Quest: Purch Group 001",
+      "description": "Find POs by purchasing group",
+      "tagline": "Find POs by purchasing group",
+      "victoryText": "Purch group POs found! Buyer champion!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Week 2: Team Accountability",
+      "storyIntro": "Tuesday. Weekly team meeting. Each purchasing group reports their active POs and spending. Your group (001) needs their numbers. How many open POs? Total committed spend? Your team lead is waiting. Find your group's POs and look prepared!",
+      "storyOutro": "Group 001 POs compiled! Multiple active POs with committed spend, everything on track. You presented confidently in the meeting. Your team lead nodded approvingly. Now let's dive into purchase requisitions - the precursor to POs...",
+      "nextQuestHint": "Master requisitions: Find PRs above 100 EUR threshold"
+    },
+    "s4hana-pr-value-filter": {
+      "name": "Value Hunter: 100 EUR PR",
+      "description": "Find PRs by value threshold",
+      "tagline": "Find PRs by value threshold",
+      "victoryText": "Value PRs found! Finance tracker!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Week 3: Approval Authority",
+      "storyIntro": "Wednesday. New company policy: All requisitions over 100 EUR need VP approval before becoming POs. Your job: find every req above this threshold that's waiting for conversion. Finance needs this for budget forecasting. High-value requisitions = big commitments!",
+      "storyOutro": "Found multiple requisitions over 100 EUR with significant pending commitments. VP is reviewing them now. You're controlling the financial gates - ensuring proper approval before committing company money. Budget discipline starts here! Let's organize reqs by purchasing group...",
+      "nextQuestHint": "Organize requisitions: Pull all req items for purchasing group 001"
+    },
+    "s4hana-pr-purch-group": {
+      "name": "PR Group: Requisition 001",
+      "description": "Track PRs by purchasing group",
+      "tagline": "Track PRs by purchasing group",
+      "victoryText": "Group PRs found! Requisition pro!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Week 3: Team Pipeline",
+      "storyIntro": "Thursday. Your purchasing group (001) needs visibility into their requisition pipeline. Which reqs are pending? Which got converted to POs? Your team lead wants a status update for Friday's planning meeting. Let's track your group's reqs!",
+      "storyOutro": "Group 001 requisition pipeline visible! Nine pending reqs, four converted to POs this week. Your team is productive! You presented this in the meeting - team lead appreciates the visibility. Now for advanced tracking: follow-on document status...",
+      "nextQuestHint": "Advanced: Check if PR 10438000 was converted to a PO (follow-on status)"
+    },
+    "s4hana-pr-followon-status": {
+      "name": "Follow-On: PR 10438000 Status",
+      "description": "Check PR follow-on document status",
+      "tagline": "Check PR follow-on document status",
+      "victoryText": "Follow-on status found! Process expert!",
+      "storyArc": "Procurement Champion",
+      "storyChapter": "Week 4: Master Level Tracking",
+      "storyIntro": "Friday, Week 4. Director asks: 'Did requisition 10438000 get converted to a PO yet? I approved it last week.' This is advanced procurement tracking - following documents through their lifecycle from req to PO to delivery. Process mastery awaits!",
+      "storyOutro": "Follow-on status confirmed! PR 10438000 became PO 5500000789, currently in vendor processing. You traced the complete document chain in seconds. This is procurement mastery - understanding how documents flow through the system. 🏆 PROCUREMENT CHAMPION STATUS ACHIEVED! You've mastered materials, plants, categories, suppliers, groups, requisitions, and process flow!",
+      "nextQuestHint": "🎓 Procurement Complete! Try Delivery/Warehouse operations next!"
+    },
+    "s4hana-delivery-due-shipping": {
+      "name": "Shipping Alert: Due for Dispatch",
+      "description": "Check deliveries ready to ship",
+      "tagline": "Check deliveries ready to ship",
+      "victoryText": "Shipping queue loaded! Dispatch ready!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Day 1: The Morning Briefing",
+      "storyIntro": "6 AM. Warehouse opens in 30 minutes. You're the new Warehouse Ops Coordinator. Before the team arrives, you need the daily dispatch list - which deliveries ship TODAY? This determines truck scheduling and picker assignments. Morning briefing starts at 6:30. Let's get the list!",
+      "storyOutro": "Shipping queue loaded! Twelve deliveries due for dispatch today. You're printing pick lists now for the team. When they arrive at 6:30, you'll have their workload organized. This is operational excellence - being prepared before the day starts! One delivery needs attention...",
+      "nextQuestHint": "Customer inquiry: Look up the details for delivery 80000048"
+    },
+    "s4hana-delivery-lookup": {
+      "name": "Delivery Finder: Doc 80000048",
+      "description": "Look up specific delivery",
+      "tagline": "Look up specific delivery",
+      "victoryText": "Delivery found! Lookup master!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Day 1: Customer Service",
+      "storyIntro": "8 AM. Customer service transferred a call to you: 'Customer asking about delivery 80000048 - can you check status?' They're on hold, getting impatient. You need delivery details in seconds. No time to dig through systems. Joule, work your magic!",
+      "storyOutro": "Delivery 80000048 found! Status: 'In warehouse, picking in progress.' You told customer service, they relayed to customer, everyone's happy. Fast, accurate responses = customer satisfaction. Now let's get the full delivery document...",
+      "nextQuestHint": "Get complete details: Pull the full delivery document for 80000048"
+    },
+    "s4hana-delivery-document": {
+      "name": "Document Scout: Delivery 80000048",
+      "description": "Find delivery document details",
+      "tagline": "Find delivery document details",
+      "victoryText": "Document found! Details master!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Day 2: Documentation Mastery",
+      "storyIntro": "Tuesday morning. Quality control flagged delivery 80000048 - they need the full delivery document for inspection records. Product codes, quantities, serial numbers, everything. This goes into permanent records. Find the complete delivery document!",
+      "storyOutro": "Complete delivery document retrieved! QC is printing it now for their records. All product codes match, quantities correct, documentation perfect. Your attention to detail prevents shipping errors. Speaking of details, let's check picking status...",
+      "nextQuestHint": "Warehouse ops: Check the overall picking status for delivery 80000048"
+    },
+    "s4hana-delivery-picking-status": {
+      "name": "Pick Status: Delivery 80000048",
+      "description": "Check overall picking status",
+      "tagline": "Check overall picking status",
+      "victoryText": "Picking status found! Warehouse pro!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Day 2: Floor Operations",
+      "storyIntro": "Noon. Warehouse manager walks over: 'Is 80000048 picked yet? Customer wants it on today's truck.' Picking status determines if it ships today or tomorrow. The truck leaves in 3 hours. You need to know if pickers finished this delivery!",
+      "storyOutro": "Picking status: 'Partially complete - 70% picked.' You told the manager, he's sending extra pickers to finish it in time for today's truck. Real-time status visibility = operational agility. Customer will get their delivery on time! Let's find what else is ready...",
+      "nextQuestHint": "Daily workflow: Check which deliveries are ready for picking right now"
+    },
+    "s4hana-delivery-ready-picking": {
+      "name": "Ready Check: Picking Queue",
+      "description": "Find deliveries ready for picking",
+      "tagline": "Find deliveries ready for picking",
+      "victoryText": "Picking queue found! Warehouse wizard!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Week 2: Workflow Optimization",
+      "storyIntro": "Monday, Week 2. New picking team starting today. They need their work queue: 'What deliveries are ready to pick RIGHT NOW?' This list determines their entire day's work. Organized workflow = efficient warehouse. Let's build their queue!",
+      "storyOutro": "Picking queue ready! Seven deliveries waiting, organized by priority. Pickers have a clear list to work through. No wasted time, no confusion. Your operational planning is keeping the warehouse efficient. Now let's master timing - when do things actually ship?",
+      "nextQuestHint": "Final skill: Check the planned goods issue date for delivery 80000048"
+    },
+    "s4hana-delivery-goods-issue-date": {
+      "name": "Date Check: Planned Issue 80000048",
+      "description": "Check planned goods issue date",
+      "tagline": "Check planned goods issue date",
+      "victoryText": "Issue date found! Planning expert!",
+      "storyArc": "Warehouse Wizard",
+      "storyChapter": "Week 2: Predictive Planning",
+      "storyIntro": "Friday. Customer called: 'When EXACTLY will delivery 80000048 ship?' They're coordinating their receiving dock schedule. You need the planned goods issue date - the system's promise for when this leaves your warehouse. Precision matters in logistics!",
+      "storyOutro": "Planned goods issue date: Tomorrow, 10 AM. Customer is scheduling their receiving dock accordingly. Your precise timing enables their planning. This is supply chain orchestration! 🏆 WAREHOUSE WIZARD COMPLETE! You've mastered daily dispatch, customer lookups, document details, picking status, queue management, and timing precision. You're the logistics expert your company needs!",
+      "nextQuestHint": "🎓 Delivery Journey Complete! You've conquered S/4HANA operations!"
+    }
+  }
+}

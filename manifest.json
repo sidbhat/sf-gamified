@@ -34,6 +34,7 @@
       ],
       "js": [
         "src/utils/logger.js",
+        "src/i18n/i18n-manager.js",
         "src/utils/error-messages.js",
         "src/utils/shadow-dom-helper.js",
         "src/utils/solution-detector.js",
@@ -77,7 +78,8 @@
       "resources": [
         "assets/*",
         "src/ui/confetti.js",
-        "src/config/*.json"
+        "src/config/*.json",
+        "i18n/*.json"
       ],
       "matches": [
         "https://*.successfactors.com/*",

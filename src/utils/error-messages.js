@@ -1,7 +1,15 @@
 /**
  * Error Message Catalog - User-friendly error messages
  * Provides consistent, helpful error messaging across the extension
+ * Now supports i18n for multi-language error messages
  */
+
+// Get i18n instance if available
+const getI18n = () => {
+  return (typeof window !== 'undefined' && window.JouleQuestI18n) 
+    ? window.JouleQuestI18n 
+    : null;
+};
 
 const ERROR_CATALOG = {
   // Connection/Setup Errors
@@ -156,7 +164,7 @@ const ERROR_CATALOG = {
 };
 
 /**
- * Get user-friendly error message
+ * Get user-friendly error message with i18n support
  * @param {string} errorType - Error type from catalog
  * @param {string} stepName - Optional step name for context
  * @param {string} technicalDetails - Optional technical error details
@@ -164,7 +172,35 @@ const ERROR_CATALOG = {
  */
 function getErrorMessage(errorType, stepName = null, technicalDetails = null) {
   const errorConfig = ERROR_CATALOG[errorType] || ERROR_CATALOG.UNKNOWN_ERROR;
+  const i18n = getI18n();
   
+  // If i18n is available, use translated messages
+  if (i18n) {
+    const errorKey = errorType.toLowerCase().replace(/_/g, '');
+    const translatedConfig = {
+      icon: errorConfig.icon,
+      title: i18n.t(`errors.${errorKey}.title`),
+      message: i18n.t(`errors.${errorKey}.message`),
+      causes: errorConfig.causes.map((_, index) => 
+        i18n.t(`errors.${errorKey}.causes.${index}`)
+      ),
+      solutions: errorConfig.solutions.map((sol, index) => ({
+        icon: sol.icon,
+        text: i18n.t(`errors.${errorKey}.solutions.${index}`)
+      })),
+      severity: errorConfig.severity,
+      actionText: errorConfig.actionText
+    };
+    
+    return {
+      ...translatedConfig,
+      stepName: stepName,
+      technicalDetails: technicalDetails,
+      timestamp: new Date().toISOString()
+    };
+  }
+  
+  // Fallback to English if i18n not available
   return {
     ...errorConfig,
     stepName: stepName,
@@ -174,11 +210,13 @@ function getErrorMessage(errorType, stepName = null, technicalDetails = null) {
 }
 
 /**
- * Format error for display in overlay
+ * Format error for display in overlay with i18n support
  * @param {Object} errorMsg - Error message object from getErrorMessage
  * @returns {string} HTML string for display
  */
 function formatErrorForDisplay(errorMsg) {
+  const i18n = getI18n();
+  
   const causesList = errorMsg.causes
     .map(cause => `• ${cause}`)
     .join('\n');
@@ -186,6 +224,11 @@ function formatErrorForDisplay(errorMsg) {
   const solutionsList = errorMsg.solutions
     .map(sol => `${sol.icon} ${sol.text}`)
     .join('\n');
+
+  // Get translated labels
+  const whyLabel = i18n ? i18n.t('errors.whyThisHappened') : 'Why this happened:';
+  const whatLabel = i18n ? i18n.t('errors.whatToDo') : 'What to do:';
+  const technicalLabel = i18n ? i18n.t('errors.technicalDetails') : 'Technical Details';
 
   return `
     <div class="error-display">
@@ -195,18 +238,18 @@ function formatErrorForDisplay(errorMsg) {
       <p class="error-message">${errorMsg.message}</p>
       
       <div class="error-section">
-        <strong>Why this happened:</strong>
+        <strong>${whyLabel}</strong>
         <div class="error-list">${causesList}</div>
       </div>
       
       <div class="error-section">
-        <strong>What to do:</strong>
+        <strong>${whatLabel}</strong>
         <div class="error-list">${solutionsList}</div>
       </div>
       
       ${errorMsg.technicalDetails ? `
         <details class="error-technical">
-          <summary>🔧 Technical Details</summary>
+          <summary>🔧 ${technicalLabel}</summary>
           <pre>${errorMsg.technicalDetails}</pre>
         </details>
       ` : ''}
