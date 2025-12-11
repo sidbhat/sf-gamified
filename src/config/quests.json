@@ -1026,7 +1026,7 @@
           "description": "Typing AI prompt for goal generation...",
           "action": "type_in_field",
           "selector": "goalForm.aiPromptField",
-          "value": "Help me improve my presentation skills by Q2 next year",
+          "value": "Help me improve my presentation skills by the end of Q2",
           "successMessage": "AI prompt entered! ✍️"
         },
         {
