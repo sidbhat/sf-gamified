@@ -1,0 +1,131 @@
+/* Automation Cursor Indicator - Purple Ball with Theme Matching */
+
+/* Purple automation ball that follows automation actions */
+.automation-cursor {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none; /* Hidden by default */
+  transform: translate(-50%, -50%);
+}
+
+/* Active state - ball is visible and animating */
+.automation-cursor.active {
+  display: block;
+  animation: cursor-pulse 1.5s ease-in-out infinite;
+}
+
+/* Purple ball with gradient matching extension theme */
+.automation-cursor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px rgba(102, 126, 234, 0.8),
+    0 0 40px rgba(118, 75, 162, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+/* Outer glow ring */
+.automation-cursor::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid rgba(102, 126, 234, 0.6);
+  border-radius: 50%;
+  animation: cursor-ring 1.5s ease-in-out infinite;
+}
+
+/* Pulse animation for the ball */
+@keyframes cursor-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* Ring expansion animation */
+@keyframes cursor-ring {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.2;
+  }
+}
+
+/* Click ripple effect */
+.automation-cursor-ripple {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999998;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
+  border: 2px solid rgba(102, 126, 234, 0.6);
+  animation: ripple-expand 0.6s ease-out forwards;
+}
+
+/* Ripple expansion animation */
+@keyframes ripple-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Moving state - cursor is transitioning to new position */
+.automation-cursor.moving {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Clicking state - cursor briefly scales up */
+.automation-cursor.clicking {
+  animation: cursor-click 0.3s ease-out;
+}
+
+@keyframes cursor-click {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .automation-cursor,
+  .automation-cursor::after,
+  .automation-cursor-ripple {
+    animation: none !important;
+    transition: none !important;
+  }
+}

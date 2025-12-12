@@ -7,6 +7,7 @@ class QuestRunner {
     this.logger = window.JouleQuestLogger;
     this.jouleHandler = window.JouleQuestJouleHandler;
     this.shadowDOM = window.JouleQuestShadowDOM;
+    this.automationCursor = window.JouleQuestAutomationCursor;
     this.currentQuest = null;
     this.currentStepIndex = 0;
     this.isRunning = false;
@@ -560,10 +561,27 @@ class QuestRunner {
       }
 
       this.logger.success('Element found, clicking...', element);
+      
+      // Show automation cursor moving to element
+      if (this.automationCursor) {
+        this.automationCursor.moveToElement(element);
+        await this.sleep(600); // Wait for cursor to move
+      }
+      
       this.shadowDOM.clickElement(element);
+      
+      // Show click ripple effect
+      if (this.automationCursor) {
+        this.automationCursor.showClickRipple();
+      }
       
       // Wait for any animations/transitions
       await this.sleep(1000);
+      
+      // Hide cursor after click
+      if (this.automationCursor) {
+        this.automationCursor.hide();
+      }
     } catch (error) {
       this.logger.error(`Failed to execute click action for ${selectorKey}`, error);
       throw error;
@@ -936,6 +954,12 @@ class QuestRunner {
         value: element.value
       });
       
+      // Show automation cursor moving to input field
+      if (this.automationCursor) {
+        this.automationCursor.moveToElement(element);
+        await this.sleep(600); // Wait for cursor to move
+      }
+      
       // Use shadowDOM helper to properly set value with Shadow DOM events
       // CRITICAL: setInputValue is now async, must await it
       this.logger.info('🚀 [executeTypeInFieldAction] Calling setInputValue...');
@@ -943,7 +967,18 @@ class QuestRunner {
       
       this.logger.success(`✅ [executeTypeInFieldAction] Typed into field: "${step.value}"`);
       
+      // Show brief click ripple to indicate typing action
+      if (this.automationCursor) {
+        this.automationCursor.showClickRipple();
+      }
+      
       await this.sleep(500);
+      
+      // Hide cursor after typing
+      if (this.automationCursor) {
+        this.automationCursor.hide();
+      }
+      
       this.logger.info('✅ [executeTypeInFieldAction] COMPLETE');
     } catch (error) {
       this.logger.error('❌ [executeTypeInFieldAction] FAILED', error);
@@ -971,13 +1006,32 @@ class QuestRunner {
       if (element) {
         this.logger.success('Button found via selectors!', element);
         
+        // Show automation cursor moving to button
+        if (this.automationCursor) {
+          this.automationCursor.moveToElement(element);
+          await this.sleep(600); // Wait for cursor to move
+        }
+        
         // Use clickElementWithRetry for better reliability
         // This handles UI5 shadow piercing, clickability checks, and retries
         const success = await this.shadowDOM.clickElementWithRetry(element, 3);
         
         if (success) {
           this.logger.success('Button clicked successfully with retry logic!');
-          await this.sleep(3000);
+          
+          // Show click ripple effect
+          if (this.automationCursor) {
+            this.automationCursor.showClickRipple();
+          }
+          
+          await this.sleep(1000);
+          
+          // Hide cursor after click
+          if (this.automationCursor) {
+            this.automationCursor.hide();
+          }
+          
+          await this.sleep(2000);
           return;
         }
       }
@@ -1015,19 +1069,36 @@ class QuestRunner {
       if (matches) {
         this.logger.success(`Found matching button in ${tagName}!`, btnElement);
         
+        // Show automation cursor moving to button
+        if (this.automationCursor) {
+          this.automationCursor.moveToElement(btnElement);
+          await this.sleep(600); // Wait for cursor to move
+        }
+        
         // Try to get the actual button from shadow root
         const shadowButton = btnElement.shadowRoot?.querySelector('button');
         if (shadowButton) {
           this.logger.success('Found button inside shadow root, clicking...');
           shadowButton.click();
-          await this.sleep(3000);
-          return;
         } else {
           this.logger.warn('No shadow root found, clicking host element directly');
           btnElement.click();
-          await this.sleep(3000);
-          return;
         }
+        
+        // Show click ripple effect
+        if (this.automationCursor) {
+          this.automationCursor.showClickRipple();
+        }
+        
+        await this.sleep(1000);
+        
+        // Hide cursor after click
+        if (this.automationCursor) {
+          this.automationCursor.hide();
+        }
+        
+        await this.sleep(2000);
+        return;
       }
     }
     

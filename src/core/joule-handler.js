@@ -733,6 +733,597 @@ class JouleHandler {
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  /**
+   * Detect current UI language
+   * Returns ISO 639-1 code (en, de, fr, etc.)
+   * @returns {string} Language code
+   */
+  detectLanguage() {
+    // Try document lang attribute
+    let lang = document.documentElement.lang || 
+               document.querySelector('html')?.getAttribute('lang');
+    
+    // Try browser language
+    if (!lang) {
+      lang = navigator.language || navigator.userLanguage;
+    }
+    
+    // Normalize to 2-letter code
+    if (lang) {
+      lang = lang.substring(0, 2).toLowerCase();
+    }
+    
+    // Default to English
+    const detectedLang = lang || 'en';
+    this.logger.info('Detected language:', detectedLang);
+    return detectedLang;
+  }
+
+  /**
+   * Universal element finder with multi-strategy approach
+   * Tries selectors in priority order (1 = highest priority)
+   * @param {Array} selectors - Array of selector objects with type, value, priority
+   * @param {number} retries - Number of retry attempts
+   * @returns {Promise<HTMLElement|null>}
+   */
+  async findElement(selectors, retries = 3) {
+    this.logger.info('Finding element with priority-based multi-strategy', { 
+      selectorCount: selectors.length,
+      retries 
+    });
+    
+    // Handle both old format (array of strings) and new format (array of objects)
+    const normalizedSelectors = selectors.map(sel => {
+      if (typeof sel === 'string') {
+        // Old format: convert to new format
+        return {
+          type: sel.startsWith('//') ? 'xpath' : 'css',
+          value: sel,
+          priority: 999
+        };
+      }
+      return sel;
+    });
+    
+    // Sort selectors by priority (1 = highest)
+    const sortedSelectors = [...normalizedSelectors].sort((a, b) => 
+      (a.priority || 999) - (b.priority || 999)
+    );
+    
+    for (let attempt = 0; attempt < retries; attempt++) {
+      if (attempt > 0) {
+        this.logger.info(`Retry attempt ${attempt}/${retries}`);
+        await this.sleep(1000);
+      }
+      
+      for (const selector of sortedSelectors) {
+        try {
+          const element = await this.trySelector(selector);
+          
+          if (element && this.isElementVisible(element) && !element.disabled) {
+            this.logger.success('Element found with strategy', { 
+              type: selector.type,
+              priority: selector.priority,
+              description: selector.description
+            });
+            return element;
+          }
+          
+        } catch (error) {
+          this.logger.warn('Selector strategy failed', { 
+            type: selector.type, 
+            error: error.message 
+          });
+        }
+      }
+    }
+    
+    this.logger.error('Element not found after all strategies and retries');
+    return null;
+  }
+
+  /**
+   * Try a single selector strategy
+   * @param {Object} selector - Selector configuration
+   * @returns {Promise<HTMLElement|null>}
+   */
+  async trySelector(selector) {
+    switch (selector.type) {
+      case 'dataHelpId':
+        return this.findByDataHelpId(selector.value);
+        
+      case 'icon':
+        return this.findByIcon(selector.value, selector.element || 'button');
+        
+      case 'accessibleName':
+        return this.findByAccessibleName(selector.value);
+        
+      case 'ariaLabel':
+        return this.findByAriaLabel(selector.value);
+        
+      case 'partialText':
+        return this.findByPartialText(selector.value);
+        
+      case 'css':
+        return this.findByCSS(selector.value);
+        
+      case 'xpath':
+        return this.findByXPath(selector.value);
+        
+      default:
+        this.logger.warn('Unknown selector type', { type: selector.type });
+        return null;
+    }
+  }
+
+  /**
+   * Find by data-help-id (language-neutral)
+   * BEST STRATEGY - Works in all languages
+   * @param {string|Array} helpIds - Help ID(s) to search for
+   * @returns {HTMLElement|null}
+   */
+  findByDataHelpId(helpIds) {
+    const idArray = Array.isArray(helpIds) ? helpIds : [helpIds];
+    
+    for (const helpId of idArray) {
+      // Try standard DOM
+      let element = document.querySelector(`[data-help-id="${helpId}"]`);
+      if (element) {
+        this.logger.info('Found by data-help-id (DOM)', { helpId });
+        return element;
+      }
+      
+      // Try shadow DOM
+      element = this.searchShadowDOMForAttribute('data-help-id', helpId);
+      if (element) {
+        this.logger.info('Found by data-help-id (Shadow DOM)', { helpId });
+        return element;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by icon name (visual identifier)
+   * GOOD STRATEGY - Language-neutral
+   * @param {string|Array} iconNames - Icon name(s) to search for
+   * @param {string} elementType - Type of element to find (default: 'button')
+   * @returns {HTMLElement|null}
+   */
+  findByIcon(iconNames, elementType = 'button') {
+    const iconArray = Array.isArray(iconNames) ? iconNames : [iconNames];
+    
+    for (const iconName of iconArray) {
+      // Find icon elements with various patterns
+      const iconSelectors = [
+        `ui5-icon[name="${iconName}"]`,
+        `[icon="${iconName}"]`,
+        `[data-icon="${iconName}"]`,
+        `.sapUi5Icon[data-icon-name="${iconName}"]`
+      ];
+      
+      for (const iconSelector of iconSelectors) {
+        // Search in regular DOM
+        const icons = document.querySelectorAll(iconSelector);
+        
+        for (const icon of icons) {
+          // Find closest button/element
+          const button = icon.closest(elementType) || 
+                        icon.parentElement?.closest(elementType);
+          
+          if (button) {
+            this.logger.info('Found by icon (DOM)', { iconName, elementType });
+            return button;
+          }
+        }
+        
+        // Try shadow DOM
+        const shadowIcon = this.searchShadowDOMForSelector(iconSelector);
+        if (shadowIcon) {
+          const button = shadowIcon.closest(elementType) || 
+                        shadowIcon.parentElement?.closest(elementType);
+          if (button) {
+            this.logger.info('Found by icon (Shadow DOM)', { iconName });
+            return button;
+          }
+        }
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by accessible-name attribute (UI5 Web Components)
+   * FALLBACK STRATEGY - Requires language mapping
+   * @param {string|Object|Array} accessibleNames - Text or language map
+   * @returns {HTMLElement|null}
+   */
+  findByAccessibleName(accessibleNames) {
+    let searchTexts;
+    
+    if (typeof accessibleNames === 'object' && !Array.isArray(accessibleNames)) {
+      // Language map provided - detect current language
+      const currentLang = this.detectLanguage();
+      searchTexts = [accessibleNames[currentLang]];
+      
+      // Add English as fallback
+      if (currentLang !== 'en' && accessibleNames.en) {
+        searchTexts.push(accessibleNames.en);
+      }
+    } else {
+      // Array of texts or single text provided
+      searchTexts = Array.isArray(accessibleNames) ? accessibleNames : [accessibleNames];
+    }
+    
+    for (const text of searchTexts) {
+      if (!text) continue;
+      
+      // Try accessible-name attribute (UI5 Web Components)
+      let element = document.querySelector(`[accessible-name="${text}"]`);
+      if (element) {
+        this.logger.info('Found by accessible-name (exact)', { text });
+        return element;
+      }
+      
+      // Try partial match
+      element = document.querySelector(`[accessible-name*="${text}"]`);
+      if (element) {
+        this.logger.info('Found by accessible-name (partial)', { text });
+        return element;
+      }
+      
+      // Try aria-label
+      element = document.querySelector(`[aria-label*="${text}"]`);
+      if (element) {
+        this.logger.info('Found by aria-label', { text });
+        return element;
+      }
+      
+      // Try shadow DOM
+      element = this.searchShadowDOMForAttribute('accessible-name', text);
+      if (element) {
+        this.logger.info('Found by accessible-name (Shadow DOM)', { text });
+        return element;
+      }
+      
+      element = this.searchShadowDOMForAttribute('aria-label', text);
+      if (element) {
+        this.logger.info('Found by aria-label (Shadow DOM)', { text });
+        return element;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by aria-label (multi-language)
+   * @param {string|Array} ariaLabels - Aria label(s) to search for
+   * @returns {HTMLElement|null}
+   */
+  findByAriaLabel(ariaLabels) {
+    const labelArray = Array.isArray(ariaLabels) ? ariaLabels : [ariaLabels];
+    
+    for (const label of labelArray) {
+      // Exact match
+      let element = document.querySelector(`[aria-label="${label}"]`);
+      if (element) {
+        this.logger.info('Found by aria-label (exact)', { label });
+        return element;
+      }
+      
+      // Partial match
+      element = document.querySelector(`[aria-label*="${label}"]`);
+      if (element) {
+        this.logger.info('Found by aria-label (partial)', { label });
+        return element;
+      }
+      
+      // Shadow DOM
+      element = this.searchShadowDOMForAttribute('aria-label', label);
+      if (element) {
+        this.logger.info('Found by aria-label (Shadow DOM)', { label });
+        return element;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by partial text match
+   * LAST RESORT - Works but least reliable
+   * @param {string|Array} texts - Text(s) to search for
+   * @returns {HTMLElement|null}
+   */
+  findByPartialText(texts) {
+    const textArray = Array.isArray(texts) ? texts : [texts];
+    
+    for (const text of textArray) {
+      const textLower = text.toLowerCase();
+      
+      // Search all buttons
+      const buttons = document.querySelectorAll('button, [role="button"]');
+      
+      for (const button of buttons) {
+        const buttonText = button.textContent?.toLowerCase() || '';
+        const ariaLabel = button.getAttribute('aria-label')?.toLowerCase() || '';
+        const accessibleName = button.getAttribute('accessible-name')?.toLowerCase() || '';
+        
+        if (buttonText.includes(textLower) || 
+            ariaLabel.includes(textLower) ||
+            accessibleName.includes(textLower)) {
+          this.logger.info('Found by partial text (DOM)', { text });
+          return button;
+        }
+      }
+      
+      // Try shadow DOM
+      const shadowButton = this.searchShadowDOMForText(textLower);
+      if (shadowButton) {
+        this.logger.info('Found by partial text (Shadow DOM)', { text });
+        return shadowButton;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by CSS selector
+   * @param {string} cssSelector - CSS selector
+   * @returns {HTMLElement|null}
+   */
+  findByCSS(cssSelector) {
+    let element = document.querySelector(cssSelector);
+    if (element) {
+      this.logger.info('Found by CSS (DOM)', { cssSelector });
+      return element;
+    }
+    
+    // Try shadow DOM
+    element = this.searchShadowDOMForSelector(cssSelector);
+    if (element) {
+      this.logger.info('Found by CSS (Shadow DOM)', { cssSelector });
+      return element;
+    }
+    
+    return null;
+  }
+
+  /**
+   * Find by XPath selector
+   * @param {string} xpathSelector - XPath selector
+   * @returns {HTMLElement|null}
+   */
+  findByXPath(xpathSelector) {
+    try {
+      const xpathResult = document.evaluate(
+        xpathSelector,
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      const element = xpathResult.singleNodeValue;
+      
+      if (element) {
+        this.logger.info('Found by XPath', { xpathSelector });
+        return element;
+      }
+    } catch (error) {
+      this.logger.warn('XPath evaluation failed', { xpathSelector, error: error.message });
+    }
+    
+    return null;
+  }
+
+  /**
+   * Check if element is visible
+   * @param {HTMLElement} element - Element to check
+   * @returns {boolean}
+   */
+  isElementVisible(element) {
+    if (!element) return false;
+    
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+    
+    return rect.width > 0 && 
+           rect.height > 0 && 
+           style.display !== 'none' && 
+           style.visibility !== 'hidden' &&
+           style.opacity !== '0';
+  }
+
+  /**
+   * Search shadow DOM for element with specific attribute
+   * @param {string} attributeName - Attribute name to search for
+   * @param {string} attributeValue - Attribute value to match
+   * @returns {HTMLElement|null}
+   */
+  searchShadowDOMForAttribute(attributeName, attributeValue) {
+    const allElements = document.querySelectorAll('*');
+    
+    for (const element of allElements) {
+      if (element.shadowRoot) {
+        // Try exact match
+        let found = element.shadowRoot.querySelector(
+          `[${attributeName}="${attributeValue}"]`
+        );
+        
+        if (found) return found;
+        
+        // Try partial match
+        found = element.shadowRoot.querySelector(
+          `[${attributeName}*="${attributeValue}"]`
+        );
+        
+        if (found) return found;
+        
+        // Recurse into nested shadow roots
+        const nested = this.searchNestedShadowForAttribute(
+          element.shadowRoot, 
+          attributeName, 
+          attributeValue
+        );
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Recursively search nested shadow DOMs for attribute
+   * @param {ShadowRoot} shadowRoot - Shadow root to search
+   * @param {string} attributeName - Attribute name
+   * @param {string} attributeValue - Attribute value
+   * @returns {HTMLElement|null}
+   */
+  searchNestedShadowForAttribute(shadowRoot, attributeName, attributeValue) {
+    const elements = shadowRoot.querySelectorAll('*');
+    
+    for (const element of elements) {
+      if (element.shadowRoot) {
+        // Try exact match
+        let found = element.shadowRoot.querySelector(
+          `[${attributeName}="${attributeValue}"]`
+        );
+        
+        if (found) return found;
+        
+        // Try partial match
+        found = element.shadowRoot.querySelector(
+          `[${attributeName}*="${attributeValue}"]`
+        );
+        
+        if (found) return found;
+        
+        const nested = this.searchNestedShadowForAttribute(
+          element.shadowRoot,
+          attributeName,
+          attributeValue
+        );
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Search shadow DOM for CSS selector
+   * @param {string} cssSelector - CSS selector
+   * @returns {HTMLElement|null}
+   */
+  searchShadowDOMForSelector(cssSelector) {
+    const allElements = document.querySelectorAll('*');
+    
+    for (const element of allElements) {
+      if (element.shadowRoot) {
+        const found = element.shadowRoot.querySelector(cssSelector);
+        if (found) return found;
+        
+        // Recurse
+        const nested = this.searchNestedShadowForSelector(element.shadowRoot, cssSelector);
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Recursively search nested shadow DOMs for CSS selector
+   * @param {ShadowRoot} shadowRoot - Shadow root to search
+   * @param {string} cssSelector - CSS selector
+   * @returns {HTMLElement|null}
+   */
+  searchNestedShadowForSelector(shadowRoot, cssSelector) {
+    const elements = shadowRoot.querySelectorAll('*');
+    
+    for (const element of elements) {
+      if (element.shadowRoot) {
+        const found = element.shadowRoot.querySelector(cssSelector);
+        if (found) return found;
+        
+        const nested = this.searchNestedShadowForSelector(element.shadowRoot, cssSelector);
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Search shadow DOM for text content
+   * @param {string} searchText - Text to search for (lowercase)
+   * @returns {HTMLElement|null}
+   */
+  searchShadowDOMForText(searchText) {
+    const allElements = document.querySelectorAll('*');
+    
+    for (const element of allElements) {
+      if (element.shadowRoot) {
+        const buttons = element.shadowRoot.querySelectorAll('button, [role="button"]');
+        
+        for (const button of buttons) {
+          const text = button.textContent?.toLowerCase() || '';
+          const ariaLabel = button.getAttribute('aria-label')?.toLowerCase() || '';
+          const accessibleName = button.getAttribute('accessible-name')?.toLowerCase() || '';
+          
+          if (text.includes(searchText) || 
+              ariaLabel.includes(searchText) ||
+              accessibleName.includes(searchText)) {
+            return button;
+          }
+        }
+        
+        // Recurse
+        const nested = this.searchNestedShadowForText(element.shadowRoot, searchText);
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Recursively search nested shadow DOMs for text
+   * @param {ShadowRoot} shadowRoot - Shadow root to search
+   * @param {string} searchText - Text to search for (lowercase)
+   * @returns {HTMLElement|null}
+   */
+  searchNestedShadowForText(shadowRoot, searchText) {
+    const elements = shadowRoot.querySelectorAll('*');
+    
+    for (const element of elements) {
+      if (element.shadowRoot) {
+        const buttons = element.shadowRoot.querySelectorAll('button, [role="button"]');
+        
+        for (const button of buttons) {
+          const text = button.textContent?.toLowerCase() || '';
+          const ariaLabel = button.getAttribute('aria-label')?.toLowerCase() || '';
+          const accessibleName = button.getAttribute('accessible-name')?.toLowerCase() || '';
+          
+          if (text.includes(searchText) || 
+              ariaLabel.includes(searchText) ||
+              accessibleName.includes(searchText)) {
+            return button;
+          }
+        }
+        
+        const nested = this.searchNestedShadowForText(element.shadowRoot, searchText);
+        if (nested) return nested;
+      }
+    }
+    
+    return null;
+  }
 }
 
 // Create global handler instance

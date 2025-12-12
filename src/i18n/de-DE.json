@@ -226,19 +226,7 @@
         "💬 Problem melden, wenn es weiterhin besteht"
       ]
     },
-    "unknownerror": {
-      "title": "Etwas ist schiefgelaufen",
-      "message": "Ein unerwarteter Fehler ist aufgetreten.",
-      "causes": [
-        "Netzwerkverbindungsproblem",
-        "Seitenkonflikt mit Erweiterung",
-        "Browser-Kompatibilitätsproblem"
-      ],
-      "solutions": [
-        "🔄 Versuchen Sie, die Seite zu aktualisieren",
-        "💬 Problem melden, wenn es weiterhin besteht"
-      ]
-    },
+    "unknownerror": {},
     "whyThisHappened": "Warum das passiert ist:",
     "whatToDo": "Was zu tun ist:",
     "technicalDetails": "Technische Details"
@@ -256,6 +244,7 @@
     "viewAssignedLearning": "Zeige mir meine zugewiesenen Schulungen",
     "viewMyEmail": "Zeige mir meine E-Mail",
     "viewMyJob": "Zeige mir meinen Job",
+    "viewJob": "Zeige mir meinen Job",
     "viewMyBirthday": "Zeige mir mein Geburtsdatum",
     "showPendingApprovals": "Zeige meine ausstehenden Genehmigungen",
     "showDirectReports": "Zeige meine direkten Mitarbeiter",
@@ -297,7 +286,16 @@
     "deliveryDocument": "Finde Lieferdokument 80000048",
     "deliveryPickingStatus": "Zeige Gesamt-Kommissionierstatus für Lieferdokument 80000048",
     "deliveryReadyPicking": "Gibt es Lieferungen, die zur Kommissionierung bereit sind?",
-    "deliveryGoodsIssueDate": "Was ist das geplante Warenausgangsdatum für Lieferung 80000048"
+    "deliveryGoodsIssueDate": "Was ist das geplante Warenausgangsdatum für Lieferung 80000048",
+    "viewEmail": "View my email",
+    "viewBirthday": "View my birthday",
+    "showCustomerBilling": "Show me all billing documents for customer USCU-CUS23",
+    "showSalesOrgBilling": "Show me billing documents for sales organization 1010",
+    "findPaymentTermsBilling": "Find billing documents with payment terms 0001",
+    "showBillingRequests": "Show me all billing documents for customer USCU-P-005",
+    "showRefDocumentBilling": "Show me all billing documents request for reference document 1000000022",
+    "showProductBilling": "Show me billing documents for product PC_SUPP_1",
+    "showOrg1710Billing": "Show me billing documents for sales organization 1710"
   },
   "quests": {
     "employee-leave-balance": {

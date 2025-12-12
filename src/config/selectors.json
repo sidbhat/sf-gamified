@@ -1,165 +1,332 @@
 {
   "joule": {
     "chatButton": [
-      "button[aria-label*='Joule']",
-      "button[title*='Joule']",
-      "button[aria-label*='AI']",
-      "[role='button'][aria-label*='Joule']",
-      "//button[contains(@aria-label, 'Joule')]",
-      "//button[contains(@aria-label, 'AI')]",
-      "//*[@role='button' and contains(@aria-label, 'Joule')]"
+      {
+        "type": "ariaLabel",
+        "value": ["Joule", "AI"],
+        "priority": 1,
+        "description": "Joule button by aria-label"
+      },
+      {
+        "type": "css",
+        "value": "button[aria-label*='Joule']",
+        "priority": 2,
+        "description": "CSS selector for Joule button"
+      },
+      {
+        "type": "css",
+        "value": "button[title*='Joule']",
+        "priority": 3,
+        "description": "CSS selector by title"
+      },
+      {
+        "type": "xpath",
+        "value": "//button[contains(@aria-label, 'Joule')]",
+        "priority": 4,
+        "description": "XPath fallback"
+      }
     ],
     "inputField": [
-      "textarea[placeholder*='Message Joule']",
-      "textarea[placeholder='Message Joule...']",
-      "textarea[aria-label*='Joule']",
-      "textarea[aria-label*='Message Joule']",
-      "[role='textbox'][aria-label*='Joule']",
-      "//textarea[contains(@placeholder, 'Message Joule')]",
-      "//textarea[contains(@aria-label, 'Joule')]",
-      "//*[@role='textbox' and contains(@aria-label, 'Joule')]"
+      {
+        "type": "css",
+        "value": "textarea[placeholder*='Message Joule']",
+        "priority": 1,
+        "description": "Joule input field"
+      },
+      {
+        "type": "css",
+        "value": "textarea[aria-label*='Joule']",
+        "priority": 2,
+        "description": "Joule input by aria-label"
+      },
+      {
+        "type": "css",
+        "value": "[role='textbox'][aria-label*='Joule']",
+        "priority": 3,
+        "description": "Textbox role"
+      }
     ],
     "sendButton": [
-      "textarea + button",
-      "[role='textbox'] + button",
-      "button[aria-label='Send']",
-      "button[aria-label='Senden']",
-      "button[aria-label='Envoyer']",
-      "button[aria-label='Enviar']",
-      "button[aria-label*='Send message']",
-      "button[aria-label*='send']",
-      "button[aria-label*='senden']",
-      "button[type='submit']",
-      "button[data-sap-ui*='send']",
-      ".send-icon",
-      "svg[aria-label='Send']",
-      "[data-ui5-stable*='send'] button",
-      "//button[@aria-label='Send']",
-      "//button[@aria-label='Senden']",
-      "//button[contains(@aria-label, 'send')]",
-      "//button[contains(@aria-label, 'senden')]",
-      "//button[@type='submit']",
-      "//textarea/following-sibling::button",
-      "//*[@role='textbox']/following-sibling::button"
-    ],
-    "responseContainer": [
-      ".joule-response",
-      ".chat-message",
-      "[role='log']",
-      "//div[contains(@class, 'response')]",
-      "//div[@role='log']"
+      {
+        "type": "css",
+        "value": "button[type='submit']",
+        "priority": 1,
+        "description": "Submit button type"
+      },
+      {
+        "type": "ariaLabel",
+        "value": ["Send", "Senden", "Envoyer", "Enviar"],
+        "priority": 2,
+        "description": "Send button multi-language"
+      },
+      {
+        "type": "css",
+        "value": "textarea + button",
+        "priority": 3,
+        "description": "Button next to textarea"
+      }
     ],
     "closeButton": [
-      "button[aria-label='Close']",
-      "button[aria-label='Schließen']",
-      "button[aria-label='Fermer']",
-      "button[aria-label='Cerrar']",
-      "button[aria-label*='close']",
-      "button[aria-label*='schließen']",
-      "button[title='Close']",
-      "button[title='Schließen']",
-      "[aria-label='Close']",
-      "[aria-label='Schließen']",
-      "//button[@aria-label='Close']",
-      "//button[@aria-label='Schließen']",
-      "//button[contains(@aria-label, 'lose')]",
-      "//button[contains(@aria-label, 'schließ')]",
-      "//*[@aria-label='Close']",
-      "//*[@aria-label='Schließen']"
-    ]
-  },
-  "navigation": {
-    "costCenter": [
-      "a[href*='cost_center']",
-      "//a[contains(@href, 'cost_center')]",
-      "//button[contains(text(), 'Cost Center')]",
-      "//a[contains(text(), 'Cost Center')]"
+      {
+        "type": "ariaLabel",
+        "value": ["Close", "Schließen", "Fermer", "Cerrar", "Fechar"],
+        "priority": 1,
+        "description": "Close button multi-language"
+      },
+      {
+        "type": "css",
+        "value": "button[aria-label*='Close']",
+        "priority": 2,
+        "description": "Close button CSS"
+      }
     ]
   },
   "goalForm": {
     "createButton": [
-      "[data-ui5-stable*='Module-GOAL']",
-      "ui5-static-area-item-sf-header button",
-      "[data-ui5-stable*='create'] button",
-      "ui5-button-xweb-goalmanagement",
-      "ui5-button",
-      "button[aria-label*='Create Goal']",
-      "button[aria-label*='Create']",
-      "span.ui5-dynamic-page-title-focus-area[role='button']",
-      "span[class*='dynamic-page-title-focus-area'][role='button']",
-      "span[data-sap-focus-ref='true'][role='button']",
-      "span[role='button'][aria-expanded]",
-      "[role='button'][data-sap-focus-ref='true']",
-      "button.ui5-button-root[role='button']",
-      "button[class*='ui5-button']",
-      "button[data-sap-focus-ref='true']",
-      "a[href*='goal-form?action=create']",
-      "//span[@class='ui5-dynamic-page-title-focus-area' and @role='button']",
-      "//span[@role='button' and @data-sap-focus-ref='true']",
-      "//button[contains(@aria-label, 'Create')]"
+      {
+        "type": "dataHelpId",
+        "value": ["goal-create-button", "createGoalButton"],
+        "priority": 1,
+        "description": "Language-neutral create button ID"
+      },
+      {
+        "type": "css",
+        "value": "a[href*='goal-form?action=create']",
+        "priority": 2,
+        "description": "Create goal link"
+      },
+      {
+        "type": "ariaLabel",
+        "value": ["Create Goal", "Create", "Ziel erstellen", "Erstellen"],
+        "priority": 3,
+        "description": "Create button multi-language"
+      }
     ],
     "aiPromptField": [
-      "textarea",
-      "textarea[id*='description']",
-      "textarea[id*='goal']",
-      "textarea[name*='description']",
-      "textarea[placeholder*='write']",
-      "textarea[aria-label*='description']",
-      "[role='textbox']",
-      "input[type='text'][id*='description']",
-      "//textarea",
-      "//textarea[contains(@id, 'description')]",
-      "//textarea[contains(@id, 'goal')]"
+      {
+        "type": "dataHelpId",
+        "value": ["goal-ai-prompt", "aiPromptField"],
+        "priority": 1,
+        "description": "Language-neutral AI prompt field ID"
+      },
+      {
+        "type": "css",
+        "value": "textarea[id*='description'], textarea[name*='description']",
+        "priority": 2,
+        "description": "Description textarea"
+      },
+      {
+        "type": "css",
+        "value": "textarea, [role='textbox']",
+        "priority": 3,
+        "description": "Generic textarea fallback"
+      }
     ],
     "generateButton": [
-      "button[aria-label*='Generate']",
-      "button[aria-label*='Generieren']",
-      "button[aria-label*='Générer']",
-      "button[aria-label*='Generar']",
-      "button[id*='generate']",
-      "button[id*='generieren']",
-      "button[aria-description*='Generate']",
-      "button[aria-description*='Generieren']",
-      "[role='button'][aria-label*='Generate']",
-      "[role='button'][aria-label*='Generieren']",
-      "ui5-button[data-sap-ui*='generate']",
-      "button[data-sap-ui*='generate']",
-      "//button[contains(@aria-label, 'Generate')]",
-      "//button[contains(@aria-label, 'Generieren')]",
-      "//button[contains(@id, 'generate')]",
-      "//button[contains(@id, 'generieren')]"
-    ],
-    "submitButton": [
-      "button[type='submit']",
-      "button[aria-label*='Submit']",
-      "button[aria-label*='Save']",
-      "button[aria-label*='Senden']",
-      "button[aria-label*='Absenden']",
-      "button[aria-label*='Speichern']",
-      "button[aria-label*='Enregistrer']",
-      "button[aria-label*='Guardar']",
-      "ui5-button",
-      "ui5-button-xweb-goalmanagement",
-      "[role='button'][aria-label*='Submit']",
-      "[role='button'][aria-label*='Save']",
-      "[role='button'][aria-label*='Senden']",
-      "[role='button'][aria-label*='Speichern']",
-      "//button[@type='submit']",
-      "//button[contains(@aria-label, 'Submit') or contains(@aria-label, 'Save')]",
-      "//button[contains(@aria-label, 'Senden') or contains(@aria-label, 'Speichern')]"
+      {
+        "type": "dataHelpId",
+        "value": "goal-ai-promptSubmitButton",
+        "priority": 1,
+        "description": "Language-neutral generate button ID (BEST)"
+      },
+      {
+        "type": "icon",
+        "value": "ai",
+        "element": "button",
+        "priority": 2,
+        "description": "Button with AI icon (GOOD)"
+      },
+      {
+        "type": "accessibleName",
+        "value": {
+          "en": "Generate with AI",
+          "de": "Ziel mit KI generieren",
+          "fr": "Générer avec IA",
+          "es": "Generar con IA",
+          "pt": "Gerar com IA",
+          "ja": "AIで生成",
+          "ko": "AI로 생성",
+          "zh": "使用AI生成",
+          "pl": "Generuj za pomocą AI",
+          "el": "Δημιουργία με AI",
+          "vi": "Tạo bằng AI"
+        },
+        "priority": 3,
+        "description": "Accessible name by language (FALLBACK)"
+      },
+      {
+        "type": "partialText",
+        "value": ["generate", "generieren", "générer", "generar", "gerar", "生成", "생성", "生成"],
+        "priority": 4,
+        "description": "Partial text match (LAST RESORT)"
+      }
     ],
     "saveButton": [
-      "ui5-button-xweb-goalmanagement",
-      "ui5-button",
-      "button[aria-label*='Save']",
-      "button[aria-label*='Speichern']",
-      "button[aria-label*='Enregistrer']",
-      "button[aria-label*='Guardar']",
-      "button[type='submit']",
-      "[role='button'][aria-label*='Save']",
-      "[role='button'][aria-label*='Speichern']",
-      "//button[contains(@aria-label, 'Save')]",
-      "//button[contains(@aria-label, 'Speichern')]"
+      {
+        "type": "dataHelpId",
+        "value": ["goal-save-button", "saveButton", "btnSave"],
+        "priority": 1,
+        "description": "Language-neutral save button ID"
+      },
+      {
+        "type": "icon",
+        "value": ["save", "disk", "floppy"],
+        "element": "button",
+        "priority": 2,
+        "description": "Save icon buttons"
+      },
+      {
+        "type": "accessibleName",
+        "value": {
+          "en": "Save",
+          "de": "Speichern",
+          "fr": "Enregistrer",
+          "es": "Guardar",
+          "pt": "Salvar",
+          "ja": "保存",
+          "ko": "저장",
+          "zh": "保存",
+          "pl": "Zapisz",
+          "el": "Αποθήκευση",
+          "vi": "Lưu"
+        },
+        "priority": 3,
+        "description": "Save button multi-language"
+      },
+      {
+        "type": "partialText",
+        "value": ["save", "speichern", "enregistrer", "guardar", "salvar", "保存", "저장"],
+        "priority": 4,
+        "description": "Partial save text"
+      }
+    ],
+    "submitButton": [
+      {
+        "type": "css",
+        "value": "button[type='submit']",
+        "priority": 1,
+        "description": "Submit button type"
+      },
+      {
+        "type": "dataHelpId",
+        "value": ["submit-button", "submitButton", "btnSubmit"],
+        "priority": 2,
+        "description": "Language-neutral submit ID"
+      },
+      {
+        "type": "accessibleName",
+        "value": {
+          "en": "Submit",
+          "de": "Absenden",
+          "fr": "Soumettre",
+          "es": "Enviar",
+          "pt": "Enviar",
+          "ja": "送信",
+          "ko": "제출",
+          "zh": "提交",
+          "pl": "Prześlij",
+          "el": "Υποβολή",
+          "vi": "Gửi"
+        },
+        "priority": 3,
+        "description": "Submit button multi-language"
+      }
+    ]
+  },
+  "common": {
+    "saveButton": [
+      {
+        "type": "dataHelpId",
+        "value": ["save-button", "saveButton", "btnSave"],
+        "priority": 1,
+        "description": "Language-neutral save ID"
+      },
+      {
+        "type": "icon",
+        "value": ["save", "disk", "floppy"],
+        "element": "button",
+        "priority": 2,
+        "description": "Save icon"
+      },
+      {
+        "type": "partialText",
+        "value": ["save", "speichern", "enregistrer", "guardar", "salvar", "保存", "저장"],
+        "priority": 3,
+        "description": "Multi-language save text"
+      }
+    ],
+    "cancelButton": [
+      {
+        "type": "dataHelpId",
+        "value": ["cancel-button", "cancelButton", "btnCancel"],
+        "priority": 1,
+        "description": "Language-neutral cancel ID"
+      },
+      {
+        "type": "icon",
+        "value": ["decline", "cancel", "close"],
+        "element": "button",
+        "priority": 2,
+        "description": "Cancel/decline icons"
+      },
+      {
+        "type": "partialText",
+        "value": ["cancel", "abbrechen", "annuler", "cancelar", "取消", "취소"],
+        "priority": 3,
+        "description": "Multi-language cancel text"
+      }
+    ],
+    "nextButton": [
+      {
+        "type": "dataHelpId",
+        "value": ["next-button", "nextButton", "btnNext"],
+        "priority": 1,
+        "description": "Language-neutral next ID"
+      },
+      {
+        "type": "icon",
+        "value": ["arrow-right", "chevron-right", "next"],
+        "element": "button",
+        "priority": 2,
+        "description": "Next/arrow icons"
+      },
+      {
+        "type": "partialText",
+        "value": ["next", "weiter", "suivant", "siguiente", "próximo", "次へ", "다음"],
+        "priority": 3,
+        "description": "Multi-language next text"
+      }
+    ],
+    "backButton": [
+      {
+        "type": "dataHelpId",
+        "value": ["back-button", "backButton", "btnBack"],
+        "priority": 1,
+        "description": "Language-neutral back ID"
+      },
+      {
+        "type": "icon",
+        "value": ["arrow-left", "chevron-left", "back"],
+        "element": "button",
+        "priority": 2,
+        "description": "Back/arrow icons"
+      },
+      {
+        "type": "partialText",
+        "value": ["back", "zurück", "retour", "volver", "voltar", "戻る", "뒤로"],
+        "priority": 3,
+        "description": "Multi-language back text"
+      }
+    ]
+  },
+  "navigation": {
+    "costCenter": [
+      {
+        "type": "css",
+        "value": "a[href*='cost_center']",
+        "priority": 1,
+        "description": "Cost center link"
+      }
     ]
   }
 }
