@@ -561,26 +561,38 @@ class QuestRunner {
       }
 
       this.logger.success('Element found, clicking...', element);
-      
+
       // Show automation cursor moving to element
-      if (this.automationCursor) {
-        this.automationCursor.moveToElement(element);
-        await this.sleep(600); // Wait for cursor to move
+      try {
+        if (this.automationCursor && this.automationCursor.moveToElement) {
+          this.automationCursor.moveToElement(element);
+          await this.sleep(600); // Wait for cursor to move
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor failed (non-critical)', cursorError);
       }
-      
+
       this.shadowDOM.clickElement(element);
-      
+
       // Show click ripple effect
-      if (this.automationCursor) {
-        this.automationCursor.showClickRipple();
+      try {
+        if (this.automationCursor && this.automationCursor.showClickRipple) {
+          this.automationCursor.showClickRipple();
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor ripple failed (non-critical)', cursorError);
       }
-      
+
       // Wait for any animations/transitions
       await this.sleep(1000);
-      
+
       // Hide cursor after click
-      if (this.automationCursor) {
-        this.automationCursor.hide();
+      try {
+        if (this.automationCursor && this.automationCursor.hide) {
+          this.automationCursor.hide();
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor hide failed (non-critical)', cursorError);
       }
     } catch (error) {
       this.logger.error(`Failed to execute click action for ${selectorKey}`, error);
@@ -954,12 +966,6 @@ class QuestRunner {
         value: element.value
       });
       
-      // Show automation cursor moving to input field
-      if (this.automationCursor) {
-        this.automationCursor.moveToElement(element);
-        await this.sleep(600); // Wait for cursor to move
-      }
-      
       // Use shadowDOM helper to properly set value with Shadow DOM events
       // CRITICAL: setInputValue is now async, must await it
       this.logger.info('🚀 [executeTypeInFieldAction] Calling setInputValue...');
@@ -967,16 +973,34 @@ class QuestRunner {
       
       this.logger.success(`✅ [executeTypeInFieldAction] Typed into field: "${step.value}"`);
       
-      // Show brief click ripple to indicate typing action
-      if (this.automationCursor) {
-        this.automationCursor.showClickRipple();
+      // Show automation cursor AFTER typing is complete (for consistent behavior)
+      try {
+        if (this.automationCursor && this.automationCursor.moveToElement) {
+          this.automationCursor.moveToElement(element);
+          await this.sleep(400); // Wait for cursor to move
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor failed (non-critical)', cursorError);
+      }
+      
+      // Show brief click ripple to indicate typing action completed
+      try {
+        if (this.automationCursor && this.automationCursor.showClickRipple) {
+          this.automationCursor.showClickRipple();
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor ripple failed (non-critical)', cursorError);
       }
       
       await this.sleep(500);
       
-      // Hide cursor after typing
-      if (this.automationCursor) {
-        this.automationCursor.hide();
+      // Hide cursor after showing completion
+      try {
+        if (this.automationCursor && this.automationCursor.hide) {
+          this.automationCursor.hide();
+        }
+      } catch (cursorError) {
+        this.logger.warn('Automation cursor hide failed (non-critical)', cursorError);
       }
       
       this.logger.info('✅ [executeTypeInFieldAction] COMPLETE');
@@ -1007,9 +1031,13 @@ class QuestRunner {
         this.logger.success('Button found via selectors!', element);
         
         // Show automation cursor moving to button
-        if (this.automationCursor) {
-          this.automationCursor.moveToElement(element);
-          await this.sleep(600); // Wait for cursor to move
+        try {
+          if (this.automationCursor && this.automationCursor.moveToElement) {
+            this.automationCursor.moveToElement(element);
+            await this.sleep(600); // Wait for cursor to move
+          }
+        } catch (cursorError) {
+          this.logger.warn('Automation cursor failed (non-critical)', cursorError);
         }
         
         // Use clickElementWithRetry for better reliability
@@ -1020,15 +1048,23 @@ class QuestRunner {
           this.logger.success('Button clicked successfully with retry logic!');
           
           // Show click ripple effect
-          if (this.automationCursor) {
-            this.automationCursor.showClickRipple();
+          try {
+            if (this.automationCursor && this.automationCursor.showClickRipple) {
+              this.automationCursor.showClickRipple();
+            }
+          } catch (cursorError) {
+            this.logger.warn('Automation cursor ripple failed (non-critical)', cursorError);
           }
           
           await this.sleep(1000);
           
           // Hide cursor after click
-          if (this.automationCursor) {
-            this.automationCursor.hide();
+          try {
+            if (this.automationCursor && this.automationCursor.hide) {
+              this.automationCursor.hide();
+            }
+          } catch (cursorError) {
+            this.logger.warn('Automation cursor hide failed (non-critical)', cursorError);
           }
           
           await this.sleep(2000);
@@ -1070,9 +1106,13 @@ class QuestRunner {
         this.logger.success(`Found matching button in ${tagName}!`, btnElement);
         
         // Show automation cursor moving to button
-        if (this.automationCursor) {
-          this.automationCursor.moveToElement(btnElement);
-          await this.sleep(600); // Wait for cursor to move
+        try {
+          if (this.automationCursor && this.automationCursor.moveToElement) {
+            this.automationCursor.moveToElement(btnElement);
+            await this.sleep(600); // Wait for cursor to move
+          }
+        } catch (cursorError) {
+          this.logger.warn('Automation cursor failed (non-critical)', cursorError);
         }
         
         // Try to get the actual button from shadow root
@@ -1086,15 +1126,23 @@ class QuestRunner {
         }
         
         // Show click ripple effect
-        if (this.automationCursor) {
-          this.automationCursor.showClickRipple();
+        try {
+          if (this.automationCursor && this.automationCursor.showClickRipple) {
+            this.automationCursor.showClickRipple();
+          }
+        } catch (cursorError) {
+          this.logger.warn('Automation cursor ripple failed (non-critical)', cursorError);
         }
         
         await this.sleep(1000);
         
         // Hide cursor after click
-        if (this.automationCursor) {
-          this.automationCursor.hide();
+        try {
+          if (this.automationCursor && this.automationCursor.hide) {
+            this.automationCursor.hide();
+          }
+        } catch (cursorError) {
+          this.logger.warn('Automation cursor hide failed (non-critical)', cursorError);
         }
         
         await this.sleep(2000);
@@ -1237,8 +1285,9 @@ class QuestRunner {
 
   /**
    * Get selectors from key (e.g., "joule.chatButton")
+   * Converts new selector object format to array of strings for shadow-dom-helper
    * @param {string} key - Selector key in dot notation
-   * @returns {string[]} Array of selectors
+   * @returns {string[]} Array of selector strings
    */
   getSelectorsFromKey(key) {
     const parts = key.split('.');
@@ -1251,7 +1300,55 @@ class QuestRunner {
       }
     }
     
-    return obj;
+    // NEW: Convert selector objects to strings
+    // Selectors.json now uses objects with {type, value, priority, description}
+    // We need to extract the actual selector strings
+    if (Array.isArray(obj)) {
+      return obj.map(selectorObj => {
+        if (typeof selectorObj === 'string') {
+          // Backwards compatibility: already a string
+          return selectorObj;
+        }
+        
+        // New format: selector object with metadata
+        if (selectorObj.type === 'css' || selectorObj.type === 'xpath') {
+          // CSS and XPath selectors have direct string values
+          return selectorObj.value;
+        } else if (selectorObj.type === 'ariaLabel') {
+          // ariaLabel can be array or string
+          const labels = Array.isArray(selectorObj.value) ? selectorObj.value : [selectorObj.value];
+          // Convert to CSS selector
+          return labels.map(label => `[aria-label*="${label}"]`).join(', ');
+        } else if (selectorObj.type === 'dataHelpId') {
+          // dataHelpId is SAP-specific data-help-id attribute
+          const ids = Array.isArray(selectorObj.value) ? selectorObj.value : [selectorObj.value];
+          return ids.map(id => `[data-help-id="${id}"]`).join(', ');
+        } else if (selectorObj.type === 'icon') {
+          // Icon-based selector (UI5 icon attribute)
+          const icons = Array.isArray(selectorObj.value) ? selectorObj.value : [selectorObj.value];
+          const element = selectorObj.element || '*';
+          return icons.map(icon => `${element}[icon*="${icon}"]`).join(', ');
+        } else if (selectorObj.type === 'accessibleName') {
+          // accessibleName is language-specific object
+          // Convert all language variants to selectors
+          const names = Object.values(selectorObj.value);
+          return names.map(name => `[aria-label*="${name}"]`).join(', ');
+        } else if (selectorObj.type === 'partialText') {
+          // partialText needs to use :contains() pseudo-selector
+          const texts = Array.isArray(selectorObj.value) ? selectorObj.value : [selectorObj.value];
+          const element = selectorObj.element || '*';
+          // Return multiple selectors, one for each text variant
+          return texts.map(text => `${element}:contains('${text}')`).join(', ');
+        }
+        
+        // Fallback: return value as-is
+        this.logger.warn(`Unknown selector type: ${selectorObj.type}, using value as-is`);
+        return selectorObj.value;
+      }).filter(s => s); // Remove any null/undefined
+    }
+    
+    // Not an array (shouldn't happen with current structure)
+    return [obj];
   }
 
   /**

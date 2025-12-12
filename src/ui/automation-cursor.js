@@ -61,7 +61,9 @@ class AutomationCursor {
    */
   moveToElement(element) {
     if (!element) {
-      this.logger.warn('AutomationCursor.moveToElement: element is null');
+      if (this.logger && this.logger.warn) {
+        this.logger.warn('AutomationCursor.moveToElement: element is null');
+      }
       return;
     }
 
@@ -72,7 +74,10 @@ class AutomationCursor {
 
       this.showAt(centerX, centerY, false);
     } catch (error) {
-      this.logger.error('AutomationCursor.moveToElement failed', error);
+      if (this.logger && this.logger.error) {
+        this.logger.error('AutomationCursor.moveToElement failed', error);
+      }
+      // Fail silently - don't break quest execution
     }
   }
 
